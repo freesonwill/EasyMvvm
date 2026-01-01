@@ -24,10 +24,9 @@ import arch.cayenne.module.order.ui.viewholder.OrderReserveCollapseViewHolder
 
 class OrderBettingAdapter(
     private val type: OrderSportPageEnum,
+    private val onClickListener: OnOrderClickListener? = null,
     private val earlySettleListener: OrderEarlySettleListener? = null,
-    private val dataListener: OrderDataSelectorListener? = null,
     private val reserveListener: OrderReserveListener? = null,
-    private val selectionListener: SelectionItemListener? = null
 ) : BaseAdapter<BetSlipData, BaseViewHolder, ViewBinding>(BetSlipCompare()) {
 
     // 記錄每個 item 的展開/收起狀態
@@ -44,17 +43,29 @@ class OrderBettingAdapter(
                 val item = getItem(position) as BetSlipOrderHeaderBean
                 headerHolder.init(item)
                 headerHolder.binding.root.setOnClickListener {
-                    dataListener?.onDateClicked()
+                    onClickListener?.onDateClick()
                 }
             }
 
             BODY_EXPANDED -> {
+                val selectionItemListener = object : OrderBettingSelectionAdapter.SelectionItemListener {
+                    override fun onSingleClick(bean: BetSlipSelectionData) {
+                        val item = getItem(position)
+                        if (item is BetSlipOrderBean) {
+                            onClickListener?.onItemSingleClick(item)
+                        }
+                    }
+                }
+                val mBinding = (binding as? ItemOrderSportBettingBinding)
+                mBinding?.ivShare?.setOnClickListener {
+                    onClickListener?.onShareClick(getItem(position))
+                }
                 if (type == OrderSportPageEnum.RESERVE) {
                     val reserveHolder = holder as OrderReserveViewHolder
                     val item = getItem(position) as BetSlipReserveBean
 
                     reserveHolder.init(item)
-                    reserveHolder.initSelection(listOf(item.selection), type, selectionListener)
+                    reserveHolder.initSelection(listOf(item.selection), type, selectionItemListener)
                     reserveHolder.setDoubleClick {
                         toggleItemState(item.reserveId, position)
                     }
@@ -72,7 +83,7 @@ class OrderBettingAdapter(
                     val item = getItem(position) as BetSlipOrderBean
 
                     orderHolder.init(item)
-                    orderHolder.initSelection(item.selectionsList, type, selectionListener)
+                    orderHolder.initSelection(item.selectionsList, type, selectionItemListener)
                     orderHolder.setDoubleClick {
                         toggleItemState(item.betId, position)
                     }
@@ -180,12 +191,14 @@ class OrderBettingAdapter(
         const val BODY_COLLAPSED = 2
     }
 
-    interface OrderEarlySettleListener {
-        fun onEarlySettle(bean: BetSlipOrderBean)
+    interface OnOrderClickListener {
+        fun onDateClick()
+        fun onItemSingleClick(bean: BetSlipOrderBean)
+        fun onShareClick(bean: BetSlipData)
     }
 
-    interface OrderDataSelectorListener {
-        fun onDateClicked()
+    interface OrderEarlySettleListener {
+        fun onEarlySettle(bean: BetSlipOrderBean)
     }
 
     interface OrderReserveListener {
@@ -196,9 +209,5 @@ class OrderBettingAdapter(
             locationY: Int,
             viewHeight: Int
         )
-    }
-
-    interface SelectionItemListener {
-        fun onSingleClick(bean: BetSlipSelectionData)
     }
 }

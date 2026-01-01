@@ -12,7 +12,6 @@ import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.GameDatabase
-import arch.cayenne.lib.database.dao.UserDataDao
 import arch.cayenne.lib.database.entity.AvatarEmbedded
 import arch.cayenne.lib.database.entity.CurrencyBean
 import arch.cayenne.lib.database.entity.SportBean
@@ -26,9 +25,9 @@ import arch.cayenne.lib.http._interface.IAccount
 import arch.cayenne.lib.http._interface.IConfig
 import arch.cayenne.lib.http.data.AccountInfo
 import arch.cayenne.lib.http.data.CurrencyInfo
-import arch.cayenne.lib.http.data.ProfileInfo
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.module.home.data.constants.PlayType
+import arch.cayenne.module.home.data.constants.MatchListSortType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
 import arch.cayenne.module.home.data.repo.HomeRepository
 import com.blankj.utilcode.util.GsonUtils
@@ -127,6 +126,7 @@ class ModuleRepository(
                 registerTime = profileInfo.registerTime,
                 vipLevel = profileInfo.vipLevel,
                 score = profileInfo.score,
+                ccy = profileInfo.ccy,
                 list = profileInfo.list.map { WalletBean(it.ccy, it.score, it.exchangeScore) },
                 admittedBetScore = profileInfo.admittedBetScore,
                 requiredAdmittedBetScore = profileInfo.requiredAdmittedBetScore,
@@ -174,12 +174,13 @@ class ModuleRepository(
             data.map {
                 CurrencyBean(
                     id = it.id,
-                    virtual = it.virtual,
-                    rate = it.rate,
-                    unit = it.unit,
                     name = it.name,
                     ccy = it.ccy,
+                    crypto = it.crypto,
+                    scale = it.scale,
+                    unit = it.unit,
                     icon = it.icon,
+                    rate = it.rate
                 )
             }
         )
@@ -287,7 +288,8 @@ class ModuleRepository(
                         page = 0,
                         date = 0,//default沒給，只能預設為是今日
                         matchId = match.matchId,
-                        order = index
+                        order = index,
+                        sortType = MatchListSortType.BY_TIME.type
                     )
                 }
                 database.matchDao().insertMatch(

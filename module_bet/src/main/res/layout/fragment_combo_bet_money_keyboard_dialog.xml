@@ -89,7 +89,9 @@
             app:layout_constraintBottom_toBottomOf="@id/rv_quick_amount"
             app:layout_constraintEnd_toStartOf="@id/gl_other"
             app:layout_constraintStart_toEndOf="@id/rv_quick_amount"
-            app:layout_constraintTop_toTopOf="@id/rv_quick_amount" />
+            app:layout_constraintTop_toTopOf="@id/rv_quick_amount"
+            android:spacing="@dimen/dp_6"
+            />
 
         <GridLayout
             android:id="@+id/gl_other"

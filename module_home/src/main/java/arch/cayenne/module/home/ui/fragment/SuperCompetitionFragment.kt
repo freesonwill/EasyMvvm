@@ -11,6 +11,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
+import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
@@ -51,7 +53,6 @@ class SuperCompetitionFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
         initSportBanner()
-        initVIPInfo()
         initMatchListFragment()
     }
 
@@ -65,13 +66,27 @@ class SuperCompetitionFragment :
     }
 
     override suspend fun createObserver() {
-        // 監聽 VIP 等級變化
-        mViewModel.vipLevel.observe(viewLifecycleOwner) { level ->
-            updateVIPInfo(
-                vipLevel = level.toInt(),
-                percent = "57.91%",
-                levelUpInfo = "升级还需¥59w"
-            )
+        mViewModel.onVipListener.observe(viewLifecycleOwner) {
+            if (it != null) {
+                var percent = "0%"
+                var progress = 0f
+                val betScore = it.admittedBetScore.toFloat()
+                val reqScore = it.requiredAdmittedBetScore.toFloat()
+                if (reqScore > 0L && betScore > 0L) {
+                    progress = (betScore / reqScore) * 100f
+                    percent = String.format("%.2f", progress) + "%"
+                }
+                val cny = CurrencySymbols.getSymbol(it.ccy) +
+                        CurrencySymbols.getFormatAmount(it.ccy, reqScore)
+                val info = getString(arch.cayenne.lib.common.R.string.vip_level_require, cny)
+                updateVIPInfo(
+                    vipLevel = it.vipLevel,
+                    vipStage = it.vipStage,
+                    percent = percent,
+                    levelUpInfo = info,
+                    progress = progress
+                )
+            }
         }
         mViewModel.dateList.observe(viewLifecycleOwner) {
             // 日期 Tab 設定
@@ -90,7 +105,6 @@ class SuperCompetitionFragment :
             if (display.timestamp == HomeViewModel.DEFAULT_DATE) return@observe
             showSelectedDateTab(mViewModel.getDisplayDateIndex(display.timestamp))
         }
-
     }
 
     override fun initData() {
@@ -129,30 +143,21 @@ class SuperCompetitionFragment :
         }
     }
 
-    // init VIP 信息區塊
-    private fun initVIPInfo() {
-        // VIP 數據設置初始值，避免初始化時沒有數據
-        val currentLevel = VIPDataExt.getVIPLevel(75L)
-        updateVIPInfo(
-            vipLevel = currentLevel.toInt(),
-            percent = "57.91%",
-            levelUpInfo = "升级还需¥59w"
-        )
-    }
-
-    // 更新 VIP 信息顯示
-    private fun updateVIPInfo(vipLevel: Int, percent: String, levelUpInfo: String) {
+    private fun updateVIPInfo(
+        vipLevel: Int,
+        vipStage: Int,
+        percent: String,
+        levelUpInfo: String,
+        progress: Float
+    ) {
         // 使用 VIPResourceHelper 轉換等級
-        val level = VIPResourceHelper.getVIPLevelFromInt(vipLevel)
-
+        val level = VIPResourceHelper.getVIPLevelFromInt(vipStage)
         with(mBinding) {
             // 設置背景 - 使用 VIPResourceHelper
-            clVipInfo.background = VIPResourceHelper.getForegroundResource(level).getDrawable()
-
+            clVipInfo.background = VIPResourceHelper.getSportBackgroundResource(level)
             // 設置圖標 - 使用 VIPResourceHelper
             ivLevel.setImageResource(VIPResourceHelper.getIconResource(level))
             ivLevelName.setImageResource(VIPResourceHelper.getLevelNameResource(level))
-
             // 設置文字漸變效果 - 使用 VIPResourceHelper
             val bottom = 20.dp2px.toFloat()
             val linearGradient = LinearGradient(
@@ -167,16 +172,13 @@ class SuperCompetitionFragment :
             )
             tvLevel.paint.shader = linearGradient
             tvLevel.text = getString(arch.cayenne.lib.common.R.string.vip_level_format, vipLevel)
-
-            // 設置百分比 - 使用 VIPResourceHelper
             tvPercent.text = percent
-            ivPercent.setImageResource(VIPResourceHelper.getPercentResource(level))
-
-            // 設置升級信息
+            val color = VIPResourceHelper.getProgressStartColor(level)
+            vipProgress.setProgressColor(color)
+            vipProgress.setProgress(progress)
             tvLevelUpInfo.text = levelUpInfo
         }
     }
-
 
     private fun addDateTabListener() {
         mBinding.tlDateList.addOnTabSelectedListener2(object :
@@ -213,7 +215,11 @@ class SuperCompetitionFragment :
         clearDateTabSelection()
     }
 
-    private fun createDateTab(date: String?, weekday: String?, type: BiDirectionalDateType): TabLayout.Tab {
+    private fun createDateTab(
+        date: String?,
+        weekday: String?,
+        type: BiDirectionalDateType
+    ): TabLayout.Tab {
         val tab = mBinding.tlDateList.newTab()
         val tabView = ItemDateTabBinding.inflate(LayoutInflater.from(context), null, false).apply {
             if (type == BiDirectionalDateType.Date) {

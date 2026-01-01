@@ -742,6 +742,11 @@ public final class LogUtils {
             return this;
         }
 
+        public File getDir() {
+            String dir = mDir == null ? mDefaultDir : mDir;
+            return new File(dir);
+        }
+
         public Config setFilePrefix(final String filePrefix) {
             if (isSpace(filePrefix)) {
                 mFilePrefix = "util";

@@ -10,6 +10,8 @@ import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
@@ -40,6 +42,7 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
 import arch.cayenne.lib.common.utils.ext.setupViewPagerScroll
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
@@ -50,13 +53,16 @@ import arch.cayenne.module.home.ui.view.HomeTabMediator
 import arch.cayenne.module.home.ui.view.PromoTab
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import com.google.android.material.tabs.TabLayout
+import com.walisport.module.popup.slot.ui.fragment.PopupSlotFragment
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
 /**
  * 体育页
  */
-class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
+class NewHomeFragment : BaseFragment<HomeViewModel , FragmentNewHomeBinding>() {
     override val vbClass: KClass<FragmentNewHomeBinding> = FragmentNewHomeBinding::class
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
 
@@ -67,6 +73,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private var indicatorDrawable: android.graphics.drawable.Drawable? = null
     private var customIndicator: CustomTabIndicator? = null
 
+    private val popupSlotFragment: PopupSlotFragment by lazy {
+        PopupSlotFragment()
+    }
     private val balanceViewModel: BalanceViewModel by viewModel()
 
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
@@ -77,7 +86,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         initPlayTypeLayout()
         setReceiveHorizontalScrollResult()
         initCurveBanner()
-
+        initPopupSlot()
     }
 
     override fun onStart() {
@@ -122,6 +131,13 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         // 启动轮播
         mBinding. banner.start()
     }
+
+    private fun initPopupSlot() {
+        childFragmentManager.beginTransaction()
+            .add(R.id.fragment_new_home_container_view , popupSlotFragment , PopupSlotFragment.TAG)
+            .commit()
+    }
+
     private fun setupSidebar() {
         mBinding.ivHomeSidebar.clickNoRepeat {
             requireActivity().supportFragmentManager.setFragmentResult(
@@ -230,6 +246,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     (tab.view.getChildAt(1) as? TextView)?.typeface = Typeface.DEFAULT_BOLD
                     updateTabTextStyle(position)
                 }
+                mBinding.vpSub.startFadeAnim { onComplete ->
+                    onComplete.invoke()
+                }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab, isTabClick: Boolean) {
@@ -264,7 +283,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             val tabStrip = (getChildAt(0) as? ViewGroup) ?: return
             tabStrip.clipChildren = false
             tabStrip.clipToPadding = false
-            
+
             val tabWidthPx = 56.dp2px
             for (i in 0 until tabStrip.childCount) {
                 val tabView = tabStrip.getChildAt(i)
@@ -422,6 +441,17 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
         }
 
+        mViewModel.scrollStateChanged.observe(viewLifecycleOwner) {
+            if (it == RecyclerView.SCROLL_STATE_IDLE) {
+                lifecycleScope.launch {
+                    delay(200)
+                    popupSlotFragment.fadeAndIn()
+                }
+            } else {
+                popupSlotFragment.fadeAndOut()
+            }
+        }
+
     }
 
     //設置是否允許水平滑動ViewPager，預設是可以滑動
@@ -446,5 +476,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         homeMediator = null
         super.onDestroyView()
     }
+
+
+
+
 
 }

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_32"
+    android:id="@+id/cl_custom_game_tab_group"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <arch.cayenne.lib.common.ui.view.BounceTabLayoutContainer
         android:id="@+id/tl_container"
@@ -20,7 +21,6 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             android:overScrollMode="never"
-            android:paddingStart="@dimen/dp_13"
             android:paddingEnd="35dp"
             android:background="@android:color/transparent"
             app:tabPaddingBottom="@dimen/dp_0"
@@ -57,7 +57,6 @@
             android:paddingBottom="@dimen/dp_2"
             android:layout_marginStart="@dimen/dp_5"
             android:layout_marginEnd="@dimen/dp_1"
-            android:text="@string/custom_tab_hot"
             android:textColor="@color/color_C0C0C0"
             android:textSize="@dimen/sp_14" />
 

@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="arch.cayenne.module.chat.ui.fragment.ChatHomeFragment">
+    tools:context="arch.cayenne.module.chat.ui.fragment.ChatBaseFragment">
 
     <data>
 
@@ -124,6 +124,15 @@
             app:layout_constraintBottom_toBottomOf="@id/chat_ll_input"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/chat_ll_input" />
+
+        <View
+            android:id="@+id/top_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/color_0FFFFFFF"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@id/input_bg"
+            />
 
         <View
             android:id="@+id/hot_bg"

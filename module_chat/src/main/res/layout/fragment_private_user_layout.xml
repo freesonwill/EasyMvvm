@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_66000000">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_425"
+        android:background="@drawable/shape_chat_info_bg"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/avatarImageView"
+            android:layout_width="87dp"
+            android:layout_height="87dp"
+            android:layout_marginLeft="143dp"
+            android:layout_marginTop="@dimen/dp_17"
+            android:background="@drawable/chat_info_avatar"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_133"
+            android:layout_marginTop="@dimen/dp_2"
+            android:text="南京红姐"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/avatarImageView"
+            app:skinnableFontWeight="500"
+            tools:ignore="HardcodedText" />
+
+        <ImageView
+            android:id="@+id/iv_vip"
+            android:layout_width="33dp"
+            android:layout_height="@dimen/dp_15"
+            android:layout_marginLeft="@dimen/dp_7"
+            android:src="@drawable/chat_info_vip"
+            android:layout_marginTop="@dimen/dp_2"
+            app:layout_constraintBottom_toBottomOf="@id/tv_name"
+            app:layout_constraintLeft_toRightOf="@id/tv_name"
+            app:layout_constraintTop_toTopOf="@id/tv_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_add_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:text="已加入1025天"
+            android:textColor="@color/color_999999"
+            android:textSize="13sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_name"
+            tools:ignore="HardcodedText" />
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="@dimen/dp_12"
+            android:background="@color/color_0FFFFFFF"
+            app:layout_constraintTop_toBottomOf="@id/tv_add_day" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_user_locked"
+            android:layout_width="@dimen/dp_48"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginTop="@dimen/dp_53"
+            android:scaleType="fitXY"
+            android:src="@drawable/icon_user_locked"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/line" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_private"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="私密账号"
+            android:textColor="@color/color_FFFFFF"
+            android:textSize="@dimen/sp_15"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_user_locked"
+            app:skinnableFontWeight="500"
+            tools:ignore="HardcodedText" />
+
+        <View
+            android:id="@+id/line2"
+            android:layout_width="match_parent"
+            android:layout_height="0.6dp"
+            android:layout_marginTop="42.5dp"
+            android:background="@color/color_2c2c2c"
+            app:layout_constraintTop_toBottomOf="@id/tv_private" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_report"
+            android:layout_width="74dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_10"
+            android:background="@drawable/shape_chat_info_report_text_bg"
+            android:gravity="center"
+            android:text="@string/chat_report"
+            android:textColor="@color/color_C0C0C0"
+            android:textSize="14sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/line2" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_at"
+            android:layout_width="259dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_weight="1"
+            android:background="@drawable/shape_chat_info_auto_text_bg"
+            android:gravity="center"
+            android:text="@string/chat_auto"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_report"
+            app:layout_constraintLeft_toRightOf="@id/tv_report" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,6 +19,8 @@
     <string name="title_result_success_bet">投注成功</string>
     <string name="title_result_fail_bet">投注失败</string>
     <string name="title_result_toast">投注结果通知</string>
+    <string name="title_result_success_bet_done">已投注成功</string>
+    <string name="title_result_fail_bet_done">未投注成功, 点击查看详情</string>
     <string name="btn_clear">清空</string>
     <string name="btn_confirm">确定</string>
     <string name="btn_cancel">取消</string>
@@ -59,6 +61,7 @@
     <string name="drawer_gift">活动</string>
     <string name="drawer_settings">设置</string>
     <string name="drawer_help">帮助</string>
+    <string name="drawer_debug">调试信息</string>
     <string name="drawer_feedback">反馈与建议</string>
     <string name="drawer_customer_service">官方客服</string>
     <string name="drawer_invite">邀请好友</string>
@@ -69,9 +72,11 @@
     <string name="custom_tab_hot_reward">热返</string>
     <string name="custom_tab_cold_reward">冷返</string>
     <string name="custom_tab_all">全部</string>
+    <string name="custom_tab_time">时间</string>
     <string name="crazy_earn_text">疯狂赚钱</string>
 
     <!-- VIP 相關文字 -->
+    <string name="vip_level_require">升级还需%s投注额</string>
     <string name="vip_level_format">VIP %d</string>
     <string name="notification_text">notification</string>
 </resources>

@@ -99,7 +99,7 @@ class CommonDialog : BaseDialogFragment<EmptyViewModel, DialogCommonBinding>() {
         super.onStart()
         dialog?.window?.apply {
             setWindowAnimations(R.style.CommonDialogAnimation)
-            setLayout(280f.dp2px, ViewGroup.LayoutParams.WRAP_CONTENT)
+            setLayout(280.dp2px, ViewGroup.LayoutParams.WRAP_CONTENT)
         }
     }
 

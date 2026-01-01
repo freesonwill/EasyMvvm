@@ -2,6 +2,8 @@ package com.walisport.module.gamedetail.ui.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.constants.StatusBarMode
@@ -10,8 +12,11 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.helper.showToast
+import com.walisport.module.gamedetail.R
 import com.walisport.module.gamedetail.databinding.FragmentGameDetailBinding
 import com.walisport.module.gamedetail.ui.viewmodel.GameDetailPageViewModel
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -22,8 +27,11 @@ class GameDetailFragment : BaseFragment<GameDetailPageViewModel, FragmentGameDet
 
     private val balanceViewModel: BalanceViewModel by viewModel()
 
+    private val args by navArgs<GameDetailFragmentArgs>()
+
 
     override fun initView(savedInstanceState: Bundle?) {
+        val gameId = args.gameId
         val adapter = GameDetailPagerAdapter(this)
         with (mBinding) {
 //            val statusBarHeight = ImmersionBar.getStatusBarHeight(this@GameDetailFragment)
@@ -61,12 +69,32 @@ class GameDetailFragment : BaseFragment<GameDetailPageViewModel, FragmentGameDet
                 navigateUp()
             }
             ivFavorite.clickNoRepeat {
-                it.isSelected = !it.isSelected
+                // 根据当前收藏状态显示相应的提示信息。
+                // 如果未收藏，则显示“收藏成功”的提示；
+                // 如果已收藏，则显示“取消收藏”的提示。
+                if (mViewModel.isCollected.value != true) {
+                    showToast(getString(R.string.collect_success))
+                } else {
+                    showToast(getString(R.string.collect_cancelled))
+                }
+                mViewModel.toggleCollectStatus(args.gameId)
+
+                lifecycleScope.launch {
+                    mViewModel.notifyFavouriteChanged()
+                }
             }
         }
     }
 
     override suspend fun createObserver() {
+        mViewModel.isCollected.observe(viewLifecycleOwner) { isCollected ->
+            mBinding.ivFavorite.isSelected = isCollected
+        }
+    }
+
+    override fun initData() {
+        super.initData()
+        mViewModel.queryGameDetail(args.gameId)
     }
 
     override fun onDestroyView() {

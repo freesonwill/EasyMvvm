@@ -1,0 +1,5 @@
+<resources>
+    <string name="game_data_empty">No game records available</string>
+    <string name="game_favorite_empty">No favorite games yet</string>
+
+</resources>

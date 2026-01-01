@@ -1,6 +1,5 @@
 package com.walisport.module.hall.ui.fragment
 
-import android.annotation.SuppressLint
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -9,12 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
-import androidx.core.view.marginStart
 import androidx.fragment.app.viewModels
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
@@ -22,6 +20,7 @@ import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
@@ -29,51 +28,53 @@ import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
 import arch.cayenne.lib.common.ui.adapter.BannerImageAdapter
 import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
 import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
-import arch.cayenne.lib.common.utils.ThumbHashUtils
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
+import arch.cayenne.lib.common.utils.ext.removeAllTips
+import arch.cayenne.lib.common.utils.ext.setRoundedBackground
+import arch.cayenne.lib.common.utils.ext.setScaleAnim
+import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableTextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.walisport.module.business.common.data.Category
 import com.walisport.module.hall.R
+import com.walisport.module.hall.data.GameCategoryVo
 import com.walisport.module.hall.data.HallGamePage
 import com.walisport.module.hall.data.HallGameTabDefault
 import com.walisport.module.hall.databinding.FragmentHallBinding
 import com.walisport.module.hall.databinding.ItemHallGameTabBinding
-import com.walisport.module.hall.ui.viewmodel.HallViewModel
-import kotlin.reflect.KClass
-import arch.cayenne.lib.common.utils.ext.setRoundedBackground
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
-import com.google.android.material.tabs.TabLayout
-import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
-import arch.cayenne.lib.common.utils.ext.startFadeAnim
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
-import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
-import arch.cayenne.lib.common.utils.ext.removeAllTips
 import com.walisport.module.hall.ui.view.ScrollableTabIndicatorHelper
+import com.walisport.module.hall.ui.viewmodel.HallViewModel
+import com.walisport.module.popup.slot.ui.fragment.PopupSlotFragment
 import kotlinx.coroutines.delay
-import arch.cayenne.lib.common.utils.ext.setScaleAnim
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.walisport.module.hall.data.Category
-import com.walisport.module.hall.data.GameCategoryVo
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import kotlin.getValue
-import android.graphics.drawable.BitmapDrawable
-import com.bumptech.glide.Glide
+import kotlin.reflect.KClass
+
 /**
  * 游戏大厅界面
  */
 
-class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
+class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
 
     override val vbClass: KClass<FragmentHallBinding> = FragmentHallBinding::class
     override val vmClass: KClass<HallViewModel> = HallViewModel::class
+
+    private val popupSlotFragment: PopupSlotFragment by lazy {
+        PopupSlotFragment()
+    }
 
     private val balanceViewModel: BalanceViewModel by viewModel()
     private val mMinHeight = 38.dp2px
@@ -93,7 +94,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
             var barHeight = ViewUtils.getStatusBarHeight(requireContext())
             //
         }
-
+        initPopupSlot()
         mViewModel.queryGameCommon()
     }
 
@@ -372,6 +373,18 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
                 mBinding.homeBarIcon.marginStartAnim()
             }
         }
+
+        mViewModel.scrollStateChanged.observe(viewLifecycleOwner) {
+            if (it == RecyclerView.SCROLL_STATE_IDLE) {
+                lifecycleScope.launch {
+                    delay(200)
+                    popupSlotFragment.fadeAndIn()
+                }
+
+            } else {
+                popupSlotFragment.fadeAndOut()
+            }
+        }
     }
 
     override fun onStart() {
@@ -409,4 +422,14 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
         // 启动轮播
         mBinding.ivRightLogo.start()
     }
+
+    private fun initPopupSlot() {
+        childFragmentManager.beginTransaction()
+            .add(R.id.fragment_hall_container_view , popupSlotFragment , PopupSlotFragment.TAG)
+            .commit()
+    }
+
+
+
+
 }

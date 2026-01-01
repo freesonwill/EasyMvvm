@@ -13,20 +13,34 @@ import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.chat.data.compare.ChatCompare
-import arch.cayenne.lib.common.data.constants.MsgType
+import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 import arch.cayenne.module.chat.data.model.ClickSpan
 import arch.cayenne.module.chat.data.model.ColorSpan
 import arch.cayenne.module.chat.databinding.ItemLiveChatBinding
+import arch.cayenne.module.chat.utils.ChatMsgUtils
 
-class ChatPageAdapter(private val specialClick: (bean: ChatMsgPageBean, clickSpan: String, clickType: MsgType) -> Unit) :
+class ChatPageAdapter(
+    private val specialClick: (bean: ChatMsgPageBean, clickSpan: String, clickType: ChatMsgType) -> Unit,
+    private val longClick: (bean: ChatMsgPageBean) -> Unit
+) :
     BaseAdapter<ChatMsgPageBean, ChatPageAdapter.LiveChatViewHolder, ItemLiveChatBinding>(
         ChatCompare()
     ) {
+    private var isLongPress = false
+    private val longPressTimeout = 500L
+    private val longPressHandler = android.os.Handler()
+    private val longPressRunnable = Runnable {
+        isLongPress = true
+        // 这里处理长按逻辑
+    }
+
 
     inner class LiveChatViewHolder(binding: ItemLiveChatBinding) : BaseViewHolder(binding) {
         val nBinding = binding
         fun initListener() {
+
+
             nBinding.tv.apply {
                 movementMethod = object : LinkMovementMethod() {
                     override fun onTouchEvent(
@@ -34,7 +48,10 @@ class ChatPageAdapter(private val specialClick: (bean: ChatMsgPageBean, clickSpa
                         buffer: Spannable?,
                         event: MotionEvent?
                     ): Boolean {
-                        if (widget != null && buffer != null && event?.action == MotionEvent.ACTION_UP) {
+                        if (widget != null && buffer != null && event?.action == MotionEvent.ACTION_DOWN) {
+                            isLongPress = false
+                            longPressHandler.postDelayed(longPressRunnable, longPressTimeout)
+                        } else if (widget != null && buffer != null && event?.action == MotionEvent.ACTION_UP) {
                             // 获取点击位置
                             val x = event.x.toInt() - widget.totalPaddingLeft + widget.scrollX
                             val y = event.y.toInt() - widget.totalPaddingTop + widget.scrollY
@@ -42,16 +59,25 @@ class ChatPageAdapter(private val specialClick: (bean: ChatMsgPageBean, clickSpa
                             val layout = widget.layout
                             val line = layout.getLineForVertical(y)
                             val off = layout.getOffsetForHorizontal(line, x.toFloat())
-                            val spans = buffer.getSpans(off-1, off + 1, ClickSpan::class.java)
                             val position = widget.tag as Int
 
+                            if (isLongPress) {
+                                val colorSpans =
+                                    buffer.getSpans(off - 1, off + 1, ColorSpan::class.java)
+                                if (colorSpans.isNotEmpty()) {
+                                    longClick.invoke(getItem(position))
+                                }
+                                return true
+
+                            }
+                            val spans = buffer.getSpans(off - 1, off + 1, ClickSpan::class.java)
                             if (spans.isNotEmpty()) {
                                 spans.first().also {
                                     specialClick.invoke(getItem(position), it.tv, it.msgType)
                                 }
                                 return true
                             } else {
-                                specialClick.invoke(getItem(position), "", MsgType.TEXT)
+                                specialClick.invoke(getItem(position), "", ChatMsgType.TEXT)
                             }
                         }
                         return true
@@ -62,10 +88,13 @@ class ChatPageAdapter(private val specialClick: (bean: ChatMsgPageBean, clickSpa
 
         fun setText(bean: ChatMsgPageBean, position: Int) {
             val first = "${bean.userName}:"
-            val second = bean.content
-
+            val second = if(bean.msgType in arrayOf(ChatMsgType.AT,ChatMsgType.BET_SPORT,ChatMsgType.BET_GAME)) {
+                bean.content
+            } else {
+                ChatMsgUtils.addNoDivideCharInBetShar1(bean.content)
+            }
             val builder = SpannableStringBuilder()
-            builder.append("$first  ")
+            builder.append("$first  \u2060")
             builder.setSpan(
                 ColorSpan(
                     SkinnableResourceManager.getColor(
@@ -81,7 +110,12 @@ class ChatPageAdapter(private val specialClick: (bean: ChatMsgPageBean, clickSpa
 //                    )
 //                ), 0, msgSpannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
 //            )
-            if (bean.msgType in arrayOf(MsgType.AT, MsgType.BET_GAME, MsgType.BET_SPORT)) {
+            if (bean.msgType in arrayOf(
+                    ChatMsgType.AT,
+                    ChatMsgType.BET_GAME,
+                    ChatMsgType.BET_SPORT
+                )
+            ) {
                 bean.atRange?.forEach {
                     msgSpannable.setSpan(
                         ClickSpan(bean.msgType, second.substring(it.first, it.last)),
@@ -107,12 +141,14 @@ class ChatPageAdapter(private val specialClick: (bean: ChatMsgPageBean, clickSpa
         holder.setText(getItem(position), position)
         val item = getItem(position)
 
-        holder.nBinding.tv.backgroundTintList = ContextCompat.getColorStateList(binding.tv.context,
-            if(item.msgType == MsgType.BET_SPORT || item.msgType == MsgType.BET_GAME) {
+        holder.nBinding.tv.backgroundTintList = ContextCompat.getColorStateList(
+            binding.tv.context,
+            if (item.msgType == ChatMsgType.BET_SPORT || item.msgType == ChatMsgType.BET_GAME) {
                 arch.cayenne.lib.common.R.color.color_632433
             } else {
                 arch.cayenne.lib.common.R.color.color_0FFFFFFF
-            })
+            }
+        )
     }
 
     override fun createViewBinding(

@@ -49,11 +49,11 @@ class LauncherFragment: BaseFragment<LauncherViewModel, FragmentLauncherBinding>
 
             // 動態調整位置（設計稿並非置中，每種狀態位置不一樣，美術說先照設計稿做不修改成置中）
             if(isLandscape()) {
-                (ivLoading.layoutParams as ConstraintLayout.LayoutParams).apply { topMargin = if(isShowLogo) 265.dp2px else 175f.dp2px }
-                (tvHint.layoutParams as ConstraintLayout.LayoutParams).apply { bottomMargin = if(isShowLogo) 175.dp2px else 33f.dp2px }
+                (ivLoading.layoutParams as ConstraintLayout.LayoutParams).apply { topMargin = if(isShowLogo) 265.dp2px else 175.dp2px }
+                (tvHint.layoutParams as ConstraintLayout.LayoutParams).apply { bottomMargin = if(isShowLogo) 175.dp2px else 33.dp2px }
             } else {
                 (ivLoading.layoutParams as ConstraintLayout.LayoutParams).apply { topMargin = if(isShowLogo) 326.dp2px else 244.dp2px }
-                (tvHint.layoutParams as ConstraintLayout.LayoutParams).apply { bottomMargin = if(isShowLogo) 203.dp2px else 30.5f.dp2px }
+                (tvHint.layoutParams as ConstraintLayout.LayoutParams).apply { bottomMargin = if(isShowLogo) 203.dp2px else 30.5f.dp2px.toInt() }
             }
 
             // 初始化BalanceView

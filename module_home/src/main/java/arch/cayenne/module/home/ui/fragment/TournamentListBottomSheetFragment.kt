@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.enableRecyclerViewBounce
@@ -131,7 +132,7 @@ class TournamentListBottomSheetFragment :
                     adapter.clearAllSelections()
                 } else {
                     // 情況2：沒有切換外部tab，從 ViewModel 中讀取已保存的選中狀態
-                    val savedSelections = subHomeViewModel.getSavedTournamentSelections()
+                    val savedSelections = subHomeViewModel.getCurrentSelectedTournaments()
 
                     if (savedSelections.isNotEmpty()) {
                         // 有保存的狀態，恢復之前的選中
@@ -415,6 +416,25 @@ class TournamentListBottomSheetFragment :
             // 數據更新後，檢查按鈕狀態
             if (tournamentType == TournamentListType.MORE) {
                 updateConfirmButtonState()
+            }
+            mBinding.rvTournamentList.post{
+                launch{
+                    val savedSelections = subHomeViewModel.getCurrentSelectedTournaments()
+                    if(savedSelections.isNotEmpty()){
+                        val selectedIndex = it
+                            .asSequence()
+                            .mapIndexedNotNull { index, item ->
+                                if (item is TournamentListItem.TournamentItem && item.tournament.id==savedSelections[0]) index else null
+                            }
+                            .firstOrNull() ?: 0
+                        val layoutManager = mBinding.rvTournamentList.layoutManager as LinearLayoutManager
+                        val itemHeight = mBinding.rvTournamentList.getChildAt(0)?.height ?: 0
+                        val recyclerViewHeight = mBinding.rvTournamentList.height
+                        val offset = recyclerViewHeight / 2 - itemHeight / 2
+                        layoutManager.scrollToPositionWithOffset(selectedIndex, offset)
+                    }
+
+                }
             }
         }
 

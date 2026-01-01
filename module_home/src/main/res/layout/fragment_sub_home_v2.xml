@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinator_layout_sub_home"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/apl_home_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Banner 元件 -->
+        <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+            android:id="@+id/ll_banner"
+            android:layout_width="match_parent"
+            android:layout_height="134dp"
+            android:background="@color/color_1E1E1E"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/dp_3"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <include
+                android:id="@+id/include_sport_banner"
+                layout="@layout/include_sport_banner" />
+
+            <!-- VIP 信息區塊 -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_vip_info"
+                android:layout_width="172dp"
+                android:layout_height="111dp"
+                android:background="@drawable/bg_banner_vip">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_20"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="VIP 87" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_percent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginBottom="@dimen/dp_3"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_12"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/vip_progress"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:skinnableFontWeight="700"
+                    tools:text="87%" />
+
+                <arch.cayenne.lib.common.ui.view.VIPProgressView
+                    android:id="@+id/vip_progress"
+                    android:layout_width="@dimen/dp_75"
+                    android:layout_height="@dimen/dp_4"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginBottom="@dimen/dp_4"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_level_up_info"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_level_up_info"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_marginBottom="@dimen/dp_12"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/color_7AFFFFFF"
+                    android:textSize="@dimen/sp_12"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/iv_level_name"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableImageView
+                    android:id="@+id/iv_level"
+                    android:layout_width="@dimen/dp_55"
+                    android:layout_height="59dp"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_4"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableImageView
+                    android:id="@+id/iv_level_name"
+                    android:layout_width="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_27"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:layout_marginEnd="@dimen/dp_12"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/iv_level" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
+        <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+            android:id="@+id/cl_second_nav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- 球種選擇 (固定不變的二級導航) -->
+            <arch.cayenne.lib.skin.widget.SkinnableView
+                android:id="@+id/view_second_navbar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_70"
+                android:background="@color/color_1E1E1E"
+                android:clipChildren="true"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
+                android:id="@+id/rv_sports_list"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/color_1E1E1E"
+                android:clipToPadding="false"
+                android:paddingStart="4dp"
+                android:paddingEnd="0dp"
+                android:scrollbars="none"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="@id/view_second_navbar"
+                app:layout_constraintEnd_toStartOf="@id/cl_second_guide"
+                app:layout_constraintStart_toStartOf="@id/view_second_navbar"
+                app:layout_constraintTop_toTopOf="@id/view_second_navbar" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/cl_second_guide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="70dp" />
+
+            <!--賽程-->
+            <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+                android:id="@+id/frame_schedule_click_area"
+                android:layout_width="34dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/dp_1"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="@id/view_second_navbar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/view_second_navbar">
+
+                <arch.cayenne.lib.skin.widget.SkinnableImageView
+                    android:id="@+id/iv_schedule_icon"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_gravity="center_horizontal|top"
+                    android:layout_marginBottom="@dimen/dp_4"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_home_schedule" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_schedule_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:text="@string/schedule_title"
+                    android:textColor="@color/color_999999"
+                    android:textSize="12sp" />
+
+            </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+        </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout
+        android:id="@+id/cl_sub_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <include
+            android:id="@+id/layout_container"
+            layout="@layout/view_sub_home_page_v2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+
+    </arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

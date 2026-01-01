@@ -28,12 +28,12 @@ import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import arch.cayenne.lib.database.entity.GameSupplierDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import com.walisport.module.business.common.data.UniversalLoadMoreScrollListener
+import com.walisport.module.business.common.data.constants.GameSortType
+import com.walisport.module.business.common.ui.adapter.GameContentAdapter
 import com.walisport.module.hall.R
-import com.walisport.module.hall.data.UniversalLoadMoreScrollListener
-import com.walisport.module.hall.data.constants.GameSortType
 import com.walisport.module.hall.databinding.FragmentGameContentBinding
 import com.walisport.module.hall.databinding.LayoutGameSortingMenuBinding
-import com.walisport.module.hall.ui.adapter.GameContentAdapter
 import com.walisport.module.hall.ui.viewmodel.GameContentViewModel
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
 import com.walisport.module.live.data.EventClick
@@ -128,7 +128,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
             rvGame.addItemDecoration(itemDecoration)
             adapter = GameContentAdapter(onItemClick = {
                 mViewModel.setIsClickGame(EventClick.EVENT_CLICK_ACK_TRUE.type)
-                navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink())
+                navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink("gameId" to it.gameID))
             })
             rvGame.adapter = adapter
             rvGame.itemAnimator = null
@@ -142,6 +142,8 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
             }
         }
 
+        setSortBtnText()
+
     }
 
     override fun initListener() {
@@ -150,6 +152,16 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
         }, {
             hallViewModel.setScorll(false)
         })
+
+        mBinding.rvGame.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: androidx.recyclerview.widget.RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                // 这里处理滚动状态变化
+                // newState: 0=IDLE, 1=DRAGGING, 2=SETTLING
+                hallViewModel.setScrollState(newState)
+            }
+        })
+
         mBinding.rvGame.addOnScrollListener(UniversalLoadMoreScrollListener(6) {
             if (mViewModel.apiStateListener.value == DataState.LoadSuccess) {
                 mViewModel.loadNextPage()

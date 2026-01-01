@@ -1,6 +1,5 @@
 package arch.cayenne.module.order.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -39,14 +38,11 @@ class OrderReserveViewModel(private val repo: OrderReserveRepository) : BaseView
         // 監聽 Repository 的預約資料 Flow
         repo.reserveDataFlow
             .onEach { reserves ->
-                Log.d("abcd", "+++ $reserves")
-
                 if (reserves.isNotEmpty()) {
                     processReserveData(reserves)
                 }
             }
             .launchIn(viewModelScope)
-        repo.loadMockTestData()
     }
 
     private var lastCursorBetTime: Long? = null

@@ -2,19 +2,24 @@ package arch.cayenne.module.order.ui.fragment
 
 import android.os.Bundle
 import android.widget.LinearLayout
-import androidx.fragment.app.setFragmentResult
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.data.constants.MsgType
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.data.constants.ChatMsgType
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.UnReadMessageViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.setupHorizontalScrollDegree
+import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.module.betslip.BuildConfig
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.FragmentChooseBetLayoutBinding
 import arch.cayenne.module.order.data.constants.OrderPageEnum
@@ -37,7 +42,10 @@ class ChatChooseBetFragment : BaseFragment<ChatChooseViewModel, FragmentChooseBe
     private var tabLayoutMediator: TabLayoutMediator? = null
 
     companion object {
-        const val CHOOSE_BET_MODE = "CHOOSE_BET_MODE"
+        const val SHARE_BET_LISTEN = "share_bet_listen"
+        const val SHARE_BET_RESULT = "share_bet_result"
+        const val SHARE_BET_TYPE = "share_bet_type"
+
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -73,21 +81,59 @@ class ChatChooseBetFragment : BaseFragment<ChatChooseViewModel, FragmentChooseBe
     }
 
     override suspend fun createObserver() {
-        with(unreadMessageViewModel) {
-            //未读消息监听
-            unreadMsg.observe(viewLifecycleOwner) { flag ->
+        mViewModel.apiStateListener.observe(viewLifecycleOwner) {
+            when (it) {
+                is DataState.Loading -> {
+                    mBinding.apply {
+                        viewPager.isVisible = false
+                        dynamicStateLayout.isVisible = true
+                        dynamicStateLayout.setState(
+                            DynamicStateLayout.States.LOADING,
+                            getString(arch.cayenne.lib.common.R.string.loading)
+                        )
+                    }
 
+                }
+
+                is DataState.NetworkUnavailable -> {
+                    mBinding.apply {
+                        viewPager.isVisible = true
+                        dynamicStateLayout.isVisible = false
+                        showToast("获取分享注单失败")
+                    }
+                }
+
+                is DataState.LoadSuccess -> {
+                    mBinding.apply {
+                        viewPager.isVisible = true
+                        dynamicStateLayout.isVisible = false
+                    }
+                }
+
+                else -> {}
             }
         }
-        unreadMessageViewModel.createObserver()
+
         mViewModel.betClickLiveData.observe(viewLifecycleOwner) {
+            betType = if (it.type == ChatMsgType.BET_GAME) 0 else 1
+            val betCode =
+                if (it.type == ChatMsgType.BET_GAME) "bet-test202512223-wg0s53" else it.betCode
+            val userId = if(it.type == ChatMsgType.BET_GAME) 6660030 else mViewModel.getUid()
+            mViewModel.getBetShare(userId, betCode)
+
+            "choose_bet betCode $betType betCode $betCode".logd("aaa")
+        }
+        mViewModel.betShareLiveData.observe(viewLifecycleOwner) {
             val bundle = Bundle().apply {
-                putInt("key", if (it == MsgType.BET_GAME) 0 else 1)
+                putParcelable(SHARE_BET_RESULT, it)
+                putInt(SHARE_BET_TYPE, betType)
             }
-            sendResult("choose_bet", bundle)
+            sendResult(SHARE_BET_LISTEN, bundle)
             findNavController().navigateUp()
         }
     }
+
+    var betType = 0
 
     private fun reflexPadding(tabLayout: TabLayout) {
         tabLayout.post {

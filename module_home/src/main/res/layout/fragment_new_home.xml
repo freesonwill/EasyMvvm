@@ -9,16 +9,17 @@
     <arch.cayenne.lib.common.ui.view.MatrixSlantLayout
         android:id="@+id/homeBarIcon"
         android:layout_width="127dp"
-        android:layout_marginTop="-20dp"
         android:layout_height="@dimen/dp_160"
+        android:layout_marginTop="-20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" >
+        tools:ignore="MissingConstraints">
+
         <com.youth.banner.Banner
             android:id="@+id/banner"
-            android:layout_gravity="bottom"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="bottom"
             android:layout_marginStart="@dimen/dp_1"
             android:background="@color/slant_view"
             android:paddingStart="1dp"
@@ -45,8 +46,7 @@
                 android:id="@+id/clAvava"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_3"
-                android:paddingTop="@dimen/dp_9"
+                android:paddingTop="@dimen/dp_10"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="MissingConstraints">
@@ -62,17 +62,16 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
             <arch.cayenne.lib.common.ui.view.BalanceView
                 android:id="@+id/balance_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_9"
-                android:layout_marginBottom="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_3"
                 android:paddingTop="@dimen/dp_7"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@+id/clAvava"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -92,10 +91,10 @@
             <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
                 android:id="@+id/cl_first_navbar"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:orientation="horizontal"
+                android:layout_height="@dimen/dp_46"
                 android:clipChildren="false"
                 android:clipToPadding="false"
+                android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -104,13 +103,13 @@
                     android:id="@+id/iv_home_sidebar"
                     android:layout_width="@dimen/dp_42"
                     android:layout_height="@dimen/dp_36"
-                    android:paddingStart="@dimen/dp_6"
                     android:layout_gravity="center_vertical"
                     android:layout_marginTop="@dimen/dp_2"
+                    android:background="@color/color_272727"
+                    android:paddingStart="@dimen/dp_6"
                     android:paddingTop="5dp"
                     android:paddingBottom="7dp"
                     android:scaleType="fitCenter"
-                    android:background="@color/color_272727"
                     android:src="@drawable/ic_home_sidebar"
                     android:stateListAnimator="@animator/layout_alpha_animator"
                     android:translationZ="1dp"
@@ -125,8 +124,8 @@
                     android:layout_marginTop="@dimen/dp_6"
                     android:layout_marginEnd="@dimen/dp_6"
                     android:src="@drawable/ic_shape_unread_msg_dot"
-                    android:visibility="gone"
                     android:translationZ="5dp"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="@id/iv_home_sidebar"
                     app:layout_constraintTop_toTopOf="@id/iv_home_sidebar" />
 
@@ -211,4 +210,11 @@
                 app:layout_constraintTop_toBottomOf="@+id/cl_first_navbar" />
         </arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_new_home_container_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

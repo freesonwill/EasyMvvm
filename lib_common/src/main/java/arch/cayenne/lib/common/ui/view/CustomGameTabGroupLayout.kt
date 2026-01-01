@@ -99,12 +99,16 @@ class CustomGameTabGroupLayout : FrameLayout {
         binding.tvBtnSort.text = text
     }
 
+    fun setExpandBtnText(text: String) {
+        binding.tvBtnExpand.text = text
+    }
+
     /**
      * 更新聯賽按鈕樣式
      * @param hasSelection true: 有選中的聯賽，false: 沒有選中的聯賽
      */
     fun updateTournamentButtonStyle(hasSelection: Boolean) {
-        LogUtils.e("updateTournamentButtonStyle--------->${hasSelection}")
+        //LogUtils.e("updateTournamentButtonStyle--------->${hasSelection}")
         with(binding) {
             if (hasSelection) {
                 // 有選中狀態：高亮顯示
@@ -139,13 +143,17 @@ class CustomGameTabGroupLayout : FrameLayout {
                 tab.id = data.id
 
                 tab.customView = createTabView(data)
-                tab.view.setPadding(0, 0, 6f.dp2px, 0)
+                tab.view.setPadding(0, 0, 6.dp2px, 0)
                 if (data.id == 0) {
                     tab.view.minimumWidth = 0
                 }
                 tlVendorList.addTab(tab)
             }
         }
+    }
+
+    fun clearTabList() {
+        binding.tlVendorList.removeAllTabs()
     }
 
 
@@ -225,6 +233,10 @@ class CustomGameTabGroupLayout : FrameLayout {
 
     fun setTabClickListener(listener: CustomGameTabClickListener) {
         this.tabClickListener = listener
+    }
+
+    fun tabCount(): Int {
+        return binding.tlVendorList.tabCount
     }
 
 }

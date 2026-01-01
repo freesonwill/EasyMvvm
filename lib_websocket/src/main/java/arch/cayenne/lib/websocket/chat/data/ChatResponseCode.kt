@@ -26,4 +26,9 @@ enum class ChatResponseCode(val sid: Short, val mid: Short = 500) {
 
     CHECK_BET_AMOUNT_RESP(1016), //查询用户投注额 = 1016
 
+    REPORT_USER_RESP(1018), //用户举报结果 = 1018
+    SYSTEM_MSG_NOTIFY(2003) //500-2003: 系统消息推送
+
+
+
 }

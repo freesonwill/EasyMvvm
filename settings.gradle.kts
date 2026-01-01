@@ -30,7 +30,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "wls-android"
+rootProject.name = "3n1-android"
 include(":app")
 include(":lib_base")
 include(":lib_common")
@@ -48,7 +48,7 @@ include(":module_bet")
 include(":module_betslip")
 include(":module_search")
 include(":module_handicap")
-include(":plugin_koin")
+include(":external:plugin_koin")
 include(":module_feedback")
 include(":module_message")
 include(":module_betslip")
@@ -64,3 +64,5 @@ include(":module_misc")
 include(":module_hall")
 include(":module_launcher")
 include(":module_game_detail")
+include(":module_popup_slot")
+include(":module_business_common")

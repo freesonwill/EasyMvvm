@@ -22,6 +22,7 @@ import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
 import arch.cayenne.lib.common.ui.view.CustomTabLayoutMediator
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -48,7 +49,7 @@ import arch.cayenne.module.home.data.BiDirectionalDate
 import arch.cayenne.module.home.data.BiDirectionalDateType
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.TournamentListType
-import arch.cayenne.module.home.data.constants.TournamentSortType
+import arch.cayenne.module.home.data.constants.MatchListSortType
 import arch.cayenne.module.home.databinding.FragmentEarlyBinding
 import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
@@ -88,7 +89,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
     private var sortingMenuBinding: LayoutTournamentSortingMenuBinding? = null
 
     // 當前排序類型，預設為按熱門聯賽排序
-    private var currentSortType = TournamentSortType.BY_HOT
+    private var currentSortType = MatchListSortType.BY_HOT
 
     private val defaultAnimDuration = 300L
 
@@ -118,11 +119,8 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
 
     override fun initView(savedInstanceState: Bundle?) {
         initSportLayout()
-        initVIPInfo()
         initSportBanner()
-
         initTournamentLayout()
-
         // 初始化聯賽按鈕狀態
         updateTournamentButtonStyle(mViewModel.hasTournamentSelections())
     }
@@ -220,13 +218,27 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
             }
         }
 
-        // 監聽 VIP 等級變化
-        mViewModel.vipLevel.observe(viewLifecycleOwner) { level ->
-            updateVIPInfo(
-                vipLevel = level.toInt(),
-                percent = "57.91%",
-                levelUpInfo = "升级还需¥59w"
-            )
+        mViewModel.onVipListener.observe(viewLifecycleOwner) {
+            if (it != null) {
+                var percent = "0%"
+                var progress = 0f
+                val betScore = it.admittedBetScore.toFloat()
+                val reqScore = it.requiredAdmittedBetScore.toFloat()
+                if (reqScore > 0L && betScore > 0L) {
+                    progress = (betScore / reqScore) * 100f
+                    percent = String.format("%.2f", progress) + "%"
+                }
+                val cny = CurrencySymbols.getSymbol(it.ccy) +
+                        CurrencySymbols.getFormatAmount(it.ccy, reqScore)
+                val info = getString(arch.cayenne.lib.common.R.string.vip_level_require, cny)
+                updateVIPInfo(
+                    vipLevel = it.vipLevel,
+                    vipStage = it.vipStage,
+                    percent = percent,
+                    levelUpInfo = info,
+                    progress
+                )
+            }
         }
 
         mViewModel.dateList.observe(viewLifecycleOwner) {
@@ -290,23 +302,12 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         }
     }
 
-    // init VIP 信息區塊
-    private fun initVIPInfo() {
-        // VIP 數據設置初始值，避免初始化時沒有數據
-        val currentLevel = VIPDataExt.getVIPLevel(75L)
-        updateVIPInfo(
-            vipLevel = currentLevel.toInt(),
-            percent = "57.91%",
-            levelUpInfo = "升级还需¥59w"
-        )
-    }
-
     // init Sport Banner 輪播區塊
     @SuppressLint("ClickableViewAccessibility")
     private fun initSportBanner() {
         val mockBannerList = listOf(
             R.drawable.banner_ad1,
-           R.drawable.banner_ad1,
+            R.drawable.banner_ad1,
             R.drawable.banner_ad1,
             R.drawable.banner_ad1,
             R.drawable.banner_ad1,
@@ -341,18 +342,20 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
     }
 
     // 更新 VIP 信息顯示
-    private fun updateVIPInfo(vipLevel: Int, percent: String, levelUpInfo: String) {
-        // 使用 VIPResourceHelper 轉換等級
-        val level = VIPResourceHelper.getVIPLevelFromInt(vipLevel)
-
+    private fun updateVIPInfo(
+        vipLevel: Int,
+        vipStage: Int,
+        percent: String,
+        levelUpInfo: String,
+        progress: Float
+    ) {
+        val level = VIPResourceHelper.getVIPLevelFromInt(vipStage)
         with(mBinding) {
             // 設置背景 - 使用 VIPResourceHelper
-            clVipInfo.background = VIPResourceHelper.getForegroundResource(level).getDrawable()
-
+            clVipInfo.background = VIPResourceHelper.getSportBackgroundResource(level)
             // 設置圖標 - 使用 VIPResourceHelper
             ivLevel.setImageResource(VIPResourceHelper.getIconResource(level))
             ivLevelName.setImageResource(VIPResourceHelper.getLevelNameResource(level))
-
             // 設置文字漸變效果 - 使用 VIPResourceHelper
             val bottom = 20.dp2px.toFloat()
             val linearGradient = LinearGradient(
@@ -367,12 +370,10 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
             )
             tvLevel.paint.shader = linearGradient
             tvLevel.text = getString(arch.cayenne.lib.common.R.string.vip_level_format, vipLevel)
-
-            // 設置百分比 - 使用 VIPResourceHelper
             tvPercent.text = percent
-            ivPercent.setImageResource(VIPResourceHelper.getPercentResource(level))
-
-            // 設置升級信息
+            val color = VIPResourceHelper.getProgressStartColor(level)
+            vipProgress.setProgressColor(color)
+            vipProgress.setProgress(progress)
             tvLevelUpInfo.text = levelUpInfo
         }
     }
@@ -395,7 +396,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
 
                 if (tab != null && data != null && tab.customView == null) {
                     tab.customView = createTournamentTabView(data)
-                    tab.view.setPadding(0, 0, 6f.dp2px, 0)
+                    tab.view.setPadding(0, 0, 6.dp2px, 0)
                     if (data.tournamentList[0].id == HomeViewModel.TOURNAMENT_ALL_ID) {
                         tab.view.minimumWidth = 0
                     }
@@ -646,8 +647,8 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
 
             // 點擊按熱門排序
             binding.tvSortByHot.clickNoRepeat {
-                if (currentSortType != TournamentSortType.BY_HOT) {
-                    currentSortType = TournamentSortType.BY_HOT
+                if (currentSortType != MatchListSortType.BY_HOT) {
+                    currentSortType = MatchListSortType.BY_HOT
                     updateSortingMenuSelection()
                     applySorting()
                 }
@@ -656,8 +657,8 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
 
             // 點擊按時間排序
             binding.tvSortByTime.clickNoRepeat {
-                if (currentSortType != TournamentSortType.BY_TIME) {
-                    currentSortType = TournamentSortType.BY_TIME
+                if (currentSortType != MatchListSortType.BY_TIME) {
+                    currentSortType = MatchListSortType.BY_TIME
                     updateSortingMenuSelection()
                     applySorting()
                 }
@@ -681,12 +682,12 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
             )
 
             when (currentSortType) {
-                TournamentSortType.BY_HOT -> {
+                MatchListSortType.BY_HOT -> {
                     binding.tvSortByHot.setTextColor(selectedColor)
                     binding.tvSortByTime.setTextColor(unselectedColor)
                 }
 
-                TournamentSortType.BY_TIME -> {
+                MatchListSortType.BY_TIME -> {
                     binding.tvSortByHot.setTextColor(unselectedColor)
                     binding.tvSortByTime.setTextColor(selectedColor)
                 }
@@ -701,12 +702,12 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         // TODO: 實現實際的排序邏輯
         // 根據 currentSortType 來決定如何排序賽事列表
         when (currentSortType) {
-            TournamentSortType.BY_HOT -> {
+            MatchListSortType.BY_HOT -> {
                 // 按熱門聯賽排序的邏輯
                 // 可以調用 ViewModel 的方法來更新數據
             }
 
-            TournamentSortType.BY_TIME -> {
+            MatchListSortType.BY_TIME -> {
                 // 按比賽時間排序的邏輯
                 // 可以調用 ViewModel 的方法來更新數據
             }
@@ -788,7 +789,11 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         }
     }
 
-    private fun createDateTab(date: String?, weekday: String?, type: BiDirectionalDateType): TabLayout.Tab {
+    private fun createDateTab(
+        date: String?,
+        weekday: String?,
+        type: BiDirectionalDateType
+    ): TabLayout.Tab {
         val tab = mBinding.tlDateList.newTab()
         val tabView = ItemDateTabBinding.inflate(LayoutInflater.from(context), null, false).apply {
             if (type == BiDirectionalDateType.Date) {

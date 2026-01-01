@@ -6,4 +6,9 @@
     <string name="title_combo_bet_detail_tips">%s is composed of all %s bets</string>
     <string name="title_result_amount">Principal</string>
     <string name="hint_input_money">Please enter the amount</string>
+    <string name="toast_bet_failure">Bet failed, please try again</string>
+    <string name="hint_empty_amount">Please enter the bet amount</string>
+    <string name="hint_bet_inactive">盘口已暂停/关闭</string>
+    <string name="market_close">盘口关闭</string>
+    <string name="market_pause">盘口暂停</string>
 </resources>

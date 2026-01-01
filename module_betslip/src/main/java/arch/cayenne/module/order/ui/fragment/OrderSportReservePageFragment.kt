@@ -10,7 +10,10 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportDisplayOddsExt.getDisplayOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.database.entity.BetSlipData
+import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.lib.database.entity.BetSlipReserveBean
+import arch.cayenne.lib.database.entity.BetSlipSelectionData
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.FragmentOrderSportPageBinding
 import arch.cayenne.module.order.data.constants.OrderSportPageEnum
@@ -29,7 +32,18 @@ class OrderSportReservePageFragment :
     override fun initView(savedInstanceState: Bundle?) {
         val adapter =
             OrderBettingAdapter(
-                OrderSportPageEnum.RESERVE,
+                OrderSportPageEnum.RESERVE, object : OrderBettingAdapter.OnOrderClickListener {
+                    override fun onDateClick() {
+                        showDateDialog()
+                    }
+
+                    override fun onItemSingleClick(bean: BetSlipOrderBean) {
+                    }
+
+                    override fun onShareClick(bean: BetSlipData) {
+                    }
+
+                },
                 reserveListener = object : OrderBettingAdapter.OrderReserveListener {
                     override fun onCancelReserve(bean: BetSlipReserveBean) {
                         if (mViewModel.checkNetwork()) {
@@ -76,12 +90,6 @@ class OrderSportReservePageFragment :
                                 odds = bean.selection.odds.getDisplayOdds().toOdds()
                             ).show(childFragmentManager)
                         }
-                    }
-
-                },
-                dataListener = object : OrderBettingAdapter.OrderDataSelectorListener {
-                    override fun onDateClicked() {
-                        showDateDialog()
                     }
                 })
         mBinding.rvContent.adapter = adapter

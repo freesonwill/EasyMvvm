@@ -1,6 +1,9 @@
 package arch.cayenne.lib.common.utils.ext
 
+import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.os.Bundle
 import androidx.annotation.StringRes
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 
@@ -20,7 +23,7 @@ object DeeplinkExt {
      * input: "http://badiu.com?path={path}".deeplink("path" to "go")
      * output: "http://badiu.com?path=go"
      */
-    fun String.deeplink(vararg params: Pair<String, Any>): Uri {
+    fun String.deeplink(vararg params: Pair<String, Any?>): Uri {
         val sb = StringBuffer(this.split("?")[0])
         params.forEachIndexed { index, (key, value) ->
             if (index == 0) sb.append("?") else sb.append("&")
@@ -38,7 +41,7 @@ object DeeplinkExt {
      * input: R.string.deeplink_baidu.deeplink("path" to "go")
      * output: "http://badiu.com?path=go"
      */
-    fun @receiver:StringRes Int.deeplink(vararg params: Pair<String, Any>): Uri {
+    fun @receiver:StringRes Int.deeplink(vararg params: Pair<String, Any?>): Uri {
         return this.getString().deeplink(*params)
     }
 
@@ -93,5 +96,25 @@ object DeeplinkExt {
      */
     fun String.deeplink(): Uri {
         return Uri.parse(this)
+    }
+
+    /**
+     * 取 deepLink query 参数
+     *
+     * @param key
+     * @return
+     * eg:  deepLink: app://www.example.com/path?param1=value1&param2=value2
+     *      arguments.getDeepLinkQueryParam("param1") -> "value1"
+     */
+    fun Bundle?.getDeepLinkQueryParam(key: String): String? {
+        val deepLinkIntentKey = "android-support-nav:controller:deepLinkIntent"
+        val intent: Intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            this?.getParcelable(deepLinkIntentKey, Intent::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            this?.getParcelable(deepLinkIntentKey)
+        } ?: return null
+        val uri: Uri? = intent.data
+        return uri?.getQueryParameter(key)
     }
 }

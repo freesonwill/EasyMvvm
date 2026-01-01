@@ -7,6 +7,7 @@ import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.module.chat.data.model.ChatPersonalData
@@ -23,8 +24,12 @@ import kotlin.reflect.KClass
 class ChatPersonalDialogFragment :
     BasePreLoadBottomSheetFragment<ChatPersonalDialogViewModel, FragmentChatPersonalLayoutBinding>() {
 
+
+
     companion object {
         val TAG = ChatPersonalDialogFragment::class.java.simpleName
+        val CHAT_PERSONAL_REQUEST = "chat_personal_request"
+        val CHAT_PERSONAL_RESULT = "chat_personal_result"
 
         fun create(fragment: Fragment) {
             val manager = fragment.childFragmentManager
@@ -53,7 +58,6 @@ class ChatPersonalDialogFragment :
         dialog.setOnShowListener {
             setupFullScreen(dialog)
         }
-
         return dialog
     }
 
@@ -68,7 +72,6 @@ class ChatPersonalDialogFragment :
 //            // 设置透明背景
 //            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             attributes.height = 320.dp2px
-
         }
     }
 
@@ -78,12 +81,9 @@ class ChatPersonalDialogFragment :
         val nAdapter = ChatPersonalAdapter()
         nAdapter.setRecyclerItemListener(object : RecyclerItemListener<ChatPersonalData> {
             override fun onItemClick(item: ChatPersonalData?, position: Int) {
+                setFragmentResult(position)
                 if (position == 3) {
                     ChatReportFragment.show(this@ChatPersonalDialogFragment)
-//                    lifecycleScope.launch {
-//                        delay(200)
-//                        dismissNow()
-//                    }
                     dismiss()
                 } else {
                     dismiss()
@@ -103,6 +103,14 @@ class ChatPersonalDialogFragment :
         }
 
     }
+
+    private fun setFragmentResult(data: Int) {
+        val bundle = Bundle().apply {
+            putInt(CHAT_PERSONAL_RESULT, data)
+        }
+        parentFragmentManager.setFragmentResult(CHAT_PERSONAL_REQUEST, bundle)
+    }
+
 
     override fun onStart() {
         super.onStart()

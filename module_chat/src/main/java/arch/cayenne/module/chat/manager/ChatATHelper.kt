@@ -10,11 +10,10 @@ import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.lifecycle.LifecycleCoroutineScope
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.chat.R
-import arch.cayenne.lib.common.data.constants.MsgType
+import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.module.chat.data.model.AtBean
 import arch.cayenne.module.chat.data.model.MentionSpan
 import arch.cayenne.module.chat.utils.EmojiEditFilter
@@ -49,10 +48,11 @@ class ChatATHelper(
 
     //是否at输入
     var isAtInput: Boolean = false
-// 由于输入框@按下后需要弹出@弹框，为了@弹框位置正确，等软件盘弹出后在弹出@弹框
-    var shouldOpenAtDialog:Boolean = false
 
-    var etWatchListen:((edit:Editable?) -> Unit)? = null
+    // 由于输入框@按下后需要弹出@弹框，为了@弹框位置正确，等软件盘弹出后在弹出@弹框
+    var shouldOpenAtDialog: Boolean = false
+
+    var etWatchListen: ((edit: Editable?) -> Unit)? = null
 
 
     private val atClick: ((str: String) -> Unit) = {}
@@ -91,18 +91,18 @@ class ChatATHelper(
             startInputPosition = chatEtInput.selectionStart
 //            atPopupWindow.showPopupWindow(chatEtInput)
         }))
-        atPopupWindow.createPopupWindow(context, object : RecyclerItemListener<AtBean> {
-            override fun onItemClick(item: AtBean?, position: Int) {
-                if (item == null) {
-                    return
-                }
-                addAtMentionSpan(item)
-                startInputPosition = -1//选择at后继续输入，at弹框关闭
-            }
-        })
-        atPopupWindow.addDismissListener {
-            startInputPosition = -1
-        }
+//        atPopupWindow.createPopupWindow(context, object : RecyclerItemListener<AtBean> {
+//            override fun onItemClick(item: AtBean?, position: Int) {
+//                if (item == null) {
+//                    return
+//                }
+////                addAtMentionSpan(item)
+//                startInputPosition = -1//选择at后继续输入，at弹框关闭
+//            }
+//        })
+//        atPopupWindow.addDismissListener {
+//            startInputPosition = -1
+//        }
         chatEtInput.apply {
             //设置发送按钮
             imeOptions = EditorInfo.IME_ACTION_SEND
@@ -123,8 +123,49 @@ class ChatATHelper(
         }
     }
 
-    fun addAtMentionSpan(item: AtBean) {
-        isAtInput = true
+//    fun addAtMentionSpan(item: AtBean) {
+//        isAtInput = true
+//        chatEtInput.apply {
+//            text?.let {
+//                if (atPopupWindow.isSearchIng && startInputPosition >= 0 && selectionStart > startInputPosition) {
+//                    it.replace(startInputPosition, selectionStart, "")
+//                }
+//                var nStart: Int = -1
+//                var atStrLength = -1
+//                if (item.isSelect) {
+//                    var atStr = ""
+//                    if (selectionStart > 0 && it[selectionStart - 1] == '@') {
+//                        nStart = selectionStart - 1 //光标在@后面
+//                        atStr = "${item.name} "
+//                        atStrLength = atStr.length + 1 //少了个@
+//                    } else {
+//                        atStr = "@${item.name} "
+//                        nStart = selectionStart
+//                        atStrLength = atStr.length
+//                    }
+//                    it.insert(selectionStart, atStr)
+//                    addSpecialMentionSpan(ChatMsgType.AT,this, item.name, nStart, atStrLength)//+ @ 空格
+//                } else {
+//                    var indexStart = it.indexOf("@${item.name} ")
+//                    var indexEnd = indexStart + item.name.length + 2//从0开始，+1 加上空格字符串+1
+//                    if (indexStart < 0) { //空格被删除的时候
+//                        indexStart = it.indexOf("@${item.name}")
+//                        indexEnd = indexStart + item.name.length + 1
+//                    }
+//                    if (indexStart >= 0 && indexEnd <= it.length) {
+//                        it.replace(indexStart, indexEnd, "")
+//                    }
+//                }
+//            }
+//        }
+//        if (atPopupWindow.isSearchIng) {
+//            atPopupWindow.isSearchIng = false
+//            dismissWindow()
+//        }
+//    }
+
+
+    fun addAtMentionSpan(name: String) {
         chatEtInput.apply {
             text?.let {
                 if (atPopupWindow.isSearchIng && startInputPosition >= 0 && selectionStart > startInputPosition) {
@@ -132,59 +173,31 @@ class ChatATHelper(
                 }
                 var nStart: Int = -1
                 var atStrLength = -1
-                if (item.isSelect) {
-                    var atStr = ""
-                    if (selectionStart > 0 && it[selectionStart - 1] == '@') {
-                        nStart = selectionStart - 1 //光标在@后面
-                        atStr = "${item.name} "
-                        atStrLength = atStr.length + 1 //少了个@
-                    } else {
-                        atStr = "@${item.name} "
-                        nStart = selectionStart
-                        atStrLength = atStr.length
-                    }
-                    it.insert(selectionStart, atStr)
-                    addSpecialMentionSpan(MsgType.AT,this, item.name, nStart, atStrLength)//+ @ 空格
-                } else {
-                    var indexStart = it.indexOf("@${item.name} ")
-                    var indexEnd = indexStart + item.name.length + 2//从0开始，+1 加上空格字符串+1
-                    if (indexStart < 0) { //空格被删除的时候
-                        indexStart = it.indexOf("@${item.name}")
-                        indexEnd = indexStart + item.name.length + 1
-                    }
-                    if (indexStart >= 0 && indexEnd <= it.length) {
-                        it.replace(indexStart, indexEnd, "")
-                    }
-                }
+                val atStr = "@${name} "
+
+                nStart = selectionStart
+                atStrLength = atStr.length
+                it.insert(selectionStart, atStr)
+                addSpecialMentionSpan(ChatMsgType.AT, this, name, nStart, atStrLength)//+ @ 空格
             }
-        }
-        if (atPopupWindow.isSearchIng) {
-            atPopupWindow.isSearchIng = false
-            dismissWindow()
         }
     }
 
-    fun addShareBetSpan(betStr:String,msgType: MsgType) {
+    fun addShareBetSpan(betStr: String, msgType: ChatMsgType) {
         chatEtInput.apply {
             text?.let {
-                var nStart: Int = -1
-                var betStrLength = -1
-                    if (selectionStart > 0 ) {
-                        nStart = selectionStart - 1 //光标在@后面
-                        betStrLength = betStr.length + 1 //少了个@
-                    } else {
-                        nStart = selectionStart
-                        betStrLength = betStr.length
-                    }
-                    it.insert(selectionStart, betStr)
-                    addSpecialMentionSpan(msgType,this, betStr, nStart, betStrLength)//+ @ 空格
+                val nStart: Int = selectionStart
+                val betStrLength = betStr.length
+
+                it.insert(selectionStart, betStr)
+                addSpecialMentionSpan(msgType, this, betStr, nStart, betStrLength)//+ @ 空格
             }
         }
     }
 
-    fun addAtInEt(){
+    fun addAtInEt() {
         chatEtInput.apply {
-            text.insert(selectionStart,"@")
+            text.insert(selectionStart, "@")
         }
     }
 
@@ -201,7 +214,7 @@ class ChatATHelper(
                 spannable.removeSpan(mention)
                 if (spanStart + 1 == position) {
                     val tv = spannable.substring(spanStart + 3, spanEnd)
-                    val mentionSpan = MentionSpan(mention.msgType,tv, atClick)
+                    val mentionSpan = MentionSpan(mention.msgType, tv, atClick)
                     spannable.setSpan(
                         mentionSpan, spanStart + 2, spanEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
@@ -222,13 +235,19 @@ class ChatATHelper(
     }
 
     //添加at消息的背景色字体颜色
-    fun addSpecialMentionSpan(type: MsgType, editText: EditText, name: String, start: Int, length: Int) {
+    fun addSpecialMentionSpan(
+        type: ChatMsgType,
+        editText: EditText,
+        name: String,
+        start: Int,
+        length: Int
+    ) {
         val text = editText.text.toString()
         val allLength = start + length
         if (start < 0 || text.length < allLength) {
             return
         }
-        val mentionSpan = MentionSpan(type,name, atClick)
+        val mentionSpan = MentionSpan(type, name, atClick)
         editText.text.setSpan(
             mentionSpan, start, allLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
@@ -346,7 +365,7 @@ class ChatATHelper(
         }
     }
 
-    fun addTextWatcher(){
+    fun addTextWatcher() {
         chatEtInput.addTextChangedListener(etInputWatcher)
     }
 

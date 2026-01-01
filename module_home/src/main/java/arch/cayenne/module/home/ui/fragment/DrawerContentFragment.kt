@@ -8,6 +8,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import arch.cayenne.lib.base.BuildConfig
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -272,7 +273,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
 
         var id = 0
         earningFeaturesAdapter.submitList(
-            listOf(
+            listOfNotNull(
                 CommonFeaturesBean(
                     id++, arch.cayenne.lib.common.R.drawable.ic_drawer_invite,
                     arch.cayenne.lib.common.R.string.drawer_invite,
@@ -288,7 +289,18 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                     navigatePage(arch.cayenne.lib.res.R.string.nav_module_partner_fragment.deeplink())
                 },
 
-                )
+                if (BuildConfig.BUILD_TYPE != "release") {
+                    CommonFeaturesBean(
+                        id++, arch.cayenne.lib.common.R.drawable.ic_drawer_help,
+                        arch.cayenne.lib.common.R.string.drawer_debug
+                    ) {
+                        navigate(arch.cayenne.lib.res.R.string.nav_module_debug_fragment.deeplink())
+                    }
+                } else {
+                    null
+                }
+
+            )
         )
 
 

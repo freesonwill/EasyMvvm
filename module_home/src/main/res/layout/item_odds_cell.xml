@@ -9,22 +9,23 @@
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_short_name"
             style="@style/OddsShortNameStyle"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="3dp"
             app:layout_constraintBottom_toTopOf="@id/tv_odds"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:skinnableFontWeight="400"
             tools:text="主" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_odds"
             style="@style/OddsTextStyle"
-            android:layout_marginBottom="4dp"
-            app:skinnableFontWeight="500"
+            android:layout_marginBottom="4.5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_short_name"
+            app:skinnableFontWeight="500"
             tools:text="1.33" />
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView

@@ -23,6 +23,9 @@ abstract class InfoDao: BaseDao<InfoBean>() {
     @Query("SELECT balance FROM InfoBean limit 1")
     abstract suspend fun getBalance(): Long
 
+    @Query("UPDATE InfoBean SET balance = :balance")
+    abstract suspend fun updateBalance(balance: Long)
+
     @Query("SELECT currency FROM InfoBean limit 1")
     abstract suspend fun getCurrency(): String
 
