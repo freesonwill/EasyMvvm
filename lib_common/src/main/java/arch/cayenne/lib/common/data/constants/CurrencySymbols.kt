@@ -53,7 +53,7 @@ object CurrencySymbols {
     fun getFormatCNY(amount: Float): String {
         return when {
             amount >= 10_000 -> String.format("%.2fW", amount / 10_000)
-            else -> String.format("%.2f元", amount)
+            else -> String.format("%.2f", amount)
         }
     }
 }
