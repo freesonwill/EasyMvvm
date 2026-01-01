@@ -85,7 +85,7 @@
         android:id="@+id/tv_game_status"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
-        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_0"
         android:gravity="center"
         android:textColor="@color/home_secondary_text"
         android:textSize="13sp"
