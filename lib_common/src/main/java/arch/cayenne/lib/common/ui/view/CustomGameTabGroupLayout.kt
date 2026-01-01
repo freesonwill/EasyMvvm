@@ -13,6 +13,7 @@ import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.databinding.ItemCustomGameTabBinding
 import arch.cayenne.lib.common.databinding.ViewCustomGameTabGroupBinding
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -89,6 +90,11 @@ class CustomGameTabGroupLayout : FrameLayout {
 
     fun setSortBtnSrc(resId: Int) {
         binding.ivBtnSort.setImageResource(resId)
+    }
+
+    fun setSortBtnSelected() {
+        binding.llBtnSort.background =
+            R.drawable.shape_custom_game_tab_button_selected_bg.getDrawable()
     }
 
     fun setSortBtnTextColor(color: Int) {
