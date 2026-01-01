@@ -8,7 +8,6 @@ import androidx.core.animation.addListener
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
@@ -100,7 +99,7 @@ class ComboDetailFragment :
         fun title():String {
             return when {
                 isSuperCombo(serialValue) -> R.string.title_combo_bet_super.getString()
-                else -> R.string.title_combo_bet_odds.getString(comboK,comboV)
+                else -> R.string.title_combo_bet_tittle.getString(comboK,comboV)
             }
         }
 
@@ -109,7 +108,7 @@ class ComboDetailFragment :
                 comboV == 1 -> {
                     R.string.title_combo_bet_detail_tips.getString(
                         title(),
-                        R.string.title_combo_bet_odds.getString(comboK,comboV)
+                        arch.cayenne.lib.res.R.string.title_combo_bet_odds.getString(comboK,comboV)
                     )
                 }
                 else ->
@@ -117,7 +116,7 @@ class ComboDetailFragment :
                         title(),
                         ((if(isSuperCombo(serialValue)) 1 else 2)..comboK).joinToString("、") { k ->
                             if (k == 1) arch.cayenne.lib.res.R.string.title_single_bet.getString()
-                            else R.string.title_combo_bet_odds.getString(k, 1)
+                            else R.string.title_combo_bet_tittle.getString(k, 1)
                         }
                     )
             }

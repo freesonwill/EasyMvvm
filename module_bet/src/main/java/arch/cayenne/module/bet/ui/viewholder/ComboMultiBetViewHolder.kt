@@ -20,7 +20,7 @@ import java.util.Locale
 class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBet2Binding, private val onComboMultiBetClickListener: ComboMultiBetAdapter.OnComboMultiBetClickListener): BaseViewHolder(mBinding) {
 
     fun bind(item: ComboMultiBetBean) {
-        val combo = R.string.title_combo_bet_odds.getString(item.comboK, item.comboV)
+        val combo = R.string.title_combo_bet_tittle.getString(item.comboK, item.comboV)
         mBinding.tvTitleCombo.text = when {
             item.isSuperCombo -> R.string.title_combo_bet_super.getString()
             else ->  combo

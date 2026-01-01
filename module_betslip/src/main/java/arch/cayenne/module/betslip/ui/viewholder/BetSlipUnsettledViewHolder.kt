@@ -86,7 +86,7 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
             it.groupCrossborder.isVisible = flag
 
             if (flag) {
-                val combo = "${R.string.title_combo_bet_odds.getString(order.comboK, order.comboV)}*${order.comboCount}"
+                val combo = "${arch.cayenne.lib.res.R.string.title_combo_bet_odds.getString(order.comboK, order.comboV)}*${order.comboCount}"
                 it.betUnsettledTvCrossborderValue.text = combo
             }
 

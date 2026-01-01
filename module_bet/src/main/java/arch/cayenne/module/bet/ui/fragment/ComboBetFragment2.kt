@@ -239,7 +239,7 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
             with(mBinding.firstMultiItem) {
                 val moneySymbol = mViewModel.moneySymbol
                 tvTitleCombo.text = let {
-                    val combo = R.string.title_combo_bet_odds.getString().format(item.comboK, item.comboV)
+                    val combo = R.string.title_combo_bet_tittle.getString().format(item.comboK, item.comboV)
                     combo
                 }
                 tvMulti.text = let { "@${item.sumOdds.getOdds()}" }
