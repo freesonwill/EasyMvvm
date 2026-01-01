@@ -31,4 +31,11 @@ class PersonalInfoViewModel : BaseViewModel() {
         }
     }
 
+    //获取账户信息
+    fun getAccountInfo() {
+        viewModelScope.launch {
+            repository.getAccountInfo()
+        }
+    }
+
 }

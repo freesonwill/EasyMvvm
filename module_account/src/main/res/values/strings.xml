@@ -19,7 +19,13 @@
     <string name="account_edit_name_title" translatable="false">设置昵称</string>
     <string name="user_avatar" translatable="false">个人头像</string>
     <string name="account_edit_name_input_hint" translatable="false">请输入昵称</string>
-    <string name="account_edit_name_text_hint" translatable="false">一个月内仅可修改2次昵称</string>
+    <string name="account_edit_name_text_hint" translatable="false">一个月内仅可修改%s次昵称</string>
     <string name="account_edit_name_recommend" translatable="false">试试推荐昵称：</string>
     <string name="account_edit_name_refresh" translatable="false">换一批</string>
+
+    <string name="account_avatar_confirm" translatable="false">保存头像</string>
+
+    <string name="account_avatar_delete" translatable="false">删除头像</string>
+    <string name="account_close" translatable="false">取消</string>
+    <string name="account_edit_name_toast_empty" translatable="false">请输入呢称</string>
 </resources>

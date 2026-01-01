@@ -52,16 +52,22 @@ class  PersonalInfoFragment : BaseFragment<PersonalInfoViewModel, FragmentPerson
         mViewModel.onUserInfoListener.observe(viewLifecycleOwner) {
             if (it != null) {
                 mBinding.tvName.text = it.nickname
-                mBinding.tvUserId.text = it.id.toString()
-                val thumbBitmap = ThumbHashUtils.getBitmapFromThumbHash(it.avatar.thumbhash)  //返回 Bitmap?
-                thumbBitmap?.let { bitmap ->
-                    val placeholderDrawable = BitmapDrawable(resources, bitmap)
-                    Glide.with(this@PersonalInfoFragment)
-                        .load(it.avatar.url.trim())
-                        .placeholder(placeholderDrawable)
-                        .transition(DrawableTransitionOptions.withCrossFade()) // 淡入动画
-                        .into(mBinding.ivAvatar)
+                mBinding.tvUserId.text = it.Uid.toString()
+                if (it.avatar==null||it.avatar.url.isEmpty()) {
+                    mBinding.HalfCircle.visibility = android.view.View.GONE
+                }else{
+                    mBinding.HalfCircle.visibility = android.view.View.VISIBLE
+                    val thumbBitmap = ThumbHashUtils.getBitmapFromThumbHash(it.avatar.thumbhash)  //返回 Bitmap?
+                    thumbBitmap?.let { bitmap ->
+                        val placeholderDrawable = BitmapDrawable(resources, bitmap)
+                        Glide.with(this@PersonalInfoFragment)
+                            .load(it.avatar.url.trim())
+                            .placeholder(placeholderDrawable)
+                            .transition(DrawableTransitionOptions.withCrossFade()) // 淡入动画
+                            .into(mBinding.ivAvatar)
+                    }
                 }
+
             }
         }
     }

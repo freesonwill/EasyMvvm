@@ -123,6 +123,7 @@ class ModuleRepository(
                     url = profileInfo.avatar.url,
                     thumbhash = profileInfo.avatar.thumbhash
                 ),
+                Uid = 100L,
                 registerTime = profileInfo.registerTime,
                 vipLevel = profileInfo.vipLevel,
                 score = profileInfo.score,
