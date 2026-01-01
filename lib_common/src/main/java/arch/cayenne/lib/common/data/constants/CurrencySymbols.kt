@@ -52,7 +52,7 @@ object CurrencySymbols {
     @SuppressLint("DefaultLocale")
     fun getFormatCNY(amount: Float): String {
         return when {
-            amount >= 10_000 -> String.format("%.2fW", amount / 10_000)
+            amount >= 10_000 -> String.format("%.2fw", amount / 10_000)
             else -> String.format("%.2f", amount)
         }
     }
