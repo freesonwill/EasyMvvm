@@ -34,8 +34,8 @@ interface ChatManagerFactory {
         content: String,
         chatType: ChatType,
         msgType: MsgType,
-        extraData: Map<String, String>? = null,
-        refUid: List<Long>?,
+        extraData: Map<String,String>?,
+        refUid: List<String>?,
     ): ChatSendMsgResponse?
 
     suspend fun registerMsgFlowToServer(): Flow<MsgNotify>
@@ -48,10 +48,10 @@ interface ChatManagerFactory {
 
     suspend fun addLocalMsg(loginValue: ChatLoginResponseData, content: String,
                             msgType: MsgType,
-                            extraData: Map<String, String>?,
+                            extraData: Map<String,String>?,
                             chatType: ChatType,
-                            refUid: List<Long>? = null,
-                            refInfos: Map<Long,ChatRefUser>? = null
+                            refUid: List<String>? = null,
+                            refInfos: Map<String,ChatRefUser>? = null
     ): ChatMsg
     suspend fun serverConnectFlow(): StateFlow<SocketConnectState>
 }

@@ -1,4 +1,4 @@
-package com.walisport.module.me.ui.view
+package arch.cayenne.lib.common.ui.view
 
 import android.graphics.Canvas
 import android.graphics.Color

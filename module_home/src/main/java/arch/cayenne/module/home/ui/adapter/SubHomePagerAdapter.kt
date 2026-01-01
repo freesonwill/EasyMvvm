@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import arch.cayenne.module.home.data.constants.MatchListSortType
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.ui.fragment.CollectListFragment
@@ -37,7 +38,8 @@ class SubHomePagerAdapter(
         return when (val playType = playTypes[position - promoCount]) {
             PlayType.FAVORITE -> CollectListFragment()
             PlayType.EARLY -> EarlyFragment.newInstance(playType.id)
-            PlayType.ROLLING -> SubHomeFragmentV2.newInstance(playType.id)
+            PlayType.ROLLING -> SubHomeFragmentV2.newInstance(playType.id, MatchListSortType.BY_TIME)
+            PlayType.TODAY -> SubHomeFragmentV2.newInstance(playType.id, MatchListSortType.BY_HOT)
             else -> SubHomeFragment.newInstance(
                 playType.id
             )
