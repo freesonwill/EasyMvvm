@@ -123,7 +123,7 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-            }, 100)
+            }, 500)
         }
     }
 

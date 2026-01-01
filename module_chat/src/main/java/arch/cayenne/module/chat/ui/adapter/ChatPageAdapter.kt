@@ -10,13 +10,12 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.chat.data.compare.ChatCompare
 import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.module.chat.data.model.ChatMsgPageBean
-import arch.cayenne.module.chat.data.model.ClickSpan
 import arch.cayenne.module.chat.data.model.ColorSpan
+import arch.cayenne.module.chat.data.model.MentionSpan
 import arch.cayenne.module.chat.databinding.ItemLiveChatBinding
 import arch.cayenne.module.chat.utils.ChatMsgUtils
 
@@ -48,9 +47,19 @@ class ChatPageAdapter(
                         event: MotionEvent?
                     ): Boolean {
                         if (widget != null && buffer != null && event?.action == MotionEvent.ACTION_DOWN) {
+                            val msgId = widget.tag as String
+                            val position = currentList.indexOfFirst { it.msgId == msgId }
+                            if(getItem(position).msgType == ChatMsgType.SYSTEM){
+                                return true
+                            }
                             isLongPress = false
                             longPressHandler.postDelayed(longPressRunnable, longPressTimeout)
                         } else if (widget != null && buffer != null && event?.action == MotionEvent.ACTION_UP) {
+                            val msgId = widget.tag as String
+                            val position = currentList.indexOfFirst { it.msgId == msgId }
+                            if(getItem(position).msgType == ChatMsgType.SYSTEM){
+                                return true
+                            }
                             // 获取点击位置
                             val x = event.x.toInt() - widget.totalPaddingLeft + widget.scrollX
                             val y = event.y.toInt() - widget.totalPaddingTop + widget.scrollY
@@ -58,7 +67,6 @@ class ChatPageAdapter(
                             val layout = widget.layout
                             val line = layout.getLineForVertical(y)
                             val off = layout.getOffsetForHorizontal(line, x.toFloat())
-                            val position = widget.tag as Int
 
                             if (isLongPress) {
                                 val colorSpans =
@@ -69,7 +77,7 @@ class ChatPageAdapter(
                                 return true
 
                             }
-                            val spans = buffer.getSpans(off - 1, off + 1, ClickSpan::class.java)
+                            val spans = buffer.getSpans(off - 1, off + 1, MentionSpan::class.java)
                             if (spans.isNotEmpty()) {
                                 spans.first().also {
                                     specialClick.invoke(getItem(position), it.tv, it.msgType)
@@ -101,7 +109,7 @@ class ChatPageAdapter(
             builder.append(second)
 
             nBinding.tv.text = builder
-            nBinding.tv.tag = position
+            nBinding.tv.tag = bean.msgId
         }
     }
 
