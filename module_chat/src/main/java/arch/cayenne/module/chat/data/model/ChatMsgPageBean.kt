@@ -1,8 +1,10 @@
 package arch.cayenne.module.chat.data.model
 
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.lib.websocket.chat.data.ChatRefUser
+import com.google.gson.Gson
 
 /**
  * @author: wenxi
@@ -18,34 +20,35 @@ data class ChatMsgPageBean(
     val timestamp: String,
     val onlyForSelf: Int,
     val msgType: ChatMsgType,
-    val atRange: List<IntRange>? = null,
     val replaceUserName: String? = null,
-    val refUid: List<Long>? = null,
-    val refInfos:  Map<Long, ChatRefUser>? = null,
-    val extraData:Map<String,String>?=null
+    val refUid: List<String>? = null,
+    val refInfos: Map<String, ChatRefUser>? = null,
+    val extraData: Map<String,String>? = null
 ) : Comparable<ChatMsgPageBean> {
+
     companion object {
+
         fun toChatPageBean(
             bean: ChatMsg,
-            msgType: ChatMsgType,
-            atRange: List<IntRange>? = null
         ): ChatMsgPageBean {
+//            "toChatMsg ${Gson().toJson(bean)}".logd("ChatMsgPageBean")
+//                "toChatPageBean ${Gson().toJson(bean)}".logd("ChatMsgPageBean")
+            val content = bean.content
             return ChatMsgPageBean(
                 uid = bean.uid,
                 userName = bean.userName,
                 avatarId = bean.avatarId,
                 msgId = bean.msgId,
-                content = bean.content,
+                content = content,
                 timestamp = bean.timestamp,
-                refUid = bean.refUid,
+                refUid = bean.refUids,
                 refInfos = bean.refInfos,
                 onlyForSelf = bean.onlyForSelf,
-                msgType = msgType,
-                atRange = atRange
+                replaceUserName = bean.replaceUserName,
+                msgType = ChatMsgType.getChatMsgType(bean.msgType),
+                extraData = bean.extraData
             )
         }
-
-
     }
 
     override fun compareTo(other: ChatMsgPageBean): Int {

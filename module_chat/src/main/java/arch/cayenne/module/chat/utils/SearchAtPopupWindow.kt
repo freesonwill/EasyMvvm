@@ -122,7 +122,6 @@ class SearchAtPopupWindow {
         }
     }
 
-
     fun searchAtList(str: String) {
         val searchText = str.substring(1)
         val searchList = atAdapter.currentList.filter { it.name.contains(searchText) }
