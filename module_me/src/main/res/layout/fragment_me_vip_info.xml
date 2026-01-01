@@ -27,11 +27,12 @@
             android:id="@+id/tv_level"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_14"
+            android:layout_marginStart="@dimen/dp_19"
+            android:layout_marginTop="@dimen/dp_3"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_24"
-            android:textStyle="bold"
+            android:textFontWeight="860"
+            android:fontFamily="@font/sf_pro_display_heavy"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

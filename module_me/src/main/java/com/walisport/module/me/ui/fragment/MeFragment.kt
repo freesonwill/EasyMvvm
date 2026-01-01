@@ -355,18 +355,10 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                     val day = calculateBetweenDay(it.registerTime)
                     mBinding.tvJoinTime.text = day
                 }
-                tabIndicatorHelper?.setup()
             }
         }
         mViewModel.createObserver()
 
-        launch {
-            mViewModel.bottomIndexFlow.collect {
-                mBinding.vpPage.post {//延迟一帧，viewPager可能正在刷新adapter
-                    mBinding.vpPage.setCurrentItem(it, true)
-                }
-            }
-        }
     }
 
     private fun changeTabCount(tab: TabLayout.Tab, count: Long) {
@@ -424,9 +416,4 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         super.onStart()
     }
 
-    override suspend fun onArgumentsChanged(oldArgs: Bundle?, newArgs: Bundle?) {
-        arguments?.getInt(FragmentResultEnum.KEY_ME_BOTTOM.name)?.let {
-            mViewModel.bottomIndexFlow.tryEmit(it)
-        }
-    }
 }
