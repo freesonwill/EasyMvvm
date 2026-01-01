@@ -105,13 +105,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dp_10" />
-
-
                 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
-
-
             </androidx.constraintlayout.widget.ConstraintLayout>
-
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/bottom"
@@ -184,9 +179,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_30"
-                android:visibility="invisible"
-                android:layout_marginTop="@dimen/dp_18"
+                android:layout_height="@dimen/dp_50"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -233,8 +226,8 @@
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/ct_top_cc"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_18"
+        android:layout_height="@dimen/dp_50"
+        android:layout_marginTop="@dimen/dp_17"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
