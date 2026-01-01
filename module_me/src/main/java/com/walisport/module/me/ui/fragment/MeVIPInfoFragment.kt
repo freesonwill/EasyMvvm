@@ -9,6 +9,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.fragment.AllInfoDialogFragment
+import arch.cayenne.lib.common.ui.view.WLLinearGradientFontSpan
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -18,7 +19,6 @@ import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.VIPResourceHelper
 import com.walisport.module.me.databinding.FragmentMeVipInfoBinding
-import com.walisport.module.me.ui.view.WLLinearGradientFontSpan
 import com.walisport.module.me.ui.viewmodel.MeVIPInfoViewModel
 import kotlin.reflect.KClass
 
