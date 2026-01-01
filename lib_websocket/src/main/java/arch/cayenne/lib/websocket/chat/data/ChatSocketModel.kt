@@ -48,22 +48,25 @@ enum class ChatType(val value: Int) {
 enum class MsgType(val value: Int) {
     MSG_TYPE_SYSTEM(0),
     MSG_TYPE_TEXT(1),
-    MSG_TYPE_SHARE(2),
-    MSG_TYPE_AT(3);
+    MSG_TYPE_SHARE_ORDER(2),
+    MSG_TYPE_SHARE_GAME(3),
+    MSG_TYPE_AT(8);
 
     companion object {
         fun getMsgType(value: Int): MsgType {
             return when (value) {
                 0 -> MSG_TYPE_SYSTEM
-                2, 4 -> MSG_TYPE_SHARE
-                3 -> MSG_TYPE_AT
+                2 -> MSG_TYPE_SHARE_ORDER
+                3 -> MSG_TYPE_SHARE_GAME
+                4 -> MSG_TYPE_AT
                 else -> MSG_TYPE_TEXT
             }
         }
          //服务器没有At消息类型
         fun getSendMsgType(value: Int): MsgType {
             return when (value) {
-                2, 4 -> MSG_TYPE_SHARE
+                2 -> MSG_TYPE_SHARE_ORDER
+                3 -> MSG_TYPE_SHARE_GAME
                 else -> MSG_TYPE_TEXT
             }
         }

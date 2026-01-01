@@ -8,22 +8,20 @@ import arch.cayenne.lib.websocket.chat.data.MsgType
  * @description:
  */
 enum class ChatMsgType(val value:Int) {
-    BET_GAME(2),
-    BET_SPORT(4),
+    BET_GAME(3),
+    BET_SPORT(2),
     EMOJI(5),
-    AT(3),
+    AT(8),
     TEXT(1),
     SYSTEM(0);
-//    MSG_TYPE_SYSTEM(0),
-//    MSG_TYPE_TEXT(1),
-//    MSG_TYPE_SHARE(2),
-//    MSG_TYPE_AT(3);
+
     companion object {
 
         fun getChatMsgType(value: MsgType): ChatMsgType {
             return when (value) {
                 MsgType.MSG_TYPE_TEXT -> TEXT
-                MsgType.MSG_TYPE_SHARE -> BET_GAME
+                MsgType.MSG_TYPE_SHARE_GAME -> BET_GAME
+                MsgType.MSG_TYPE_SHARE_ORDER -> BET_SPORT
                 MsgType.MSG_TYPE_SYSTEM -> SYSTEM
                 MsgType.MSG_TYPE_AT -> AT
                 else -> TEXT
