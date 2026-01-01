@@ -58,8 +58,6 @@ class GameCollectionsTabFragment :
             })
             rvRecently.itemAnimator = null
             rvRecently.adapter = adapter
-            adapter.submitList(emptyList())
-
 //            BackToTopHelper(rvRecently, ivBackToTop, true)
         }
     }

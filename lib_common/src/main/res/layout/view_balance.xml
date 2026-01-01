@@ -13,22 +13,25 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"/>
+
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_wallet_balance"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:gravity="left|center_horizontal"
-        android:fontFamily="@font/sf_pro_display_bold"
-        android:textColor="@color/main_text"
-        android:textSize="14sp"
         android:layout_marginStart="@dimen/dp_5"
         android:layout_marginEnd="@dimen/dp_6"
+        android:ellipsize="end"
+        android:fontFamily="@font/sf_pro_display_bold"
+        android:gravity="left|center_horizontal"
+        android:maxLines="1"
+        android:textColor="@color/main_text"
+        android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/iv_currency_icon"
         app:layout_constraintRight_toLeftOf="@id/iv_arrow"
-        app:layout_constraintLeft_toRightOf="@+id/iv_currency_icon"/>
+        app:layout_constraintTop_toTopOf="parent" />
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_arrow"
         android:layout_width="@dimen/dp_10"
