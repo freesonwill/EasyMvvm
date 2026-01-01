@@ -7,11 +7,14 @@ import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.net.Uri
 import android.os.Bundle
+import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
@@ -25,6 +28,7 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
 import arch.cayenne.lib.common.ui.view.CustomTabLayoutMediator
+import arch.cayenne.lib.common.ui.view.WLLinearGradientFontSpan
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -230,7 +234,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
                 }
                 val cny = CurrencySymbols.getSymbol(it.ccy) +
                         CurrencySymbols.getFormatAmount(it.ccy, reqScore)
-                val info = getString(arch.cayenne.lib.common.R.string.vip_level_require, cny)
+                val info = getString(arch.cayenne.lib.common.R.string.vip_level_need, cny)
                 updateVIPInfo(
                     vipLevel = it.vipLevel,
                     vipStage = it.vipStage,
@@ -356,26 +360,24 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
             // 設置圖標 - 使用 VIPResourceHelper
             ivLevel.setImageResource(VIPResourceHelper.getIconResource(level))
             ivLevelName.setImageResource(VIPResourceHelper.getLevelNameResource(level))
-            // 設置文字漸變效果 - 使用 VIPResourceHelper
-            val bottom = 20.dp2px.toFloat()
-            val linearGradient = LinearGradient(
-                0f, 0f,
-                0f, bottom,
-                intArrayOf(
-                    VIPResourceHelper.getShaderStartColor().getColor(requireContext()),
-                    VIPResourceHelper.getShaderEndColor(level).getColor(requireContext())
-                ),
-                null,
-                Shader.TileMode.CLAMP
-            )
-            tvLevel.paint.shader = linearGradient
-            tvLevel.text = getString(arch.cayenne.lib.common.R.string.vip_level_format, vipLevel)
+            val levelStr = getString(arch.cayenne.lib.common.R.string.vip_level_format, vipLevel)
+            val start = VIPResourceHelper.getShaderStartColor().getColor(requireContext())
+            val end = VIPResourceHelper.getShaderEndColor(level).getColor(requireContext())
+            val span = getGradientSpan(levelStr,start,end)
+            tvLevel.setText(span, TextView.BufferType.SPANNABLE)
             tvPercent.text = percent
             val color = VIPResourceHelper.getProgressStartColor(level)
             vipProgress.setProgressColor(color)
             vipProgress.setProgress(progress)
             tvLevelUpInfo.text = levelUpInfo
         }
+    }
+
+    private fun getGradientSpan(content: String, startColor: Int, endColor: Int): SpannableStringBuilder {
+        val spannableStringBuilder = SpannableStringBuilder(content)
+        val span = WLLinearGradientFontSpan(startColor, endColor)
+        spannableStringBuilder.setSpan(span, 0, spannableStringBuilder.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return spannableStringBuilder
     }
 
     // 全部Tab的比賽列表載入完成後的處理
