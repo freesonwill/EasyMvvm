@@ -16,7 +16,7 @@
         android:gravity="center_vertical"
         android:text="按热门联赛排序"
         android:textColor="@color/color_00E0E5"
-        android:textSize="@dimen/sp_15" />
+        android:textSize="@dimen/sp_14" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_sort_by_time"
@@ -27,7 +27,7 @@
         android:gravity="center_vertical"
         android:text="按比赛时间排序"
         android:textColor="@color/color_999999"
-        android:textSize="@dimen/sp_15" />
+        android:textSize="@dimen/sp_14" />
 
 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
