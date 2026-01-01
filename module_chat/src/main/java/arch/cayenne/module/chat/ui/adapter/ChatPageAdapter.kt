@@ -28,7 +28,7 @@ class ChatPageAdapter(
         ChatCompare()
     ) {
     private var isLongPress = false
-    private val longPressTimeout = 500L
+    private val longPressTimeout = 300L
     private val longPressHandler = android.os.Handler()
     private val longPressRunnable = Runnable {
         isLongPress = true

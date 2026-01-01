@@ -10,6 +10,7 @@ import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.lifecycle.LifecycleCoroutineScope
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.chat.R
@@ -166,7 +167,7 @@ class ChatATHelper(
 //    }
 
 
-    fun addAtMentionSpan(name: String,user:ChatRefUser) {
+    fun addAtMentionSpan(name: String, user: ChatRefUser) {
         chatEtInput.apply {
             text?.let {
                 if (atPopupWindow.isSearchIng && startInputPosition >= 0 && selectionStart > startInputPosition) {
@@ -179,7 +180,7 @@ class ChatATHelper(
                 nStart = selectionStart
                 atStrLength = atStr.length
                 it.insert(selectionStart, atStr)
-                addSpecialMentionSpan(ChatMsgType.AT, this, name,user, nStart, atStrLength)//+ @ 空格
+                addSpecialMentionSpan(ChatMsgType.AT, this, name, user, nStart, atStrLength)//+ @ 空格
             }
         }
     }
@@ -191,7 +192,7 @@ class ChatATHelper(
                 val betStrLength = betStr.length
 
                 it.insert(selectionStart, betStr)
-                addSpecialMentionSpan(msgType, this, betStr, null,nStart, betStrLength)//+ @ 空格
+                addSpecialMentionSpan(msgType, this, betStr, null, nStart, betStrLength)//+ @ 空格
             }
         }
     }
@@ -215,7 +216,7 @@ class ChatATHelper(
                 spannable.removeSpan(mention)
                 if (spanStart + 1 == position) {
                     val tv = spannable.substring(spanStart + 3, spanEnd)
-                    val mentionSpan = MentionSpan(mention.msgType, tv, null,atClick)
+                    val mentionSpan = MentionSpan(mention.msgType, tv, null, atClick)
                     spannable.setSpan(
                         mentionSpan, spanStart + 2, spanEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
@@ -240,7 +241,7 @@ class ChatATHelper(
         type: ChatMsgType,
         editText: EditText,
         name: String,
-        user:ChatRefUser?,
+        user: ChatRefUser?,
         start: Int,
         length: Int
     ) {
@@ -249,7 +250,7 @@ class ChatATHelper(
         if (start < 0 || text.length < allLength) {
             return
         }
-        val mentionSpan = MentionSpan(type, name, user,atClick)
+        val mentionSpan = MentionSpan(type, name, user, atClick)
         editText.text.setSpan(
             mentionSpan, start, allLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
@@ -290,49 +291,24 @@ class ChatATHelper(
                     val lastSpan = spans.last()
                     val spanEnd = spannable.getSpanEnd(lastSpan)
                     val spanStart = spannable.getSpanStart(lastSpan)
-//                    "spanStart $spanStart spanEnd $spanEnd cursorPositionStart $cursorPositionStart spannableLength ${spannable.length}".logd(
-//                        "aaa"
-//                    )
-                    if (cursorPositionStart in spanStart..spanEnd) {
+//                 "cursorPositionStart $cursorPositionStart  spanStart $spanStart spanEnd $spanEnd".logd("aaa")
+                    if (cursorPositionStart in spanStart until spanEnd) {
+                        //光标在at消息中间，选中整个at消息
+                        editText.setSelection(spanStart, spanEnd)
+                        return@setOnKeyListener true
+                    }
 
+                    if (cursorPositionStart == spanEnd) {
                         val lastChar = spannable.elementAt(spanEnd - 1)
                         if (lastChar == ' ') {
-                            if (cursorPositionStart == spanEnd) { //如果光标正常的在@消息后面删除，正常对待，检查lastChar是否空字符
-                                return@setOnKeyListener false
-                            } else { //如果光标在@消息中间，检查@消息后一位是否空字符
-                                editText.text.replace(spanEnd - 1, spanEnd, "")
-                                editText.setSelection(spanEnd - 1)
-                                return@setOnKeyListener true
-                            }
-                        }
-
-
-//                        var lastChar = spannable.elementAt(spanEnd-1)
-//
-//                        if (lastChar == ' ' ) { //从右往左删除，正常排查
-//                            "lastChar 111${lastChar}1111".logd("aaa")
-//                            if(cursorPositionStart == spanEnd){
-//                                return@setOnKeyListener false
-//                            }
-//                            if(cursorPositionStart < spanEnd){
-//                                editText.text.replace(spanEnd-1,spanEnd,"")
-//                                editText.setSelection(spanEnd-1)
-//                                return@setOnKeyListener  true
-//                            }
-//                        }
-//
-//                        if(spanEnd < spannable.length  ){  // @消息中间删除
-//                            lastChar =  spannable.elementAt(spanEnd)
-//                            "lastChar2  111${lastChar}1111".logd("aaa")
-//
-//                            if(lastChar == ' '){
-//                                editText.text.replace(spanEnd,spanEnd+1,"")
-//                                editText.setSelection(spanEnd)
+//                            if (cursorPositionStart == spanEnd) { //如果光标正常的在@消息后面删除，正常对待，检查lastChar是否空字符
+                            return@setOnKeyListener false
+//                            } else { //如果光标在@消息中间，检查@消息后一位是否空字符
+//                                editText.text.replace(spanEnd - 1, spanEnd, "")
+//                                editText.setSelection(spanEnd - 1)
 //                                return@setOnKeyListener true
 //                            }
-//                        }
-
-
+                        }
                         editText.setSelection(spanStart, spanEnd)
                         return@setOnKeyListener true
                     }

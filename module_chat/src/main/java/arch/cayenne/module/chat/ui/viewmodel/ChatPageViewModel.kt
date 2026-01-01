@@ -41,7 +41,7 @@ class ChatPageViewModel:BaseViewModel() {
         if (list == null) {
             return
         }
-        val nList = list.filter { it.msgType != MsgType.MSG_TYPE_SYSTEM }.map { ChatMsgPageBean.toChatPageBean(it)}.toList()
+        val nList = list.map { ChatMsgPageBean.toChatPageBean(it)}.toList()
         msgLists.clear()
         msgLists.addAll(nList)
     }
