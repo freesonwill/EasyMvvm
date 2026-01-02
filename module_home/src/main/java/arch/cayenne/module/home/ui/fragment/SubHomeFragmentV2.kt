@@ -144,7 +144,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModelV2, FragmentSubHomeV2Bind
 
         mViewModel.tournamentsPlain.observeEvent(viewLifecycleOwner, this) { list ->
             val l = ArrayList<SimpleTabDataModel>()
-            list.take(10)
+            list.take(11)
                 .forEach { item ->
                     l.add(
                         SimpleTabDataModel(
