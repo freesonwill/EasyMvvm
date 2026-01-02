@@ -6,7 +6,6 @@ import android.view.View
 import android.view.Window
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BasePositionDialogFragment
-import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.databinding.FragmentCoinDialogBinding
 import arch.cayenne.lib.common.ui.adapter.CurrencyAdapter
@@ -26,9 +25,9 @@ class CoinDialogFragment :
     private var listener: DialogDismissListener? = null
 
     private val mockList: List<BaseCurrencyData> = listOf(
-        BaseCurrencyData.CurrencyContentData2(1,"", "", "USDT", 0L, "", "", "U"),
-        BaseCurrencyData.CurrencyContentData2(2,"", "", "BTC", 0L, "", "", "B"),
-        BaseCurrencyData.CurrencyContentData2(3,"", "", "ETH", 0L, "", "", "E")
+        BaseCurrencyData.CurrencyContentData(1,"", "", "USDT", 0L, "", "", "U"),
+        BaseCurrencyData.CurrencyContentData(2,"", "", "BTC", 0L, "", "", "B"),
+        BaseCurrencyData.CurrencyContentData(3,"", "", "ETH", 0L, "", "", "E")
     )
 
     companion object {

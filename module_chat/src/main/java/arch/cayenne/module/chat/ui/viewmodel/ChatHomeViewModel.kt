@@ -24,6 +24,8 @@ import arch.cayenne.module.chat.data.model.EmojiModel
 import arch.cayenne.module.chat.data.model.MentionSpan
 import arch.cayenne.module.chat.manager.ChatServerController
 import arch.cayenne.module.chat.utils.ChatMsgUtils
+import arch.cayenne.module.order.data.model.BetShareBean
+import com.google.gson.Gson
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -38,13 +40,18 @@ class ChatHomeViewModel() : BaseViewModel() {
     //    private val _currentSoftKeyboard = MutableStateFlow(KeyBoardType.CHAT)
     private val _updateKeyboardUiStatus = MutableLiveData(KeyBoardType.CHAT)
     private val _sendMsgLiveData = MutableLiveData<ChatMsgPageBean>()
-//    private val _chatHistoryIsEmpty = MutableLiveData<Boolean>()
+
+    //    private val _chatHistoryIsEmpty = MutableLiveData<Boolean>()
     private val chatServer: ChatServerController by inject { parametersOf(viewModelScope) }
-    private val _emojiFlow: MutableSharedFlow<EmojiModel?> = MutableSharedFlow(replay = 0, extraBufferCapacity = 10, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    private val _emojiFlow: MutableSharedFlow<EmojiModel?> = MutableSharedFlow(
+        replay = 0,
+        extraBufferCapacity = 10,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
     private val _etDelLiveDta: MutableLiveData<Boolean> = MutableLiveData()
     private val _sendTextLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private val _currentKeyBoardType = MutableLiveData<KeyBoardType>(KeyBoardType.CHAT)
-    private val _atLiveData:MutableLiveData<ChatMsgPageBean> = MutableLiveData<ChatMsgPageBean>()
+    private val _atLiveData: MutableLiveData<ChatMsgPageBean> = MutableLiveData<ChatMsgPageBean>()
 
 
     var currentKeyBoardType: KeyBoardType = KeyBoardType.CHAT
@@ -68,7 +75,7 @@ class ChatHomeViewModel() : BaseViewModel() {
     val emojiFlow: SharedFlow<EmojiModel?> = _emojiFlow
     val etDelLiveData: LiveData<Boolean> = _etDelLiveDta
     val sendTextLiveData: LiveData<Boolean> = _sendTextLiveData
-    val atLiveData:LiveData<ChatMsgPageBean> = _atLiveData
+    val atLiveData: LiveData<ChatMsgPageBean> = _atLiveData
 
     val languageManager: LanguageManager by inject { parametersOf(viewModelScope) }
     val userDataManager: UserDataManager by inject()
@@ -76,16 +83,19 @@ class ChatHomeViewModel() : BaseViewModel() {
     //聊天设置
     val chatConfigDao: ChatConfigDao by inject()
     var keyBoardHeight: Int = 0
+
     //聊天键盘切换监听
     val currentKeyBoardTypeLiveData: LiveData<KeyBoardType> = _currentKeyBoardType
-    var languageSelectPosition:Int = 1
+    var languageSelectPosition: Int = 1
+
+    var currentSelectBetShare: BetShareBean? = null
 
 
-    fun setArguments(matchId: Long?,chatType: ChatType) {
+    fun setArguments(matchId: Long?, chatType: ChatType) {
         //直播间重新从联赛进入时，刷新matchId 重新进入聊天室
         if (this.matchId != null && this.matchId != matchId) {
             this.matchId = matchId
-            chatServer.enterRoom(matchId!!,chatType)
+            chatServer.enterRoom(matchId!!, chatType)
         } else {
             this.matchId = matchId
         }
@@ -122,7 +132,7 @@ class ChatHomeViewModel() : BaseViewModel() {
 
     fun enterRoom(chatType: ChatType) {
         matchId?.let {
-            chatServer.enterRoom(it,chatType)
+            chatServer.enterRoom(it, chatType)
         }
     }
 
@@ -132,16 +142,22 @@ class ChatHomeViewModel() : BaseViewModel() {
      * */
     fun leaveRoom(chatType: ChatType) {
         matchId?.let {
-            chatServer.leaveRoom(it,chatType)
+            chatServer.leaveRoom(it, chatType)
         }
     }
 
     /**
      *发送消息
      * */
-    fun sendMsgToServer(content: String, refUid: List<Long>? = null, chatType: ChatType, msgType:MsgType, extraData: Map<String, String>?,) {
+    fun sendMsgToServer(
+        content: String,
+        refUid: List<String>? = null,
+        chatType: ChatType,
+        msgType: MsgType,
+        extraData: Map<String,String>?,
+    ) {
         matchId?.let {
-            chatServer.sendMsgToServer(it, ChatMsgUtils.replaceNoDivideChar(content), chatType, msgType, extraData,refUid)
+            chatServer.sendMsgToServer(it, content, chatType, msgType, extraData, refUid)
         }
     }
 
@@ -162,8 +178,10 @@ class ChatHomeViewModel() : BaseViewModel() {
 
     /**
      * 发送文本，@，普通表情消息
+     * @用户：[**]
+     *分享：[***]
      * */
-    fun createLocalMsg(editable: Editable,chatType: ChatType): ChatMsgPageBean? {
+    fun createLocalMsg(editable: Editable, chatType: ChatType): ChatMsgPageBean? {
         if (loginFlow.value == null) {
             "chat is not login ".logd(TAG)
             return null
@@ -179,13 +197,32 @@ class ChatHomeViewModel() : BaseViewModel() {
                 val end = spannable.getSpanEnd(it)
                 atIntRanges.add(IntRange(start, end))
             }
-
-            val localMsg = chatServer.addLocalMsg(editable.toString(),chatType,MsgType.getMsgType(spans.first().msgType.value),null) ?: return null
-            msgBean = ChatMsgPageBean.toChatPageBean(localMsg,  atIntRanges)
+            val users = ChatMsgUtils.createUserInfo(spans)
+            val refUids = users?.map { it.key }?.toList()
+            val localMsg = chatServer.addLocalMsg(
+                ChatMsgUtils.createContent(spannable, spans),
+                chatType,
+                MsgType.getMsgType(spans.first().msgType.value),
+                ChatMsgUtils.createExtraData(currentSelectBetShare, spans),
+                refUids,
+                users
+            ) ?: return null
+            msgBean = ChatMsgPageBean.toChatPageBean(localMsg)
+            "localMsg msgBean:${Gson().toJson(localMsg)}".logd(TAG)
         } else {
-            val localMsg = chatServer.addLocalMsg(editable.toString(),chatType,MsgType.MSG_TYPE_TEXT, null) ?: return null
+            val localMsg =
+                chatServer.addLocalMsg(
+                    editable.toString(),
+                    chatType,
+                    MsgType.MSG_TYPE_TEXT,
+                    null,
+                    null,
+                    null
+                )
+                    ?: return null
             msgBean = ChatMsgPageBean.toChatPageBean(localMsg)
         }
+//        "createLocalMsg msgBean:${Gson().toJson(msgBean)}".logd(TAG)
         return msgBean
     }
 
@@ -193,12 +230,14 @@ class ChatHomeViewModel() : BaseViewModel() {
      * 发送赛事表情
      * */
 
-    fun createBidLocalMsg(emojiKey: String,chatType: ChatType): ChatMsgPageBean? {
+    fun createBidLocalMsg(emojiKey: String, chatType: ChatType): ChatMsgPageBean? {
         if (loginFlow.value == null) {
             "chat is not login ".logd(TAG)
             return null
         }
-        val chatMsg = chatServer.addLocalMsg(emojiKey,chatType,MsgType.MSG_TYPE_TEXT,null) ?: return null
+        val chatMsg =
+            chatServer.addLocalMsg(emojiKey, chatType, MsgType.MSG_TYPE_TEXT, null, null,null)
+                ?: return null
         return ChatMsgPageBean.toChatPageBean(chatMsg)
     }
 
@@ -242,7 +281,7 @@ class ChatHomeViewModel() : BaseViewModel() {
     }
 
     fun sendTextToChat() {
-        val value =  _sendTextLiveData.value?.let { !it } ?: false
+        val value = _sendTextLiveData.value?.let { !it } ?: false
         _sendTextLiveData.value = value
     }
 
@@ -250,11 +289,11 @@ class ChatHomeViewModel() : BaseViewModel() {
         _currentKeyBoardType.value = keyBoardType
     }
 
-    fun updateLanguageSelect(position:Int){
+    fun updateLanguageSelect(position: Int) {
         languageSelectPosition = position
     }
 
-    fun addAtMsgToChat(msg:ChatMsgPageBean){
+    fun addAtMsgToChat(msg: ChatMsgPageBean) {
         _atLiveData.value = msg
     }
 

@@ -7,6 +7,7 @@ data class BetInsertBean(
     val sportId: Int,
     val matchId: Long,
     val marketId: Long,
+    val matchStatus:Int,//比赛状态
     val marketName: String, // 盘口名称 ex. 讓分盤
     val score: String, // 比分 ex. 1:0
     val selectionId: Long, // 盘口ID
@@ -24,6 +25,7 @@ data class BetInsertBean(
             betId = betId,
             sportId = sportId,
             matchId = matchId,
+            matchStatus = matchStatus,
             marketId = marketId,
             marketName = marketName,
             score = score,
