@@ -1,7 +1,5 @@
 package com.walisport.module.hall.data
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
@@ -24,13 +22,12 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
 class HallRepository(
-    override val scope: CoroutineScope ,
-    private val database: GameDatabase ,
-    private val httpClient: HttpClient ,
-    private val mockHttpClient: HttpClient ,
-    private val socketManager: WebSocketManager ,
-    private val preloadResultChange: MutableStateFlow<PreloadEnum> ,
-    private val manager: UserDataManager ,
+    override val scope: CoroutineScope,
+    private val database: GameDatabase,
+    private val httpClient: HttpClient,
+    private val socketManager: WebSocketManager,
+    private val preloadResultChange: MutableStateFlow<PreloadEnum>,
+    private val manager: UserDataManager,
 ) : BaseRepository() {
 
     private val _gameCategoryListLiveData = UnPeekLiveData<List<GameCategoryVo>>()
@@ -43,10 +40,10 @@ class HallRepository(
         suppliers: List<Int>,
         category: Int
     ): ApiResponseState {
-        val api = mockHttpClient.create(IHallApi::class.java)
+        val api = httpClient.create(IHallApi::class.java)
         return suspendCancellableCoroutine<ApiResponseState> { cancellableContinuation ->
             scope.launch(Dispatchers.IO) {
-                mockHttpClient.safeRequest(
+                httpClient.safeRequest(
                     request = {
                         api.queryGameList(
                             page = page ,
@@ -90,9 +87,9 @@ class HallRepository(
 
     //获取通用配置数据
     fun queryGameCommonList() {
-        val api = mockHttpClient.create(IHallApi::class.java)
+        val api = httpClient.create(IHallApi::class.java)
         scope.launch(Dispatchers.IO) {
-            mockHttpClient.safeRequest(
+            httpClient.safeRequest(
                 request = {
                     api.queryGameCommon()
                 } ,
@@ -119,10 +116,10 @@ class HallRepository(
     ): ApiResponseState {
         var sort = if (category==0) 0 else 4
         //LogUtils.e("response------all--category${category}")
-        val api = mockHttpClient.create(IHallApi::class.java)
+        val api = httpClient.create(IHallApi::class.java)
         return suspendCancellableCoroutine<ApiResponseState> { cancellableContinuation ->
             scope.launch(Dispatchers.IO) {
-                mockHttpClient.safeRequest(
+                httpClient.safeRequest(
                     request = {
                         api.queryGameList(
                             page = page ,

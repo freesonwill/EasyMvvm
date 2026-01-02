@@ -60,6 +60,22 @@ val SPORT_SERVER_WSS
         }
     }
 
+val SPORT_SERVER_HTTP
+    get() = run {
+        when (BuildConfig.BUILD_TYPE) {
+            "qatest" -> {
+                "https://sport-test.ra781.com/api/sport/"
+            }
+
+            "release" -> {
+                "https://sport-pre.ra781.com/api/sport/"
+            }
+
+            else -> {
+                "https://sport-dev.ra781.com/api/sport/"
+            }
+        }
+    }
 
 val CHAT_SERVER
     get() = run {

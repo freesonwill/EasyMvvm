@@ -5,8 +5,6 @@ import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.constants.PreloadEnum
 import arch.cayenne.lib.common.data.manager.UserDataManager
-import arch.cayenne.lib.common.utils.ext.ccyToSymbol
-import arch.cayenne.lib.common.utils.ext.symbolUrl
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.CurrencyBean
 import arch.cayenne.lib.http.HttpClient
@@ -28,22 +26,21 @@ import kotlin.coroutines.resume
  * 游戏详情的Repository
  */
 class GameDetailRepository(
-    override val scope: CoroutineScope ,
-    private val database: GameDatabase ,
-    private val httpClient: HttpClient ,
-    private val mockHttpClient: HttpClient ,
-    private val socketManager: WebSocketManager ,
-    private val preloadResultChange: MutableStateFlow<PreloadEnum> ,
-    private val manager: UserDataManager ,
+    override val scope: CoroutineScope,
+    private val database: GameDatabase,
+    private val httpClient: HttpClient,
+    private val socketManager: WebSocketManager,
+    private val preloadResultChange: MutableStateFlow<PreloadEnum>,
+    private val manager: UserDataManager,
 ) : BaseRepository() {
 
     private val currencyConfigDao = database.currencyConfigDao()
 
     suspend fun getGameDetail(id: Long): ApiResponseState {
-        val api = mockHttpClient.create(IGameDetailApi::class.java)
+        val api = httpClient.create(IGameDetailApi::class.java)
         return suspendCancellableCoroutine<ApiResponseState> { cancellableContinuation ->
             scope.launch(Dispatchers.IO) {
-                mockHttpClient.safeRequest(
+                httpClient.safeRequest(
                     request = {
                         api.getGameDetail(id)
                     } ,
@@ -110,10 +107,10 @@ class GameDetailRepository(
     }
 
     suspend fun updateGameCollect(gameId: Long , collect: Boolean): ApiResponseState {
-        val api = mockHttpClient.create(IGameFavouriteApi::class.java)
+        val api = httpClient.create(IGameFavouriteApi::class.java)
         return suspendCancellableCoroutine<ApiResponseState> { cancellableContinuation ->
             scope.launch(Dispatchers.IO) {
-                mockHttpClient.safeRequest(
+                httpClient.safeRequest(
                     request = {
                         api.updateGameCollect(
                             body = ProfileCollectEditVo(
