@@ -30,9 +30,7 @@ class GameContentSimpleAdapter(private val onItemClick: (GameContentData) -> Uni
         parent: ViewGroup,
         viewType: Int
     ): ItemGameContentSimpleBinding {
-        val binding = ItemGameContentSimpleBinding.inflate(inflater, parent, false)
-//        binding.ivGameCover.setCornerRadius(8f)
-        return binding
+        return ItemGameContentSimpleBinding.inflate(inflater, parent, false)
     }
 
     override fun createViewHolder(
@@ -58,8 +56,6 @@ class GameContentSimpleViewHolder(
                 .placeholder(placeholderDrawable)
                 .transition(DrawableTransitionOptions.withCrossFade()) // 淡入动画
                 .into(item.ivGameCover)
-
-            item.ivGameCover.setCornerRadius(8f)
         }
 
         // TODO 暫時串接遊戲詳情
