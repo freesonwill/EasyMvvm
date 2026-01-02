@@ -64,15 +64,16 @@ val SPORT_SERVER_HTTP
     get() = run {
         when (BuildConfig.BUILD_TYPE) {
             "qatest" -> {
-                "https://sport-test.ra781.com/api/sport/"
+                "https://sport-test.ra781.com"
             }
 
             "release" -> {
-                "https://sport-pre.ra781.com/api/sport/"
+                "https://sport-dev.ra781.com"
             }
 
             else -> {
-                "https://sport-dev.ra781.com/api/sport/"
+                "https://sport-pre.ra781.com"
+                //"http://192.168.10.38:5173"
             }
         }
     }
