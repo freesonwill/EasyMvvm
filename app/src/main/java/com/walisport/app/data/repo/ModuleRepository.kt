@@ -46,8 +46,8 @@ import kotlin.random.Random
 class ModuleRepository(
     override val scope: CoroutineScope,
     private val database: GameDatabase,
-    private val httpClient: HttpClient,
-    private val mockHttpClient: HttpClient,
+    private val sportHttpClient: HttpClient,
+    private val tioHttpClient: HttpClient, //3n1 http client. tio = three in one
     private val socketManager: WebSocketManager,
     private val preloadResultChange: MutableStateFlow<PreloadEnum>,
     private val manager: UserDataManager,
@@ -97,9 +97,9 @@ class ModuleRepository(
     }
 
     fun getProfileInfo() {
-        val api = mockHttpClient.create(IAccount::class.java)
+        val api = tioHttpClient.create(IAccount::class.java)
         scope.launch(Dispatchers.IO) {
-            mockHttpClient.safeRequest(
+            tioHttpClient.safeRequest(
                 request = {
                     api.profileInfo()
                 },
@@ -151,9 +151,9 @@ class ModuleRepository(
     }
 
     fun getCurrencyConfig() {
-        val api = mockHttpClient.create(IConfig::class.java)
+        val api = tioHttpClient.create(IConfig::class.java)
         scope.launch(Dispatchers.IO) {
-            mockHttpClient.safeRequest(
+            tioHttpClient.safeRequest(
                 request = {
                     api.currency()
                 },
@@ -189,12 +189,12 @@ class ModuleRepository(
 
 
     fun preLoadHome() {
-        val api = httpClient.create(IPreLoadHomeApi::class.java)
+        val api = sportHttpClient.create(IPreLoadHomeApi::class.java)
         val uid = manager.getValue(UserDataKey.KEY_UID, -1)
         val token = manager.getValue(UserDataKey.KEY_TOKEN, "")
         val lang = manager.getValue(UserDataKey.KEY_LANGUAGE, LanguageType.LANGUAGE_SIMPLE.value)
         scope.launch(Dispatchers.IO) {
-            httpClient.safeRequest(
+            sportHttpClient.safeRequest(
                 request = {
                     api.preLoad(
                         token = token,
