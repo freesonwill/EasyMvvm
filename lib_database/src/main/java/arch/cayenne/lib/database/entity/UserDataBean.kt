@@ -8,19 +8,20 @@ import androidx.room.PrimaryKey
 @Entity
 data class UserDataBean(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val nickname: String,
+    val Uid: Long,
+    var nickname: String,
     @Embedded(prefix = "avatar_")
     val avatar: AvatarEmbedded,
     val registerTime: Long,
     val vipLevel: Int,
-    val score: Long,
-    val ccy: String,
+    val score: Long,//用户积分
+    val ccy: String,//用户默认货币
     @ColumnInfo(name = "wallet_list")
     val list: List<WalletBean>,
-    val admittedBetScore: Long,
-    val requiredAdmittedBetScore: Long,
-    val vipStage: Int,
-    val nicknameChangeCount: Int
+    val admittedBetScore: Long,//当前投注分数
+    val requiredAdmittedBetScore: Long,//准入投注分数
+    val vipStage: Int,//vip阶段
+    val nicknameChangeCount: Int //呢称修改次数
 )
 
 data class AvatarEmbedded(

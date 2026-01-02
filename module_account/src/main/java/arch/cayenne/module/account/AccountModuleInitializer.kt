@@ -8,6 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 /**
  * @author: ricky.chang
@@ -29,7 +30,8 @@ class AccountModuleInitializer: DefaultInitializer<Unit> {
         factory {
             CoroutineScope(Dispatchers.IO)
         }
-        factory { PersonalInfoRepository(get(), get(), get()) }
+        factory { PersonalInfoRepository(get(), get(), get(),get(),
+            get(named("3n1_http")) ,) }
     }
     private val moduleList: List<Module> = listOf(viewModules, repoModules)
 }

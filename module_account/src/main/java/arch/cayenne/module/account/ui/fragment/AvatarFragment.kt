@@ -21,6 +21,8 @@ import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.module.account.databinding.TitleBarPreviewAvatarBinding
 import android.content.pm.PackageManager
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -31,18 +33,27 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import arch.cayenne.lib.common.utils.FileUtils
+import arch.cayenne.lib.common.utils.ThumbHashUtils
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.module.account.ui.viewmodel.PersonalInfoViewModel
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.davemorrissey.labs.subscaleview.ImageSource
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP
 
 class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
 
     override val vbClass: KClass<FragmentAvatarBinding> = FragmentAvatarBinding::class
     override val vmClass: KClass<AvatarViewModel> = AvatarViewModel::class
+    private val personalViewModel: PersonalInfoViewModel by sharedViewModel<PersonalInfoViewModel, PersonalInfoFragment>()
     private var currentPhotoPath: String? = null
     private lateinit var takePictureLauncher: ActivityResultLauncher<Intent>
     private lateinit var galleryLauncher: ActivityResultLauncher<String>
@@ -76,6 +87,7 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
         var params: ViewGroup.LayoutParams = mBinding.ivUserAvatar.layoutParams
         params.height = params.width
         mBinding.ivUserAvatar.layoutParams = params
+        showPersonalAvatar()
     }
 
     override fun initListener() {
@@ -84,6 +96,9 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
             navigate(AvatarFragmentDirections.actionAvatarFragmentToSystemAvatarFragment())
         }
 
+        titleBarBinding.ivMore.clickNoRepeat {
+            showAvatarDialog()
+        }
         //相册
         mBinding.photo.clickNoRepeat {
             permissions(PERMISSIONS_REQUEST_STORAGE, storage)
@@ -94,7 +109,19 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
             permissions(PERMISSIONS_REQUEST_CAMERA, camera)
         }
     }
+    private fun showAvatarDialog() {
+        AvatarDialogFragment().apply {
+            setOnItemClickListener(object : AvatarDialogFragment.OnClickListener {
+                override fun onClickConfirm() {
 
+                }
+
+                override fun onClickAvtarDelete() {
+
+                }
+            })
+        }.show(childFragmentManager)
+    }
     fun showAvatar(){
       val  bitmap = FileUtils.loadLocalBitmap(requireContext())
             mBinding.ivUserAvatar.maxScale = 1f
@@ -216,6 +243,36 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
             storageDir
         ).apply {
             currentPhotoPath = absolutePath
+        }
+    }
+
+
+    fun showPersonalAvatar(){
+
+        personalViewModel.onUserInfoListener.value.apply {
+            this?.avatar.let { avatar ->
+                val thumbBitmap =
+                    ThumbHashUtils.getBitmapFromThumbHash(avatar?.thumbhash)  //返回 Bitmap?
+                thumbBitmap?.let { bitmap ->
+                    val placeholderDrawable = BitmapDrawable(resources, bitmap)
+                    Glide.with(this@AvatarFragment)
+                        .downloadOnly()  // 只下载，不解码成 Bitmap
+                        .load(avatar?.url?.trim())
+                        .placeholder(placeholderDrawable)
+                        .into(object : CustomTarget<File>() {
+                            override fun onResourceReady(resource: File, transition: Transition<in File>?) {
+                                mBinding.ivUserAvatar.setImage(ImageSource.uri(Uri.fromFile(resource)))
+                            }
+
+                            override fun onLoadCleared(placeholder: Drawable?) {
+                                // 清理时调用
+                            }
+
+                            override fun onLoadFailed(errorDrawable: Drawable?) {
+                            }
+                        })
+                }
+            }
         }
     }
 
