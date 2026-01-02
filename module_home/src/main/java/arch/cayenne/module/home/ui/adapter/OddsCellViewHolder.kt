@@ -6,6 +6,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.animation.addListener
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.common.data.constants.OddsDisplayEnum
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
@@ -26,7 +27,8 @@ class OddsCellViewHolder(
     fun bind(item: SelectionBeanLite) {
         with(mBinding) {
             tvShortName.text = item.shortName
-            val oddChange = getKoin().get<UserDataManager>(UserDataManager::class).getValue(UserDataKey.KEY_ODDS,0)
+            val oddChange = getKoin().get<UserDataManager>(UserDataManager::class).getValue(UserDataKey.KEY_ODDS,
+                OddsDisplayEnum.EU.value)
             tvOdds.text = item.oddsDisplay(oddChange).getOdds()
             val isActive = item.active
             updateState(isActive, item.isSelected)
