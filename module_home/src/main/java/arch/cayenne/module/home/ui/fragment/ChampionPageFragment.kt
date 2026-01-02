@@ -28,18 +28,23 @@ import arch.cayenne.module.home.databinding.TitleBarChampionBinding
 import arch.cayenne.module.home.ui.adapter.ChampionItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnChampionItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
-import arch.cayenne.module.home.ui.viewmodel.ChampionViewModel
-import com.bumptech.glide.Glide
+import arch.cayenne.module.home.ui.viewmodel.ChampionPageViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.lang.ref.WeakReference
 import kotlin.reflect.KClass
 
-class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding>() {
+
+/**
+ * 冠军页面的 Fragment 类，用于显示和管理冠军相关的 UI 和逻辑。
+ *
+ * @constructor 继承自 BaseFragment，泛型参数为 ChampionViewModel 和 FragmentChampionBinding。
+ */
+class ChampionPageFragment : BaseFragment<ChampionPageViewModel, FragmentChampionBinding>() {
 
     override val vbClass: KClass<FragmentChampionBinding> = FragmentChampionBinding::class
-    override val vmClass: KClass<ChampionViewModel> = ChampionViewModel::class
-    private val args: ChampionFragmentArgs by navArgs()
+    override val vmClass: KClass<ChampionPageViewModel> = ChampionPageViewModel::class
+    private val args: ChampionPageFragmentArgs by navArgs()
     private lateinit var championAdapter: ChampionItemAdapter
     private val fabViewModel: FloatingButtonControlViewModel by activityViewModel()
 

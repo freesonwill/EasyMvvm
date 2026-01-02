@@ -13,8 +13,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -44,9 +42,9 @@ import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.TournamentCombo
 import arch.cayenne.module.home.data.constants.HomeState
-import arch.cayenne.module.home.data.constants.MatchListSortType
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.TournamentListType
+import arch.cayenne.module.home.data.constants.MatchListSortType
 import arch.cayenne.module.home.databinding.FragmentSubHomeBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
 import arch.cayenne.module.home.databinding.LayoutTournamentSortingMenuBinding
@@ -62,9 +60,9 @@ import java.util.Locale
 import kotlin.reflect.KClass
 
 /**
- * 今日Fragment
+ * 冠军tab的Fragment, 用在体育首页的子页面中
  */
-class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>(),
+class ChampionSubFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>(),
     ISubFragmentLifecycle {
     override val vbClass: KClass<FragmentSubHomeBinding> = FragmentSubHomeBinding::class
     override val vmClass: KClass<SubHomeViewModel> = SubHomeViewModel::class
@@ -114,8 +112,7 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
     override fun initView(savedInstanceState: Bundle?) {
         initSportLayout()
         initSportBanner()
-        initTournamentLayout()
-
+        initChampionTournamentLayout()
         // 初始化聯賽按鈕狀態
         updateTournamentButtonStyle(mViewModel.hasTournamentSelections())
     }
@@ -154,7 +151,7 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
         }
 
         with(mViewModel) {
-            sportsStatistical.observeEvent(viewLifecycleOwner, this@SubHomeFragment) {
+            sportsStatistical.observeEvent(viewLifecycleOwner, this@ChampionSubFragment) {
                 tempSportData = it
                 if (mViewModel.isAllowTabLoad) {
                     drawSportList()
@@ -415,54 +412,6 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
                     mViewModel.tempSportData = null
                 }
             }
-        }
-    }
-
-    //init 三級導航欄位與日期，只有今日和早盤有
-    @SuppressLint("DefaultLocale")
-    private fun initTournamentLayout() {
-        // 取得未來 31 天 (MMDD, 星期, timeStamp)
-        val dateTabs = getFutureSevenDays()
-        with(mBinding.layoutContainer) {
-            //聯賽
-            vpGameList.isSaveEnabled = false
-            vpGameList.adapter = null
-            vpGameList.isUserInputEnabled = false
-            vpGameList.offscreenPageLimit = 12
-
-            //如果直接點擊聯賽到ViewPager還沒生成的MatchListPageFragment聯賽的話，這個MatchListPageFragment會生成並且attach上去，所以在這裡需要做attach完成後的startObserveMatch
-            childFragmentManager.registerFragmentLifecycleCallbacks(object :
-                FragmentManager.FragmentLifecycleCallbacks() {
-                override fun onFragmentViewCreated(
-                    fm: FragmentManager,
-                    f: Fragment,
-                    v: View,
-                    savedInstanceState: Bundle?
-                ) {
-                    super.onFragmentViewCreated(fm, f, v, savedInstanceState)
-                    val currentItemId =
-                        leaguePagerAdapter?.getItemId(vpGameList.currentItem) ?: return
-                    if (f.tag == "f$currentItemId") {
-                        startObservePageMatchListChange(vpGameList.currentItem)
-                    }
-
-                    val firstFragmentItemId = leaguePagerAdapter?.getItemId(0) ?: return
-                    if (f.tag == "f$firstFragmentItemId") {
-                        startObservePageMatchListChange(0)
-                    }
-                }
-
-            }, false)
-
-        }
-
-        mBinding.layoutContainer.llBtnTournament.apply { addScaleOnTouchAnimation() }
-            .clickNoRepeat {
-                // toggleTournamentMoreSection(true, TournamentListType.MORE)
-                showTournamentListBottomSheet()
-            }
-        mBinding.layoutContainer.llTournamentSort.clickNoRepeat {
-            toggleTournamentSorting(!isExpanded)
         }
     }
 
@@ -797,7 +746,7 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
                 // 設置「全部」tab 的寬度
                 root.layoutParams = LinearLayout.LayoutParams(51.dp2px, 32.dp2px)
             } else {
-                Glide.with(this@SubHomeFragment)
+                Glide.with(this@ChampionSubFragment)
                     .load(tournament.icon.ifEmpty { R.drawable.ic_default_tournament })
                     .placeholder(R.drawable.ic_default_tournament)
                     .error(R.drawable.ic_default_tournament)
@@ -866,7 +815,33 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
         }
     }
 
+    /**
+     * 設置冠軍頁面專屬元件的可見性
+     * @param isChampionMode true: 冠軍模式（隱藏今日/早盤元件），false: 今日/早盤模式（顯示元件）
+     */
+    private fun setChampionModeVisibility(isChampionMode: Boolean) {
+        val visibility = if (isChampionMode) View.GONE else View.VISIBLE
+        with(mBinding) {
+            llBanner.visibility = visibility
+            layoutContainer.root.visibility = visibility
+            layoutContainer.llBtnTournament.visibility = visibility
+            layoutContainer.llTournamentSort.visibility = visibility
+            layoutContainer.vLeagueMoreMask.visibility = visibility
+        }
+    }
 
+    private fun initChampionTournamentLayout() {
+        setChampionModeVisibility(true)
+
+        val tournamentListFragment = TournamentListFragment.newInstance(
+            playTypeId = PlayType.CHAMPION.id,
+            sportId = mViewModel.currentSportId,
+            type = TournamentListType.CHAMPION
+        )
+        childFragmentManager.beginTransaction()
+            .replace(R.id.fl_champion_container, tournamentListFragment, PlayType.CHAMPION.name)
+            .commit()
+    }
 
     override fun onBackPressed(): Boolean {
         // 如果排序選單展開，先收起排序選單
@@ -885,8 +860,8 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
     companion object {
         const val LOW_MEMORY_THRESHOLD = 2_000_000_000L
         private const val ARG_PLAY_TYPE_ID = "play_type_id"
-        fun newInstance(playTypeId: Int): SubHomeFragment {
-            return SubHomeFragment().apply {
+        fun newInstance(playTypeId: Int): ChampionSubFragment {
+            return ChampionSubFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_PLAY_TYPE_ID, playTypeId)
                 }
