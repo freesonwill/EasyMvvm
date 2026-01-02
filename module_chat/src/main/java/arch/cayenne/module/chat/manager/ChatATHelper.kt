@@ -171,13 +171,13 @@ class ChatATHelper(
     fun addAtMentionSpan(name: String, user: ChatRefUser) {
         chatEtInput.apply {
             text?.let {
-                if (atPopupWindow.isSearchIng && startInputPosition >= 0 && selectionStart > startInputPosition) {
-                    it.replace(startInputPosition, selectionStart, "")
-                }
+//                if (atPopupWindow.isSearchIng && startInputPosition >= 0 && selectionStart > startInputPosition) {
+//                    it.replace(startInputPosition, selectionStart, "")
+//                }
+                "addAtMentionSpan selectionStart $selectionStart length ${length()}".logd(TAG)
                 var nStart: Int = -1
                 var atStrLength = -1
                 val atStr = "@${name} "
-
                 nStart = selectionStart
                 atStrLength = atStr.length
                 it.insert(selectionStart, atStr)
@@ -283,7 +283,7 @@ class ChatATHelper(
                     if (spans.size == 1) {//在一个at消息中多选删除时，先全选，如果是全选就直接删除
                         val spanStart = spannable.getSpanStart(spans[0])
                         val spanEnd = spannable.getSpanEnd(spans[0])
-                        if (spanStart != cursorPositionStart || spanEnd != cursorPositionEnd) {
+                        if (spanStart <= cursorPositionStart  && cursorPositionEnd <= spanEnd ) {
                             editText.setSelection(spanStart, spanEnd)
                             return@setOnKeyListener true
                         }
