@@ -6,6 +6,8 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.walisport.module.search.data.constants.SearchResultTypeEnum
 import com.walisport.module.search.data.constants.SearchResultUiState
+import com.walisport.module.search.data.constants.SearchResultUiState.GameCategoryMatch
+import com.walisport.module.search.data.constants.SearchResultUiState.VendorDirectMatch
 import com.walisport.module.search.data.model.SearchResultBean
 import com.walisport.module.search.data.repo.SearchRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -30,6 +32,19 @@ class SearchResultBaseViewModel: BaseViewModel() {
     /** 取得搜尋結果 */
     fun getSearchResult(keyword: String) {
         viewModelScope.launch {
+            // 1. 先判斷是否為「遊戲供應商精準關鍵字」
+            repository.findSupplierByKeyword(keyword)?.let { supplier ->
+                setUiState(VendorDirectMatch(keyword, supplier))
+                return@launch
+            }
+
+            // 2. 判斷是否為「遊戲分類關鍵字」（例如：電子、老虎機）
+            repository.matchGameCategoryByKeyword(keyword)?.let { gameTypeId ->
+                setUiState(GameCategoryMatch(keyword, gameTypeId))
+                return@launch
+            }
+
+            // 3. 否則走原本的體育搜尋流程
             callApi(
                 { repository.getSearchResult(keyword) },
                 { state ->

@@ -120,8 +120,6 @@ class ChatChooseBetFragment : BaseFragment<ChatChooseViewModel, FragmentChooseBe
                 if (it.type == ChatMsgType.BET_GAME) "bet-test202512223-wg0s53" else it.betCode
             val userId = if(it.type == ChatMsgType.BET_GAME) 6660030 else mViewModel.getUid()
             mViewModel.getBetShare(userId, betCode)
-
-            "choose_bet betCode $betType betCode $betCode".logd("aaa")
         }
         mViewModel.betShareLiveData.observe(viewLifecycleOwner) {
             val bundle = Bundle().apply {

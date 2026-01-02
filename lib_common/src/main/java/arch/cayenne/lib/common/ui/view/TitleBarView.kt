@@ -162,4 +162,17 @@ class TitleBarView @JvmOverloads constructor(
         parent?.removeView(view)
         binding.clDynamics.addView(view)
     }
+
+    /**
+     * 动态标题
+     * @param view 传入布局view
+     * @param onBack 返回 不传入Unit 默认不显示ivBack
+     */
+    fun loadDynamicsTitleBars(view: ViewGroup ) {
+        val binding = TitleBarDynamicsBinding.inflate(LayoutInflater.from(context), this, true)
+            binding.ivBack.visibility = GONE
+        val parent = view.parent as ViewGroup?
+        parent?.removeView(view)
+        binding.clDynamics.addView(view)
+    }
 }

@@ -40,7 +40,6 @@ class ChatPageAdapter(
         val nBinding = binding
         fun initListener() {
 
-
             nBinding.tv.apply {
                 movementMethod = object : LinkMovementMethod() {
                     override fun onTouchEvent(
@@ -93,6 +92,7 @@ class ChatPageAdapter(
             } else {
                 ChatMsgUtils.addNoDivideCharInBetShar(bean.content)
             }
+
             val builder = SpannableStringBuilder()
             builder.append("$first  \u2060")
             builder.setSpan(
@@ -102,30 +102,7 @@ class ChatPageAdapter(
                     )
                 ), 0, first.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
-            val msgSpannable = SpannableStringBuilder(second)
-//            msgSpannable.setSpan(
-//                ColorSpan(
-//                    SkinnableResourceManager.getColor(
-//                        binding.root.context, arch.cayenne.lib.common.R.color.color_FFFFFF
-//                    )
-//                ), 0, msgSpannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-//            )
-            if (bean.msgType in arrayOf(
-                    ChatMsgType.AT,
-                    ChatMsgType.BET_GAME,
-                    ChatMsgType.BET_SPORT
-                )
-            ) {
-                bean.atRange?.forEach {
-                    msgSpannable.setSpan(
-                        ClickSpan(bean.msgType, second.substring(it.first, it.last)),
-                        it.first,
-                        it.last,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                }
-            }
-            builder.append(msgSpannable)
+            builder.append(second)
 
             nBinding.tv.text = builder
             nBinding.tv.tag = position

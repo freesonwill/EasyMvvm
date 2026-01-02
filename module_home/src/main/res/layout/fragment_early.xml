@@ -67,7 +67,7 @@
                     android:layout_width="@dimen/dp_75"
                     android:layout_height="@dimen/dp_4"
                     android:layout_marginStart="@dimen/dp_12"
-                    android:layout_marginBottom="@dimen/dp_4"
+                    android:layout_marginBottom="@dimen/dp_3"
                     app:layout_constraintBottom_toTopOf="@+id/tv_level_up_info"
                     app:layout_constraintStart_toStartOf="parent" />
 
