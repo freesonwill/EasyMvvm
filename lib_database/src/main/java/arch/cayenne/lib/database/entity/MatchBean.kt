@@ -182,7 +182,7 @@ data class SelectionBeanLite(
     val parlay: Boolean,
     var isSelected: Boolean = false,
     var trend: Int = 0,
-    val oddsDisplayType: Int //查询此条数据时，系统设置的赔率显示方式， 注意和odds不关联， odds始终为欧洲盘赔率
+    var oddsDisplayType: Int //查询此条数据时，系统设置的赔率显示方式， 注意和odds不关联， odds始终为欧洲盘赔率
 ) {
     fun oddsDisplay(oddsType: Int): Int {
         /**
