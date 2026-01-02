@@ -133,7 +133,7 @@ class ChatPageAdapter(
         )
         if (item.flashFlag) {
             item.flashFlag = false
-            SoftKeyBoardAnim.atFlashNotifyAnim(holder.nBinding.tv)
+            SoftKeyBoardAnim.atFlashNotifyAnim(holder.nBinding.tv,item.msgType)
         }
 
     }

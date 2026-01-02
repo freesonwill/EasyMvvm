@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.data.constants.KeyBoardType
@@ -381,13 +382,17 @@ object SoftKeyBoardAnim {
     /**
      * 收到at消息时，item的闪烁动画
      * */
-    fun atFlashNotifyAnim(targetView: View): ObjectAnimator {
+    fun atFlashNotifyAnim(targetView: View,msgType:ChatMsgType): ObjectAnimator {
         val pathinterpolator = PathInterpolator(0.22f, 1f, 0.36f, 1f)
         val flashColor = ContextCompat.getColorStateList(
             targetView.context,
             arch.cayenne.lib.common.R.color.color_FFFFFF
         )
-        val originColor = ContextCompat.getColorStateList(
+        val originColor =if(msgType in arrayOf(ChatMsgType.BET_SPORT,ChatMsgType.BET_GAME))
+            ContextCompat.getColorStateList(
+                targetView.context,
+                arch.cayenne.lib.common.R.color.color_632433
+            )else  ContextCompat.getColorStateList(
             targetView.context,
             arch.cayenne.lib.common.R.color.color_0FFFFFFF
         )

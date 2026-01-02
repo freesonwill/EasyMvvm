@@ -218,20 +218,18 @@ class ChatATHelper(
             if (position in spanStart..<spanEnd) {
                 spannable.removeSpan(mention)
                 val checkLastIndex = position + count
-                if (checkLastIndex >= spanEnd) {
+                if (checkLastIndex > spanEnd) {
                     return
                 }
-
-                //检查是否在空字符串前面加的字符 如果是重新设置需要添加背景色
-                if (spannable[checkLastIndex] == ' ') {
-                    val mentionSpan = MentionSpan(mention.msgType, "", null, atClick)
+                if (checkLastIndex == spanEnd || spannable[checkLastIndex] == ' ') {//checkLastIndex == spanEnd  多选时只包含了空格或者 检查是否在空字符串前面加的字符 如果是重新设置需要添加背景色
+                    val mentionSpan =
+                        MentionSpan(mention.msgType, mention.tv, mention.user, atClick)
                     spannable.setSpan(
                         mentionSpan,
                         spanStart,
                         position,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
-                    spannable = spannable.replace(checkLastIndex,checkLastIndex+1,"")
                 }
 
                 editText.text = spannable
