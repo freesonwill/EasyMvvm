@@ -125,7 +125,7 @@ class ModuleInitializer : DefaultInitializer<String> {
 
 interface IPreLoadHomeApi : IApi {
 
-    @GET("sport_server/game/firstLoad")
+    @GET("api/sport/server/game/firstLoad")
     suspend fun preLoad(
         @Header("Authorization") token: String?,
         @Header("X-User-Id") uid: Int?,
