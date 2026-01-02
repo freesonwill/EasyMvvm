@@ -312,6 +312,10 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
                     offsetY = bottomSheet.y
                 } else if (newState == BottomSheetBehavior.STATE_HIDDEN || newState == BottomSheetBehavior.STATE_EXPANDED || newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     isDragging = false
+                    if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                        //fix: 快速滑动关闭时，dim未隐藏的问题
+                        this@BaseBottomSheetFragment.dismiss()
+                    }
                 }
             }
 
