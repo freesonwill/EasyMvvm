@@ -11,7 +11,7 @@
         android:layout_height="@dimen/dp_32"
         android:layout_marginTop="@dimen/dp_5"
         android:paddingStart="@dimen/dp_10"
-        android:paddingEnd="@dimen/dp_0"
+        android:paddingEnd="@dimen/dp_7"
         app:defaultTabIcon="@drawable/ic_wali_demo"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

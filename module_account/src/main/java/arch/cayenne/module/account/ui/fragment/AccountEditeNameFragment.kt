@@ -33,7 +33,7 @@ class AccountEditeNameFragment :
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root)
+        mBinding.titleBar.loadDynamicsTitleBars(titleBarBinding.root)
         titleBarBinding.ivBack.clickNoRepeat {
             findNavController().navigateUp()
         }

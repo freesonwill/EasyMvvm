@@ -202,7 +202,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
                 "sel.detail_active as detailActive, " +
                 "sel.name as name, " +
                 "sel.shortName as shortName, " +
-                "CASE WHEN :isEuropeOddsDisplay THEN sel.odds ELSE sel.odds - 100 END as odds, " +
+                "CASE WHEN :isEuropeOddsDisplay THEN sel.odds ELSE sel.odds END as odds, " +
                 "sel.active as active, " +
                 "sel.parlay as parlay, " +
                 "0 as isSelected," +
@@ -225,7 +225,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
                 "sel.detail_active as detailActive, " +
                 "sel.name as name, " +
                 "sel.shortName as shortName, " +
-                "CASE WHEN :isEuropeOddsDisplay THEN sel.odds ELSE sel.odds - 100 END as odds, " +
+                "CASE WHEN :isEuropeOddsDisplay THEN sel.odds ELSE sel.odds END as odds, " +
                 "sel.active as active, " +
                 "sel.parlay as parlay, " +
                 "0 as isSelected," +
@@ -246,7 +246,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Transaction
     @Query(
         "SELECT bean.selectionId as selectionId, " +
-                "CASE WHEN :isEuropeOddsDisplay THEN bean.odds ELSE bean.odds - 100 END as odds " +
+                "CASE WHEN :isEuropeOddsDisplay THEN bean.odds ELSE bean.odds END as odds " +
                 "FROM SelectionBean bean " +
                 "WHERE selectionId IN (:selectionIds)"
     )

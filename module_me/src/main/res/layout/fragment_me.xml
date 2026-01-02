@@ -40,7 +40,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:paddingTop="@dimen/dp_54">
+                    android:paddingTop="@dimen/dp_54"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="0dp">
 
                     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
                         android:id="@+id/ct_user_info"
@@ -48,7 +50,7 @@
                         android:layout_height="@dimen/dp_54"
                         android:layout_marginStart="@dimen/dp_12"
                         android:layout_marginTop="@dimen/dp_12"
-                        android:layout_marginEnd="@dimen/dp_12">
+                        android:layout_marginEnd="@dimen/dp_16">
 
                         <arch.cayenne.lib.skin.widget.SkinnableImageView
                             android:id="@+id/iv_avatar"
@@ -76,13 +78,12 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/dp_12"
-                            android:layout_marginTop="@dimen/dp_4"
+                            android:layout_marginTop="@dimen/dp_7"
                             android:textColor="@color/color_999999"
                             android:textSize="@dimen/sp_12"
                             app:layout_constraintStart_toEndOf="@id/iv_avatar"
                             app:layout_constraintTop_toBottomOf="@id/tv_nickname"
                             app:skinnableFontWeight="500" />
-
 
                         <arch.cayenne.lib.skin.widget.SkinnableImageView
                             android:layout_width="@dimen/dp_16"
@@ -91,7 +92,6 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
-
                     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
 
@@ -105,13 +105,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dp_10" />
-
-
                 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
-
-
             </androidx.constraintlayout.widget.ConstraintLayout>
-
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/bottom"
@@ -135,7 +130,7 @@
                     <arch.cayenne.lib.skin.widget.SkinnableTabLayout
                         android:id="@+id/tabLayout"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_18"
+                        android:layout_height="@dimen/dp_21"
                         android:layout_gravity="top"
                         android:background="@color/tran_0"
                         android:focusable="false"
@@ -150,9 +145,9 @@
 
                     <arch.cayenne.lib.common.ui.view.CustomTabIndicator
                         android:id="@+id/customIndicator"
-                        android:layout_width="17dp"
-                        android:layout_height="3dp"
-                        android:layout_marginTop="@dimen/dp_3"
+                        android:layout_width="14dp"
+                        android:layout_height="2dp"
+                        android:layout_marginTop="@dimen/dp_5"
                         android:background="@drawable/tab_indicator_me"
                         app:layout_constraintTop_toBottomOf="@id/skinTab" />
                 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
@@ -161,7 +156,7 @@
                     android:id="@+id/vp_page"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:background="@color/color_272727"
                     app:layout_constraintTop_toBottomOf="@+id/skinTab"
                     tools:ignore="MissingConstraints" />
@@ -184,7 +179,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_30"
+                android:layout_height="@dimen/dp_46"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -232,7 +227,8 @@
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/ct_top_cc"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_50"
+        android:layout_marginTop="@dimen/dp_17"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">

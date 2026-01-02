@@ -1,4 +1,4 @@
-package com.walisport.module.hall.ui.fragment
+package arch.cayenne.lib.common.ui.fragment
 
 import android.app.Dialog
 import android.os.Bundle
@@ -7,9 +7,9 @@ import android.view.View
 import android.view.Window
 import arch.cayenne.lib.base.ui.fragment.BasePositionDialogFragment
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
+import arch.cayenne.lib.common.databinding.FragmentAllGameInfoDialogBinding
 import arch.cayenne.lib.common.ui.dialog.NoGapDialog
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import com.walisport.module.hall.databinding.FragmentAllGameInfoDialogBinding
 import kotlin.reflect.KClass
 
 class AllInfoDialogFragment :
@@ -60,20 +60,13 @@ class AllInfoDialogFragment :
             )
             val locationX = requireArguments().getInt(LOCATION_X)
             val locationY = requireArguments().getInt(LOCATION_Y)
-//            val offsetX =
-//                (((ivBgBottom.layoutParams as? ConstraintLayout.LayoutParams)?.marginStart)
-//                    ?: 0) + ivBgBottom.measuredWidth / 2
             val offsetX = root.measuredWidth / 2
-
-
             val layoutParams = w.attributes
             layoutParams.gravity = Gravity.TOP or Gravity.START
             layoutParams.x = locationX-offsetX
-
             val y = locationY - clRoot.measuredHeight
             ivBgBottom.visibility = View.VISIBLE
             layoutParams.y = y - 3.dp2px
-
             w.attributes = layoutParams
             mBinding.root.visibility = View.VISIBLE
         }

@@ -9,7 +9,6 @@
     <string name="btn_collusion">串关</string>
     <string name="btn_bet">投注</string>
     <string name="et_money_hint">限额%s&#8211;%s</string>
-    <string name="bet_sheet_stop">盘口失效</string>
     <string name="btn_bet_hint">投注</string>
     <string name="btn_bet_win_money">可赢 %s %s</string>
     <string name="btn_confirm">确定</string>
@@ -68,5 +67,7 @@
     <string name="toast_bet_failure">投注失败，请重试</string>
     <string name="hint_empty_amount">请输入投注额</string>
     <string name="hint_bet_inactive">盘口已暂停/关闭</string>
+    <string name="market_close">盘口关闭</string>
+    <string name="market_pause">盘口暂停</string>
 
 </resources>

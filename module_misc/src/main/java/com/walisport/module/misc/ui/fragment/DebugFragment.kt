@@ -1,5 +1,6 @@
 package com.walisport.module.misc.ui.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
@@ -43,10 +44,36 @@ class DebugFragment : BaseFragment<DebugViewModel, FragmentDebugBinding>() {
             ImmersionBar.getStatusBarHeight(requireContext()).let {
                 String.format(
                     Locale.ROOT,
-                    "顶部安全高度：${58 - it.px2dp}  状态栏高度: $it px,\t${it.px2dp} dp, dp2px:${1f.dp2px},px2dp:${1f.px2dp},w-h:${ScreenUtils.getScreenWidth()}-${ScreenUtils.getScreenHeight()}",
+                    "顶部安全高度：${calculateTopSafeInset(it)}  状态栏高度: $it px,\t${it.px2dp} dp, dp2px:${1f.dp2px},px2dp:${1f.px2dp},w-h:${ScreenUtils.getScreenWidth()}-${ScreenUtils.getScreenHeight()}",
                     it
                 )
             }
+    }
+
+    private fun calculateTopSafeInset(it: Int): Int {
+        var space = 58 - it.px2dp
+
+        //特殊机型枚举
+        //如果是小米，且状态栏高度是137px
+        if (Build.MANUFACTURER.equals(
+                "Xiaomi",
+                ignoreCase = true
+            ) && it == 137
+        ) {
+            space = 17
+        }
+
+        // 如果是vivo，且状态栏高度是87px
+        if (Build.MANUFACTURER.equals("vivo", ignoreCase = true) && it == 87) {
+            space = 22
+        }
+
+        //如果是ROG， 且状态栏高度是78px
+        if (Build.MANUFACTURER.equals("asus", ignoreCase = true) && it == 78) {
+            space = 24
+        }
+
+        return space
     }
 
 

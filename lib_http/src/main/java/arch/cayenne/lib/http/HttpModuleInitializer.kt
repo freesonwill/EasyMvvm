@@ -27,7 +27,7 @@ class HttpModuleInitializer : DefaultInitializer<String> {
             single(named("wnlApi")) {  HttpClient.Builder("http://co-api.51wnl.com",5000).build()  }
             single(named("3n1")) {  HttpClient.Builder("https://betwavepro.ja700.com/",5000).build()  }
             single(named("mock")) {
-                HttpClient.Builder("$BASE_URL/" ,5000)
+                HttpClient.Builder("$BASE_URL/" ,5000).enableLog(true)
                     .addInterceptor(HeaderInterceptor(get()))
                     .build()
             }

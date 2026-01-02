@@ -142,6 +142,8 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
             }
         }
 
+        setSortBtnText()
+
     }
 
     override fun initListener() {

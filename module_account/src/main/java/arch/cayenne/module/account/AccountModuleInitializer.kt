@@ -30,7 +30,7 @@ class AccountModuleInitializer: DefaultInitializer<Unit> {
         factory {
             CoroutineScope(Dispatchers.IO)
         }
-        factory { PersonalInfoRepository(get(), get(), get(),get() ,get(named("3n1")) ,
+        factory { PersonalInfoRepository(get(), get(), get(),get(),
             get(named("mock")) ,) }
     }
     private val moduleList: List<Module> = listOf(viewModules, repoModules)

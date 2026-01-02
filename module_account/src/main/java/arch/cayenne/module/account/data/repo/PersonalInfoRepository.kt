@@ -31,13 +31,12 @@ class PersonalInfoRepository(
     private val userDataManager: UserDataManager,
     private val database: GameDatabase,
     private val httpClient: HttpClient ,
-    private val mockHttpClient: HttpClient ,
 ) : BaseRepository() {
      fun getAccountNicknameRecommendations(): UnPeekLiveData<List<String>> {
         val nicknameRecommenListLiveData = UnPeekLiveData<List<String>>()
-        val api = mockHttpClient.create(IAccount::class.java)
+        val api = httpClient.create(IAccount::class.java)
         scope.launch(Dispatchers.IO) {
-            mockHttpClient.safeRequest(
+            httpClient.safeRequest(
                 request = { api.recommendNickname() },
                 onSuccess = { resp ->
                     if (resp.code == 0) {

@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.chat.data.compare.ChatCompare
 import arch.cayenne.lib.common.data.constants.ChatMsgType
@@ -17,6 +18,7 @@ import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 import arch.cayenne.module.chat.data.model.ClickSpan
 import arch.cayenne.module.chat.data.model.ColorSpan
 import arch.cayenne.module.chat.databinding.ItemLiveChatBinding
+import arch.cayenne.module.chat.utils.ChatMsgUtils
 
 class ChatPageAdapter(
     private val specialClick: (bean: ChatMsgPageBean, clickSpan: String, clickType: ChatMsgType) -> Unit,
@@ -37,7 +39,6 @@ class ChatPageAdapter(
     inner class LiveChatViewHolder(binding: ItemLiveChatBinding) : BaseViewHolder(binding) {
         val nBinding = binding
         fun initListener() {
-
 
             nBinding.tv.apply {
                 movementMethod = object : LinkMovementMethod() {
@@ -85,11 +86,15 @@ class ChatPageAdapter(
         }
 
         fun setText(bean: ChatMsgPageBean, position: Int) {
-            val first = "${bean.userName}\u2060:"
-            val second = bean.content
+            val first = "${bean.userName}:"
+            val second = if(bean.msgType in arrayOf(ChatMsgType.AT,ChatMsgType.BET_SPORT,ChatMsgType.BET_GAME)) {
+                bean.content
+            } else {
+                ChatMsgUtils.addNoDivideCharInBetShar(bean.content)
+            }
 
             val builder = SpannableStringBuilder()
-            builder.append("$first\u2060  \u2060")
+            builder.append("$first  \u2060")
             builder.setSpan(
                 ColorSpan(
                     SkinnableResourceManager.getColor(
@@ -97,30 +102,7 @@ class ChatPageAdapter(
                     )
                 ), 0, first.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
-            val msgSpannable = SpannableStringBuilder(second)
-//            msgSpannable.setSpan(
-//                ColorSpan(
-//                    SkinnableResourceManager.getColor(
-//                        binding.root.context, arch.cayenne.lib.common.R.color.color_FFFFFF
-//                    )
-//                ), 0, msgSpannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-//            )
-            if (bean.msgType in arrayOf(
-                    ChatMsgType.AT,
-                    ChatMsgType.BET_GAME,
-                    ChatMsgType.BET_SPORT
-                )
-            ) {
-                bean.atRange?.forEach {
-                    msgSpannable.setSpan(
-                        ClickSpan(bean.msgType, second.substring(it.first, it.last)),
-                        it.first,
-                        it.last,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                }
-            }
-            builder.append(msgSpannable)
+            builder.append(second)
 
             nBinding.tv.text = builder
             nBinding.tv.tag = position

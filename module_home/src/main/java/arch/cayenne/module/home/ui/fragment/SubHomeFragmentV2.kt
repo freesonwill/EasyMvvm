@@ -5,11 +5,14 @@ import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.net.Uri
 import android.os.Bundle
+import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +25,7 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
 import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
+import arch.cayenne.lib.common.ui.view.WLLinearGradientFontSpan
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -61,7 +65,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
     private var isExpanded = false
     private var sortingMenuBinding: LayoutTournamentSortingMenuBinding? = null
 
-    // 當前排序類型，預設為按熱門聯賽排序
+    // 当前排序类型，默认为按时间排序
     private var currentSortType = MatchListSortType.BY_TIME
 
     private val defaultAnimDuration = 300L
@@ -75,11 +79,14 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
     private var sortMenuClicked: Boolean = false
 
 
-    // VIP 等級資源設置於 lib_common，統一使用 VIPResourceHelper 管理
-
+    // VIP等级资源已在 lib_common 设置，统一由 VIPResourceHelper 管理
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         arguments?.apply {
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
+            // 获取并设置初始排序类型
+            currentSortType =
+                MatchListSortType.fromType(this.getInt(ARG_SORT_TYPE))
+                    ?: MatchListSortType.BY_TIME
         }
         super.onViewCreated(view, savedInstanceState)
     }
@@ -185,16 +192,24 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
                 // 设置当前选中的联赛 ID 列表。
                 mViewModel.setCurrentTournamentIdList(selections)
             } else if (selections.size == 1) {
-                // 更新联赛按钮样式为未选中状态。
-                updateTournamentButtonStyle(false)
-
                 // 获取当前选中的联赛 ID 在联赛列表中的索引。
-                // 如果未找到匹配的联赛 ID，则返回默认值 0。
                 val index = mViewModel.tournamentsPlain.value?.peekContent()
                     ?.indexOfFirst { it.id == selections[0] }
 
-                // 根据索引设置联赛按钮的选中状态。
-                mBinding.layoutContainer.customTabGroup.select(index ?: 0)
+                // 根据索引设置联赛按钮的选中状态
+                if (index != null && index in 0..<mBinding.layoutContainer.customTabGroup.tabCount()) {
+                    //该分类在外部 tab 中存在, 外部【联赛】按钮状态不亮起, 外部 tab 自动选中该分类 tab
+                    // 更新联赛按钮样式为未选中状态。
+                    updateTournamentButtonStyle(false)
+                    mBinding.layoutContainer.customTabGroup.select(index)
+                } else {
+                    //该分类不在外部 tab 中, 外部【联赛】按钮状态亮起, 外部 tab 不选中任何联赛
+                    updateTournamentButtonStyle(true)
+                    // 设置当前选中的联赛 ID 列表。
+                    mViewModel.setCurrentTournamentIdList(selections)
+                    // 清除联赛列表的选中状态。
+                    mBinding.layoutContainer.customTabGroup.clearLeagueListSelection()
+                }
             } else {
                 // 如果没有其他选中的联赛，此代码将默认选中第一个联赛按钮。
                 mBinding.layoutContainer.customTabGroup.select(0)
@@ -230,7 +245,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
                 }
                 val cny = CurrencySymbols.getSymbol(it.ccy) +
                         CurrencySymbols.getFormatAmount(it.ccy, reqScore)
-                val info = getString(arch.cayenne.lib.common.R.string.vip_level_require, cny)
+                val info = getString(arch.cayenne.lib.common.R.string.vip_level_need, cny)
                 updateVIPInfo(
                     vipLevel = it.vipLevel,
                     vipStage = it.vipStage,
@@ -311,25 +326,24 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
             ivLevel.setImageResource(VIPResourceHelper.getIconResource(level))
             ivLevelName.setImageResource(VIPResourceHelper.getLevelNameResource(level))
             // 設置文字漸變效果 - 使用 VIPResourceHelper
-            val bottom = 20.dp2px.toFloat()
-            val linearGradient = LinearGradient(
-                0f, 0f,
-                0f, bottom,
-                intArrayOf(
-                    VIPResourceHelper.getShaderStartColor().getColor(requireContext()),
-                    VIPResourceHelper.getShaderEndColor(level).getColor(requireContext())
-                ),
-                null,
-                Shader.TileMode.CLAMP
-            )
-            tvLevel.paint.shader = linearGradient
-            tvLevel.text = getString(arch.cayenne.lib.common.R.string.vip_level_format, vipLevel)
+            val levelStr = getString(arch.cayenne.lib.common.R.string.vip_level_format, vipLevel)
+            val start = VIPResourceHelper.getShaderStartColor().getColor(requireContext())
+            val end = VIPResourceHelper.getShaderEndColor(level).getColor(requireContext())
+            val span = getGradientSpan(levelStr,start,end)
+            tvLevel.setText(span, TextView.BufferType.SPANNABLE)
             tvPercent.text = percent
             val color = VIPResourceHelper.getProgressStartColor(level)
             vipProgress.setProgressColor(color)
             vipProgress.setProgress(progress)
             tvLevelUpInfo.text = levelUpInfo
         }
+    }
+
+    private fun getGradientSpan(content: String, startColor: Int, endColor: Int): SpannableStringBuilder {
+        val spannableStringBuilder = SpannableStringBuilder(content)
+        val span = WLLinearGradientFontSpan(startColor, endColor)
+        spannableStringBuilder.setSpan(span, 0, spannableStringBuilder.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return spannableStringBuilder
     }
 
     //init 二級導航欄位
@@ -351,7 +365,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
                     ) {
                         val pos = parent.getChildAdapterPosition(view)
                         val last = (parent.adapter?.itemCount ?: 0) - 1
-                        outRect.right = if (pos == last) 0 else 4.dp2px   // marginEnd
+                        outRect.right = if (pos == last) 0 else 4.dp2px - 1   // marginEnd
                     }
                 })
                 adapter = sportsListAdapter
@@ -441,6 +455,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
             showTournamentListBottomSheet()
         })
 
+        setExpandBtnText(getString(R.string.league))
         setSortBtnText()
 
     }
@@ -619,6 +634,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
                     currentSortType = MatchListSortType.BY_HOT
                     updateSortingMenuSelection()
                     setSortBtnText()
+                    setSortBtnSelected()
                     mViewModel.setSortType(currentSortType)
                 }
                 toggleTournamentSorting(false)
@@ -631,6 +647,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
                     currentSortType = MatchListSortType.BY_TIME
                     updateSortingMenuSelection()
                     setSortBtnText()
+                    setSortBtnSelected()
                     mViewModel.setSortType(currentSortType)
                 }
                 toggleTournamentSorting(false)
@@ -676,6 +693,14 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
                 mBinding.layoutContainer.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_hot.getString())
             }
         }
+    }
+
+    private fun setSortBtnSelected() {
+        mBinding.layoutContainer.customTabGroup.setSortBtnSelected()
+    }
+
+    private fun setExpandBtnText(text: String) {
+        mBinding.layoutContainer.customTabGroup.setExpandBtnText(text)
     }
 
 
@@ -742,10 +767,12 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
     companion object {
         const val LOW_MEMORY_THRESHOLD = 2_000_000_000L
         private const val ARG_PLAY_TYPE_ID = "play_type_id"
-        fun newInstance(playTypeId: Int): SubHomeFragmentV2 {
+        private const val ARG_SORT_TYPE = "sort_type" //排序类型
+        fun newInstance(playTypeId: Int, sortType: MatchListSortType): SubHomeFragmentV2 {
             return SubHomeFragmentV2().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_PLAY_TYPE_ID, playTypeId)
+                    putInt(ARG_SORT_TYPE, sortType.type)
                 }
             }
         }

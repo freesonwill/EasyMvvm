@@ -85,10 +85,10 @@
         android:id="@+id/tv_game_status"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
-        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_0"
         android:gravity="center"
         android:textColor="@color/home_secondary_text"
-        android:textSize="12sp"
+        android:textSize="13sp"
         app:layout_constraintStart_toEndOf="@id/tv_roll"
         app:layout_constraintTop_toTopOf="@id/guide_odds_title_top"
         tools:text="加時下半場" />

@@ -14,6 +14,7 @@ import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.chat.R
 import arch.cayenne.lib.common.data.constants.ChatMsgType
+import arch.cayenne.lib.websocket.chat.data.ChatRefUser
 import arch.cayenne.module.chat.data.model.AtBean
 import arch.cayenne.module.chat.data.model.MentionSpan
 import arch.cayenne.module.chat.utils.EmojiEditFilter
@@ -75,9 +76,9 @@ class ChatATHelper(
             if (startInputPosition == -1 && !isAtInput && !isEditDelete) {
                 atPopupWindow.dismiss()
             }
-            if (!isEditDelete && startInputPosition >= 0) {
-                listenEditInput()
-            }
+//            if (!isEditDelete && startInputPosition >= 0) {
+//                listenEditInput()
+//            }
             isAtInput = false
             etWatchListen?.invoke(s)
         }
@@ -165,7 +166,7 @@ class ChatATHelper(
 //    }
 
 
-    fun addAtMentionSpan(name: String) {
+    fun addAtMentionSpan(name: String,user:ChatRefUser) {
         chatEtInput.apply {
             text?.let {
                 if (atPopupWindow.isSearchIng && startInputPosition >= 0 && selectionStart > startInputPosition) {
@@ -178,7 +179,7 @@ class ChatATHelper(
                 nStart = selectionStart
                 atStrLength = atStr.length
                 it.insert(selectionStart, atStr)
-                addSpecialMentionSpan(ChatMsgType.AT, this, name, nStart, atStrLength)//+ @ 空格
+                addSpecialMentionSpan(ChatMsgType.AT, this, name,user, nStart, atStrLength)//+ @ 空格
             }
         }
     }
@@ -186,17 +187,11 @@ class ChatATHelper(
     fun addShareBetSpan(betStr: String, msgType: ChatMsgType) {
         chatEtInput.apply {
             text?.let {
-                var nStart: Int = -1
-                var betStrLength = -1
-                if (selectionStart > 0) {
-                    nStart = selectionStart - 1 //光标在@后面
-                    betStrLength = betStr.length + 1 //少了个@
-                } else {
-                    nStart = selectionStart
-                    betStrLength = betStr.length
-                }
+                val nStart: Int = selectionStart
+                val betStrLength = betStr.length
+
                 it.insert(selectionStart, betStr)
-                addSpecialMentionSpan(msgType, this, betStr, nStart, betStrLength)//+ @ 空格
+                addSpecialMentionSpan(msgType, this, betStr, null,nStart, betStrLength)//+ @ 空格
             }
         }
     }
@@ -220,7 +215,7 @@ class ChatATHelper(
                 spannable.removeSpan(mention)
                 if (spanStart + 1 == position) {
                     val tv = spannable.substring(spanStart + 3, spanEnd)
-                    val mentionSpan = MentionSpan(mention.msgType, tv, atClick)
+                    val mentionSpan = MentionSpan(mention.msgType, tv, null,atClick)
                     spannable.setSpan(
                         mentionSpan, spanStart + 2, spanEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
@@ -245,6 +240,7 @@ class ChatATHelper(
         type: ChatMsgType,
         editText: EditText,
         name: String,
+        user:ChatRefUser?,
         start: Int,
         length: Int
     ) {
@@ -253,7 +249,7 @@ class ChatATHelper(
         if (start < 0 || text.length < allLength) {
             return
         }
-        val mentionSpan = MentionSpan(type, name, atClick)
+        val mentionSpan = MentionSpan(type, name, user,atClick)
         editText.text.setSpan(
             mentionSpan, start, allLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )

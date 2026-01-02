@@ -26,4 +26,5 @@
     <string name="search_result_sub_title_tournament">%1$s Season</string>
     <string name="search_result_no_more_data">No more data</string>
     <string name="search_no_history_record">No search data</string>
+    <string name="reward_tips">The rate is calculated based on data from the last 30 minutes.</string>
 </resources>

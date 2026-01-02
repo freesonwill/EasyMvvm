@@ -100,16 +100,26 @@ class MatchItemViewHolder(
             }
             tvTournamentName.text = basicInfo.tournamentName
 
+
+
             if (basicInfo.status == 5) {  //開賽中
-                tvRoll.visibility = View.VISIBLE
+                tvRoll.visibility = View.GONE
                 tvGameStatus.visibility = View.VISIBLE
                 tvGameStatus.text = liveInfo.period
                 tvGameTime.text = liveClock(liveInfo.clock, liveInfo.clockModified)
                 tvGameTime.visibility = if (liveInfo.rollClock) View.VISIBLE else View.GONE
             } else {
-                tvRoll.visibility = View.GONE
-                tvGameStatus.visibility = View.GONE
-                tvGameTime.text = basicInfo.startTime.toLocalDateTimeString()
+                if (playType == PlayType.TODAY.id) {
+                    // 今日tab中，如果赛事未开赛，显示“未开赛”
+                    tvRoll.visibility = View.GONE
+                    tvGameStatus.visibility = View.VISIBLE
+                    tvGameStatus.text = root.context.getString(R.string.not_started)
+                    tvGameTime.visibility = View.GONE
+                } else {
+                    tvRoll.visibility = View.GONE
+                    tvGameStatus.visibility = View.GONE
+                    tvGameTime.text = basicInfo.startTime.toLocalDateTimeString()
+                }
             }
 
             //客隊

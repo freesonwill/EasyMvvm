@@ -63,10 +63,10 @@ class DimController private constructor() {
             isVisible = false
         }.apply {
             setOnClickListener {
-                Toast.makeText(context, "Dim View Clicked,alpha:${it.alpha}, translationX:${it.translationX},translationY:${it.translationY}",Toast.LENGTH_SHORT).show()
+                "aaaa----Dim View Clicked,alpha:${it.alpha}, isVisible:${it.isVisible},canChangeDim:$canChangeDim, translationX:${it.translationX},translationY:${it.translationY}".logd(TAG)
             }
             setOnLongClickListener {
-                Toast.makeText(context, "Dim View removed",Toast.LENGTH_SHORT).show()
+                "aaaa----Dim View removed".logd(TAG)
                 hideDim()
                 true
             }

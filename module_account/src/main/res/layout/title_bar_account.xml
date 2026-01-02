@@ -7,7 +7,7 @@
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_back"
-        android:layout_marginStart="@dimen/dp_5"
+        android:layout_marginStart="@dimen/dp_2"
         style="@style/CustomToolbarImgStyle"
         app:srcCompat="@drawable/universal_icon_back"
         />

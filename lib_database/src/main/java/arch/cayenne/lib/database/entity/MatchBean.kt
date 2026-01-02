@@ -111,7 +111,30 @@ data class MatchBasicInfoBean(
     val tournamentHot: Boolean,
     val tournamentWeight: Int,
     val provider: Int
-)
+){
+    /**
+     * 比赛状态enum,
+     * 比赛状态 0-已结束 1-推迟 2-中断 3-取消 4-未开赛 5-进行中 6-延迟 7-废弃 8-暂停
+     *
+     * @see galaxy.common.proto.Common.MatchBasicInfo.getStatus
+     */
+    enum class MatchStatus(val code: Int) {
+        FINISHED(0),    // 已结束
+        POSTPONED(1),   // 推迟
+        INTERRUPTED(2), // 中断
+        CANCELED(3),    // 取消
+        NOT_STARTED(4), // 未开赛
+        IN_PROGRESS(5), // 进行中
+        DELAYED(6),     // 延迟
+        ABANDONED(7),   // 废弃
+        PAUSED(8)       // 暂停
+        ;
+
+        companion object {
+            fun of(code: Int): MatchStatus? = entries.firstOrNull { it.code == code }
+        }
+    }
+}
 
 data class MatchLiveInfoBean(
     val clock: Int,//走表时间，以秒为单位
@@ -159,7 +182,11 @@ data class SelectionBeanLite(
     val parlay: Boolean,
     var isSelected: Boolean = false,
     var trend: Int = 0,
-)
+){
+    fun oddsDisplay(oddsType:Int):Int {
+        return odds - 100 * oddsType
+    }
+}
 
 data class OldSelectionLite(
     val selectionId: Long,

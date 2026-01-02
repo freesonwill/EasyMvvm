@@ -64,7 +64,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tab_layout" />
 
-    <arch.cayenne.lib.common.ui.view.DynamicStateLayoutV2
+    <arch.cayenne.lib.common.ui.view.DynamicStateLayout
         android:id="@+id/dynamic_state_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"

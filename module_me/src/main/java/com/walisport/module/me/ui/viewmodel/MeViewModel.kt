@@ -17,7 +17,6 @@ import plugin.koin.KoinViewModel
 @KoinViewModel
 class MeViewModel : BaseViewModel() {
     private val repository: MeRepository by inject { parametersOf(viewModelScope) }
-    val bottomIndexFlow: MutableSharedFlow<Int> = MutableSharedFlow(replay = 1)
 
     private var _recentlyCount: Long = 0L
     private var _gameFavouriteCount: Long = 0L
@@ -42,29 +41,6 @@ class MeViewModel : BaseViewModel() {
                 _onVipListener.value = it
             }
         }
-    }
-
-    //子类判断是否滑动到顶部
-    private val _sonVerticalScrollIsTop = MutableLiveData<Boolean?>(true)
-    val sonVerticalScrollIsTop: LiveData<Boolean?> = _sonVerticalScrollIsTop
-
-
-    private val _scrollTop = MutableLiveData<Boolean?>()
-    val scrollTop: LiveData<Boolean?> = _scrollTop
-
-    fun setSonVerticalScrollIsTop(boo: Boolean) {
-        if (boo != sonVerticalScrollIsTop.value) {
-            _sonVerticalScrollIsTop.value = boo
-        }
-    }
-
-    fun setScrollTop(boo: Boolean) {
-        _scrollTop.value = boo
-    }
-
-
-    fun getSonVerticalScrollIsTop(): Boolean? {
-        return sonVerticalScrollIsTop.value
     }
 
     fun createObserver() {

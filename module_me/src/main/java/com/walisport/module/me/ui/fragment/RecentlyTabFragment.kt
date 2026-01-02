@@ -5,10 +5,7 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
-import arch.cayenne.lib.base.ui.animation.AnimationController
-import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
@@ -18,12 +15,11 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import com.walisport.module.business.common.data.Category
 import com.walisport.module.business.common.data.UniversalLoadMoreScrollListener
-import com.walisport.module.business.common.ui.adapter.GameContentAdapter
+import com.walisport.module.business.common.ui.adapter.MeGameContentAdapter
 import com.walisport.module.live.data.EventClick
 import com.walisport.module.me.databinding.FragmentRecentlyTabBinding
 import com.walisport.module.me.ui.viewmodel.MeViewModel
 import com.walisport.module.me.ui.viewmodel.RecentlyTabViewModel
-import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 
 /**
@@ -38,7 +34,7 @@ class RecentlyTabFragment : BaseFragment<RecentlyTabViewModel, FragmentRecentlyT
 
     private val parentViewModel: MeViewModel by viewModels({ requireParentFragment() })
 
-    private lateinit var adapter: GameContentAdapter
+    private lateinit var adapter: MeGameContentAdapter
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
@@ -46,14 +42,15 @@ class RecentlyTabFragment : BaseFragment<RecentlyTabViewModel, FragmentRecentlyT
             val itemDecoration = GridSpacingItemDecoration(
                 spanCount = 3,
                 horizontalSpacing = 9.dp2px,
-                verticalSpacing = 17.dp2px,
+                verticalSpacing = 9.dp2px,
                 includeEdge = false // 確保邊緣沒有空隙
             )
             rvRecently.addItemDecoration(itemDecoration)
-            adapter = GameContentAdapter(onItemClick = {
+            adapter = MeGameContentAdapter(onItemClick = {
                 mViewModel.setIsClickGame(EventClick.EVENT_CLICK_ACK_TRUE.type)
                 navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink("gameId" to it.gameID))
             })
+            rvRecently.itemAnimator = null
             rvRecently.adapter = adapter
 //            BackToTopHelper(rvRecently, ivBackToTop, true)
         }

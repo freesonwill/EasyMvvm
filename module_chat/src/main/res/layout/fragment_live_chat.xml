@@ -30,17 +30,15 @@
             android:id="@+id/ll_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/live_chat_history"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginBottom="@dimen/dp_60"
-                android:layout_weight="1" />
-
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
+            android:orientation="vertical"/>
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/live_chat_history"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/dp_12"
+            app:layout_constraintBottom_toTopOf="@id/input_bg"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_weight="1" />
 
         <View
             android:id="@+id/top_ll_chat"
@@ -124,6 +122,15 @@
             app:layout_constraintBottom_toBottomOf="@id/chat_ll_input"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/chat_ll_input" />
+
+        <View
+            android:id="@+id/top_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/color_0FFFFFFF"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@id/input_bg"
+            />
 
         <View
             android:id="@+id/hot_bg"

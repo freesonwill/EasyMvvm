@@ -23,6 +23,7 @@ import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import com.walisport.module.business.common.data.UniversalLoadMoreScrollListener
 import com.walisport.module.business.common.ui.adapter.GameContentAdapter
+import com.walisport.module.business.common.ui.adapter.GameFavouriteContentAdapter
 import com.walisport.module.hall.R
 import com.walisport.module.hall.databinding.FragmentGameFavouriteBinding
 import com.walisport.module.hall.ui.viewmodel.GameFavouriteViewModel
@@ -33,7 +34,7 @@ class GameFavouriteFragment : BaseFragment<GameFavouriteViewModel, FragmentGameF
     override val vbClass: KClass<FragmentGameFavouriteBinding> = FragmentGameFavouriteBinding::class
     override val vmClass: KClass<GameFavouriteViewModel> = GameFavouriteViewModel::class
 
-    private lateinit var adapter: GameContentAdapter
+    private lateinit var adapter: GameFavouriteContentAdapter
 
     private val titleBarBinding: TitleBarSimpleBinding by lazy {
         TitleBarSimpleBinding.inflate(
@@ -47,7 +48,7 @@ class GameFavouriteFragment : BaseFragment<GameFavouriteViewModel, FragmentGameF
         GridSpacingItemDecoration(
             spanCount = 3,
             horizontalSpacing = 9.dp2px,
-            verticalSpacing = 17.dp2px,
+            verticalSpacing = 16.dp2px,
             includeEdge = false // 確保邊緣沒有空隙
         )
     }
@@ -60,9 +61,10 @@ class GameFavouriteFragment : BaseFragment<GameFavouriteViewModel, FragmentGameF
             mBinding.root.touchBackPressed()
             rvGame.layoutManager = GridLayoutManager(requireContext(), 3)
             rvGame.addItemDecoration(itemDecoration)
-            adapter = GameContentAdapter(onItemClick = {
+            adapter = GameFavouriteContentAdapter(onItemClick = {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_gamedetail.deeplink("gameId" to it.gameID))
             })
+            rvGame.itemAnimator = null
             rvGame.adapter = adapter
             BackToTopHelper(rvGame, ivBackToTop, true)
         }

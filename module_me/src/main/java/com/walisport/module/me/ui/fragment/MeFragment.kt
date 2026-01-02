@@ -300,6 +300,9 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         mBinding.nestedScrollView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
             // scrollY 就是当前的垂直滑动距离
             if (scrollY > (mBinding.clTop.height- mBinding.ctTopBar.height)) {
+                if (mBinding.topSkinTab.visibility== View.INVISIBLE){
+                    topTabIndicatorHelper?.smartAnimateToCurrent(0)
+                }
                 mBinding.topSkinTab.visibility = View.VISIBLE
             } else if (scrollY < mBinding.clTop.height- mBinding.ctTopBar.height) {
                 mBinding.topSkinTab.visibility = View.INVISIBLE
@@ -352,18 +355,10 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                     val day = calculateBetweenDay(it.registerTime)
                     mBinding.tvJoinTime.text = day
                 }
-                tabIndicatorHelper?.setup()
             }
         }
         mViewModel.createObserver()
 
-        launch {
-            mViewModel.bottomIndexFlow.collect {
-                mBinding.vpPage.post {//延迟一帧，viewPager可能正在刷新adapter
-                    mBinding.vpPage.setCurrentItem(it, true)
-                }
-            }
-        }
     }
 
     private fun changeTabCount(tab: TabLayout.Tab, count: Long) {
@@ -421,9 +416,4 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         super.onStart()
     }
 
-    override suspend fun onArgumentsChanged(oldArgs: Bundle?, newArgs: Bundle?) {
-        arguments?.getInt(FragmentResultEnum.KEY_ME_BOTTOM.name)?.let {
-            mViewModel.bottomIndexFlow.tryEmit(it)
-        }
-    }
 }
