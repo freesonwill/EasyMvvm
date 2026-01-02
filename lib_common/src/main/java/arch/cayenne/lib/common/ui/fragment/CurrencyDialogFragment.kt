@@ -1,17 +1,11 @@
 package arch.cayenne.lib.common.ui.fragment
 
 import android.animation.ObjectAnimator
-import android.annotation.TargetApi
 import android.app.Dialog
-import android.content.DialogInterface
 import android.graphics.Outline
-import android.graphics.Rect
-import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 import android.view.ViewTreeObserver
 import android.view.Window
@@ -24,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BasePositionDialogFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.databinding.FragmentCurrencyDialogBinding
@@ -39,7 +32,9 @@ import com.blankj.utilcode.util.SizeUtils
 import kotlin.reflect.KClass
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class CurrencyDialogFragment constructor() : BasePositionDialogFragment<CurrencyDialogViewModel, FragmentCurrencyDialogBinding>() {
+class CurrencyDialogFragment constructor() :
+    BasePositionDialogFragment<CurrencyDialogViewModel, FragmentCurrencyDialogBinding>() {
+
     companion object {
         private const val LOCATION_OFFSET = "locationOffset"
         private const val IS_PORTRAIT = "isPortrait"
@@ -55,8 +50,7 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
     }
 
     private var dismissListener: (() -> Unit)? = null
-    private var onClickListener: ((BaseCurrencyData.CurrencyContentData2) -> Unit)? = null
-
+    private var onClickListener: ((BaseCurrencyData.CurrencyContentData) -> Unit)? = null
     private val balanceViewModel: BalanceViewModel by viewModel()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -81,7 +75,7 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
         if (offset == -1) return
 
         val layoutParams = w.attributes
-        if(isPortrait) {
+        if (isPortrait) {
             layoutParams.gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
             layoutParams.y = offset
         } else {
@@ -122,32 +116,31 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
             }
         })
         removeDim()
-
     }
 
-    override val vbClass: KClass<FragmentCurrencyDialogBinding> = FragmentCurrencyDialogBinding::class
+    override val vbClass: KClass<FragmentCurrencyDialogBinding> =
+        FragmentCurrencyDialogBinding::class
     override val vmClass: KClass<CurrencyDialogViewModel> = CurrencyDialogViewModel::class
 
-    val currencyAdapter: CurrencyAdapter by lazy {
-        CurrencyAdapter{
+    private val currencyAdapter: CurrencyAdapter by lazy {
+        CurrencyAdapter {
             this.onClickListener?.invoke(it)
             doExitAnim()
         }
     }
-    val currencySettingAdapter: CurrencySettingAdapter by lazy { CurrencySettingAdapter() }
+    private val settingAdapter: CurrencySettingAdapter by lazy { CurrencySettingAdapter() }
 
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             clCurrencyRoot.visibility = View.INVISIBLE
             clCurrencyRoot.setOnClickListener {
-               doExitAnim()
+                doExitAnim()
             }
-
             rvCurrency.adapter = currencyAdapter
-            rvCurrency.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-
-            rvCurrencySetting.adapter = currencySettingAdapter
+            rvCurrency.layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            rvCurrencySetting.adapter = settingAdapter
             rvCurrencySetting.layoutManager = GridLayoutManager(requireContext(), 2)
             val itemDecoration = GridSpacingItemDecoration(
                 spanCount = 2,
@@ -156,7 +149,6 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
                 includeEdge = false // 確保邊緣沒有空隙
             )
             rvCurrencySetting.addItemDecoration(itemDecoration)
-
             ivSetting.clickNoRepeat {
                 ObjectAnimator.ofFloat(
                     clContent, "translationX", 0f, -clContent.measuredWidth.toFloat()
@@ -202,7 +194,13 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
             clipToOutline = true // 開啟裁剪
             outlineProvider = object : ViewOutlineProvider() {
                 override fun getOutline(view: View, outline: Outline) {
-                    outline.setRoundRect(0, 0, view.width, view.height, SizeUtils.dp2px(9f).toFloat())
+                    outline.setRoundRect(
+                        0,
+                        0,
+                        view.width,
+                        view.height,
+                        SizeUtils.dp2px(9f).toFloat()
+                    )
                 }
             }
         }
@@ -233,22 +231,21 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
             mBinding.rvCurrency.doOnPreDraw {
                 mBinding.blurView.invalidateOutline()
             }
-            currencySettingAdapter.submitList(fiat+crypto)
+            settingAdapter.submitList(fiat)
         }
     }
 
     override fun onStart() {
         super.onStart()
-        StatusBarConfig.statusBarType = if(requireArguments().getBoolean(IS_PORTRAIT)) StatusBarMode.DRAW_BEHIND() else StatusBarMode.FULLSCREEN
+        StatusBarConfig.statusBarType =
+            if (requireArguments().getBoolean(IS_PORTRAIT)) StatusBarMode.DRAW_BEHIND() else StatusBarMode.FULLSCREEN
         setStatusBar(StatusBarConfig, mBinding.root)
     }
 
     private fun doExitAnim() {
         if (!mBinding.root.isEnabled) return
         mBinding.root.isEnabled = false
-
         val targetView = mBinding.clCurrencyRoot
-
         targetView.animate()
             .scaleX(0f)
             .scaleY(0f)
@@ -268,7 +265,7 @@ class CurrencyDialogFragment constructor() : BasePositionDialogFragment<Currency
         this.dismissListener = listener
     }
 
-    fun setonItemClickListener(listener: (BaseCurrencyData.CurrencyContentData2) -> Unit) {
+    fun setOnItemClickListener(listener: (BaseCurrencyData.CurrencyContentData) -> Unit) {
         this.onClickListener = listener
     }
 }

@@ -12,13 +12,13 @@ class BalanceViewModel(
     private val balanceRepository: BalanceRepository
 ): BaseViewModel() {
 
-    private val _onBalanceChange = MutableLiveData<BaseCurrencyData.CurrencyContentData2?>()
-    val onBalanceChange: LiveData<BaseCurrencyData.CurrencyContentData2?> = _onBalanceChange
+    private val _onBalanceChange = MutableLiveData<BaseCurrencyData.CurrencyContentData?>()
+    val onBalanceChange: LiveData<BaseCurrencyData.CurrencyContentData?> = _onBalanceChange
 
-    var userCurrency: Pair<List<BaseCurrencyData.CurrencyContentData2>, List<BaseCurrencyData.CurrencyContentData2>>? = null
+    var userCurrency: Pair<List<BaseCurrencyData.CurrencyContentData>, List<BaseCurrencyData.CurrencyContentData>>? = null
 
-    private val _onUserCurrencyChange = MutableLiveData<Pair<List<BaseCurrencyData.CurrencyContentData2>, List<BaseCurrencyData.CurrencyContentData2>>>()
-    val onUserCurrencyChange: LiveData<Pair<List<BaseCurrencyData.CurrencyContentData2>, List<BaseCurrencyData.CurrencyContentData2>>> = _onUserCurrencyChange
+    private val _onUserCurrencyChange = MutableLiveData<Pair<List<BaseCurrencyData.CurrencyContentData>, List<BaseCurrencyData.CurrencyContentData>>>()
+    val onUserCurrencyChange: LiveData<Pair<List<BaseCurrencyData.CurrencyContentData>, List<BaseCurrencyData.CurrencyContentData>>> = _onUserCurrencyChange
 
     init {
         viewModelScope.launch {

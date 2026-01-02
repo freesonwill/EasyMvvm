@@ -51,7 +51,7 @@ class BalanceView : FrameLayout {
             f.setOnDismissListener {
                 rotateArrow(false)
             }
-            f.setonItemClickListener {
+            f.setOnItemClickListener {
                 setMoney(it)
                 setMoney(it.amountStr)
             }
@@ -80,7 +80,7 @@ class BalanceView : FrameLayout {
         mBinding.tvWalletBalance.text = money
     }
 
-    fun setMoney(data: BaseCurrencyData.CurrencyContentData2) {
+    fun setMoney(data: BaseCurrencyData.CurrencyContentData) {
         viewModel?.setDefaultCurrency(data.ccy)
     }
 

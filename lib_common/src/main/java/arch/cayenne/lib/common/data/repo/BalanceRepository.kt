@@ -4,9 +4,6 @@ import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoneyForScale
 import arch.cayenne.lib.database.dao.CurrencyConfigDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.UserDataDao
@@ -18,8 +15,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.text.NumberFormat
-import java.util.Locale
 
 class BalanceRepository(
     override val scope: CoroutineScope,
@@ -46,10 +41,10 @@ class BalanceRepository(
     }
 
 
-    private suspend fun mappingCurrency(user: UserDataBean?) : Pair<List<BaseCurrencyData.CurrencyContentData2>, List<BaseCurrencyData.CurrencyContentData2>> {
+    private suspend fun mappingCurrency(user: UserDataBean?) : Pair<List<BaseCurrencyData.CurrencyContentData>, List<BaseCurrencyData.CurrencyContentData>> {
         val currencyList = currencyConfigDao.getCurrencyConfigList()
-        val fiat = arrayListOf<BaseCurrencyData.CurrencyContentData2>()
-        val crypto = arrayListOf<BaseCurrencyData.CurrencyContentData2>()
+        val fiat = arrayListOf<BaseCurrencyData.CurrencyContentData>()
+        val crypto = arrayListOf<BaseCurrencyData.CurrencyContentData>()
         if (user == null) return Pair(fiat, crypto)
         val showAllCurrency =  manager.getValue(UserDataKey.KEY_SHOW_ALL_CURRENCY, false)//先暫時為false
         val exchangeAmountUnit = currencyList.find { it.ccy == manager.getValue<String>(UserDataKey.KEY_DEFAULT_CURRENCY) }?.unit ?: ""
@@ -92,7 +87,7 @@ class BalanceRepository(
         ) { user, defaultCurrency ->
         // profile/info沒進資料庫
         if (user == null) {
-            return@combine BaseCurrencyData.CurrencyContentData2(
+            return@combine BaseCurrencyData.CurrencyContentData(
                 id = 0,
                 icon = "",
                 ccy = "",
@@ -116,7 +111,7 @@ class BalanceRepository(
         }
         return@combine fait.firstOrNull()
             ?: crypto.firstOrNull()
-            ?: BaseCurrencyData.CurrencyContentData2(
+            ?: BaseCurrencyData.CurrencyContentData(
                 id = 0,
                 icon = "",
                 ccy = "",
@@ -129,7 +124,7 @@ class BalanceRepository(
             )
     }
 
-    suspend fun getUserCurrency(): Pair<List<BaseCurrencyData.CurrencyContentData2>, List<BaseCurrencyData.CurrencyContentData2>> {
+    suspend fun getUserCurrency(): Pair<List<BaseCurrencyData.CurrencyContentData>, List<BaseCurrencyData.CurrencyContentData>> {
         val user = userDataDao.getUser()
         return mappingCurrency(user)
 
@@ -140,8 +135,8 @@ class BalanceRepository(
         exchangeAmount: Long?,
         exchangeAmountUnit: String,
         currencySelectedCCY: String,
-    ): BaseCurrencyData.CurrencyContentData2 {
-        return BaseCurrencyData.CurrencyContentData2(
+    ): BaseCurrencyData.CurrencyContentData {
+        return BaseCurrencyData.CurrencyContentData(
             id = id,
             icon = icon,
             ccy = ccy,
@@ -155,13 +150,13 @@ class BalanceRepository(
         )
     }
 
-    suspend fun search(keyword: String): Pair<List<BaseCurrencyData.CurrencyContentData2>, List<BaseCurrencyData.CurrencyContentData2>> {
+    suspend fun search(keyword: String): Pair<List<BaseCurrencyData.CurrencyContentData>, List<BaseCurrencyData.CurrencyContentData>> {
         val pattern = keywordToSqlPattern(keyword)
         val firstChar = if (keyword.isNotEmpty()) keyword.first().toString() else ""
         val user = userDataDao.getUser()
         val currencyList = currencyConfigDao.searchByKeyword(pattern, firstChar)
-        val fiat = arrayListOf<BaseCurrencyData.CurrencyContentData2>()
-        val crypto = arrayListOf<BaseCurrencyData.CurrencyContentData2>()
+        val fiat = arrayListOf<BaseCurrencyData.CurrencyContentData>()
+        val crypto = arrayListOf<BaseCurrencyData.CurrencyContentData>()
         if (user == null) return Pair(fiat, crypto)
         val showAllCurrency =  manager.getValue(UserDataKey.KEY_SHOW_ALL_CURRENCY, false)//先暫時為false
         val exchangeAmountUnit = currencyList.find { it.ccy == manager.getValue<String>(UserDataKey.KEY_DEFAULT_CURRENCY) }?.unit ?: ""

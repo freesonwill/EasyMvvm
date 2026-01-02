@@ -8,7 +8,7 @@ import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.databinding.ItemCurrencySettingBinding
 import arch.cayenne.lib.common.ui.viewholder.CurrencySettingViewHolder
 
-class CurrencySettingAdapter: BaseAdapter<BaseCurrencyData.CurrencyContentData2, CurrencySettingViewHolder, ItemCurrencySettingBinding>(CurrencySettingCompare()) {
+class CurrencySettingAdapter: BaseAdapter<BaseCurrencyData.CurrencyContentData, CurrencySettingViewHolder, ItemCurrencySettingBinding>(CurrencySettingCompare()) {
     override fun convertPlus(
         holder: CurrencySettingViewHolder,
         binding: ItemCurrencySettingBinding,
@@ -33,15 +33,15 @@ class CurrencySettingAdapter: BaseAdapter<BaseCurrencyData.CurrencyContentData2,
     }
 }
 
-class CurrencySettingCompare: DiffUtil.ItemCallback<BaseCurrencyData.CurrencyContentData2>() {
+class CurrencySettingCompare: DiffUtil.ItemCallback<BaseCurrencyData.CurrencyContentData>() {
     override fun areItemsTheSame(
-        oldItem: BaseCurrencyData.CurrencyContentData2,
-        newItem: BaseCurrencyData.CurrencyContentData2
+        oldItem: BaseCurrencyData.CurrencyContentData,
+        newItem: BaseCurrencyData.CurrencyContentData
     ): Boolean = oldItem == newItem
 
     override fun areContentsTheSame(
-        oldItem: BaseCurrencyData.CurrencyContentData2,
-        newItem: BaseCurrencyData.CurrencyContentData2
+        oldItem: BaseCurrencyData.CurrencyContentData,
+        newItem: BaseCurrencyData.CurrencyContentData
     ): Boolean = oldItem == newItem
 
 }
