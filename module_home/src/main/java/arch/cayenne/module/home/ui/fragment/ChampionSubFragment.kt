@@ -50,8 +50,8 @@ import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
 import arch.cayenne.module.home.databinding.LayoutTournamentSortingMenuBinding
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
+import arch.cayenne.module.home.ui.viewmodel.ChampionSubViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
-import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.Job
@@ -62,10 +62,10 @@ import kotlin.reflect.KClass
 /**
  * 冠军tab的Fragment, 用在体育首页的子页面中
  */
-class ChampionSubFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>(),
+class ChampionSubFragment : BaseFragment<ChampionSubViewModel, FragmentSubHomeBinding>(),
     ISubFragmentLifecycle {
     override val vbClass: KClass<FragmentSubHomeBinding> = FragmentSubHomeBinding::class
-    override val vmClass: KClass<SubHomeViewModel> = SubHomeViewModel::class
+    override val vmClass: KClass<ChampionSubViewModel> = ChampionSubViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
 
     private var tournamentTabLayoutMediator: CustomTabLayoutMediator? = null

@@ -10,8 +10,6 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.ui.viewmodel.Event
-import arch.cayenne.lib.common.utils.ext.VIPDataExt
-import arch.cayenne.lib.database.entity.BaseTournamentData
 import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentDataModel
@@ -19,8 +17,8 @@ import arch.cayenne.lib.database.entity.UserDataBean
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.TournamentCombo
 import arch.cayenne.module.home.data.constants.HomeState
-import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.MatchListSortType
+import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
 import arch.cayenne.module.home.data.repo.HomeRepository
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +34,7 @@ import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-open class SubHomeViewModel : BaseViewModel() {
+open class SubHomeViewModelV2 : BaseViewModel() {
 
     val repository: HomeRepository by inject()
 
@@ -54,7 +52,7 @@ open class SubHomeViewModel : BaseViewModel() {
 
     val tournaments by lazy { MutableLiveData<Event<List<TournamentCombo>>>() } // 今日/早盤
 
-    val tournamentsPlain by lazy { MutableLiveData<Event<List<TournamentDataModel>>>() } // 今日/早盤
+    val tournamentsPlain by lazy { MutableLiveData<Event<List<TournamentDataModel>>>() } // 今日/滚球/早盤
 
 
     //聯賽收回上滑動畫結束事件
@@ -64,8 +62,6 @@ open class SubHomeViewModel : BaseViewModel() {
     private val _collapseTournamentDropdown = MutableLiveData<Event<Boolean>>()
     val collapseTournamentDropdown: MutableLiveData<Event<Boolean>> = _collapseTournamentDropdown
 
-    protected val _navigateToChampion = MutableLiveData<Event<ChampionTournamentDataModel>>()
-    val navigationToChampion: LiveData<Event<ChampionTournamentDataModel>> = _navigateToChampion
     private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
     private val _selectedSkinType = MutableLiveData<Event<String>>()
     val selectedSkinType: LiveData<Event<String>> = _selectedSkinType
@@ -152,60 +148,64 @@ open class SubHomeViewModel : BaseViewModel() {
                     }
                 }
                 .collect {
-                    "联赛资料  collect ".logi(this@SubHomeViewModel::class.java.simpleName)
-                    if (currentPlayTypeId != PlayType.CHAMPION.id) {
-                        val selectedTournament = it.map { tournamentDataModel ->
-                            repository.getCurrentSelectedTournamentId(currentPlayTypeId)?.let {
-                                repository.getTournament(
-                                    currentPlayTypeId,
-                                    currentSportId,
-                                    tournamentDataModel.id
-                                )
-                            }
-                        }
-                        val list = mutableListOf<TournamentDataModel>()
-                        list.add(
-                            TournamentDataModel.createAllItem(
+                    "联赛资料  collect ".logi(this@SubHomeViewModelV2::class.java.simpleName)
+                    val selectedTournament = it.map { tournamentDataModel ->
+                        repository.getCurrentSelectedTournamentId(currentPlayTypeId)?.let {
+                            repository.getTournament(
                                 currentPlayTypeId,
-                                currentSportId
+                                currentSportId,
+                                tournamentDataModel.id
                             )
-                        )
-                        list.addAll(it)
-                        if (selectedTournament == null) {
-                            "联赛资料 setCurrentTournamentId(0) ".logi(this@SubHomeViewModel::class.java.simpleName)
-                            setCurrentTournamentIdList(listOf(0))
-                            list.find { it.id == 0 }?.isSelected = true
-                        } else if (!it.any { data ->
-                                data.id in selectedTournament.filterNotNull()
-                                    .map { tournamentDataModel -> tournamentDataModel.id }
-                            }) {  //有在目前聯賽中，但是沒有在前10筆資料中，所以新增第11筆，並且點擊它
-                            setCurrentTournamentIdList(
-                                selectedTournament.filterNotNull()
-                                    .map { tournamentDataModel -> tournamentDataModel.id })
-                            selectedTournament.filterNotNull()
-                                .forEach { model -> model.isSelected = true }
-                            list.addAll(selectedTournament.filterNotNull())
-                        } else {
-                            list.find { tournamentDataModel ->
-                                tournamentDataModel.id in selectedTournament.filterNotNull()
-                                    .map { model -> model.id }
-                            }?.isSelected = true
-
-                            setCurrentTournamentIdList(
-                                selectedTournament.filterNotNull()
-                                    .filter { tournamentDataModel -> tournamentDataModel.isSelected }
-                                    .map { tournamentDataModel -> tournamentDataModel.id })
-                        }
-                        launch(Dispatchers.Main) {
-                            "送出联赛资料到UI".logi(this@SubHomeViewModel::class.java.simpleName)
-                            tournaments.value =
-                                Event(list.map { tournament -> TournamentCombo(listOf(tournament), false) })
-
-                            tournamentsPlain.value = Event(list)
-                            setState(HomeState.Tournament.LoadSuccess)
                         }
                     }
+                    val list = mutableListOf<TournamentDataModel>()
+                    list.add(
+                        TournamentDataModel.createAllItem(
+                            currentPlayTypeId,
+                            currentSportId
+                        )
+                    )
+                    list.addAll(it)
+                    if (selectedTournament == null) {
+                        "联赛资料 setCurrentTournamentId(0) ".logi(this@SubHomeViewModelV2::class.java.simpleName)
+                        setCurrentTournamentIdList(listOf(0))
+                        list.find { it.id == 0 }?.isSelected = true
+                    } else if (!it.any { data ->
+                            data.id in selectedTournament.filterNotNull()
+                                .map { tournamentDataModel -> tournamentDataModel.id }
+                        }) {  //有在目前聯賽中，但是沒有在前10筆資料中，所以新增第11筆，並且點擊它
+                        setCurrentTournamentIdList(
+                            selectedTournament.filterNotNull()
+                                .map { tournamentDataModel -> tournamentDataModel.id })
+                        selectedTournament.filterNotNull()
+                            .forEach { model -> model.isSelected = true }
+                        list.addAll(selectedTournament.filterNotNull())
+                    } else {
+                        list.find { tournamentDataModel ->
+                            tournamentDataModel.id in selectedTournament.filterNotNull()
+                                .map { model -> model.id }
+                        }?.isSelected = true
+
+                        setCurrentTournamentIdList(
+                            selectedTournament.filterNotNull()
+                                .filter { tournamentDataModel -> tournamentDataModel.isSelected }
+                                .map { tournamentDataModel -> tournamentDataModel.id })
+                    }
+                    launch(Dispatchers.Main) {
+                        "送出联赛资料到UI".logi(this@SubHomeViewModelV2::class.java.simpleName)
+                        tournaments.value =
+                            Event(list.map { tournament ->
+                                TournamentCombo(
+                                    listOf(tournament),
+                                    false
+                                )
+                            })
+
+                        tournamentsPlain.value = Event(list)
+                        setState(HomeState.Tournament.LoadSuccess)
+                    }
                 }
+
         }
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -277,12 +277,11 @@ open class SubHomeViewModel : BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             _currentSportId.value = sportId
             repository.updateSelectedSportId(currentPlayTypeId, currentSportId)
-            if (currentPlayTypeId != PlayType.CHAMPION.id) {
-                "On setCurrentSport -> Clear Tournaments LiveData & Update Tournaments from API".logi(
-                    this::class.java.simpleName
-                )
-                getCurrentTournament()
-            }
+            "On setCurrentSport -> Clear Tournaments LiveData & Update Tournaments from API".logi(
+                this::class.java.simpleName
+            )
+            getCurrentTournament()
+
         }
     }
 
@@ -294,7 +293,7 @@ open class SubHomeViewModel : BaseViewModel() {
                 repository.getTenTournaments(currentPlayTypeId, currentSportId)
             }, {
                 if (it is ApiResponseState.Succeeded<*>) {
-                    "联赛资料 存入DB完成 ".logi(this@SubHomeViewModel::class.java.simpleName)
+                    "联赛资料 存入DB完成 ".logi(this@SubHomeViewModelV2::class.java.simpleName)
                     setState(HomeState.Tournament.LoadSuccess)
                 } else if (it is ApiResponseState.Failed) {
                     if ((tournaments.value?.peekContent() == null || tournaments.value?.peekContent()
@@ -332,8 +331,6 @@ open class SubHomeViewModel : BaseViewModel() {
     }
 
 
-
-
     fun requestCollapseTournamentDropdown() {
         _collapseTournamentDropdown.value = Event(true)
     }
@@ -364,17 +361,12 @@ open class SubHomeViewModel : BaseViewModel() {
         hasTournamentTabSwitched = true
     }
 
-    open fun onTournamentListSelected(tournament: BaseTournamentData) {
+    open fun onTournamentListSelected(tournament: TournamentDataModel) {
         // 標記外部tab已切換，下次打開彈窗時需要清空篩選
         hasTournamentTabSwitched = true
-
-        if (tournament is TournamentDataModel) {
-            val currentList = tournaments.value?.peekContent() ?: return
-            setCurrentTournamentIdList(listOf(tournament.id))
-            currentList.forEach { it.isSelected = false }
-        } else if (tournament is ChampionTournamentDataModel) {
-            _navigateToChampion.value = Event(tournament)
-        }
+        val currentList = tournaments.value?.peekContent() ?: return
+        setCurrentTournamentIdList(listOf(tournament.id))
+        currentList.forEach { it.isSelected = false }
     }
 
     // 檢查是否切換了外部tab

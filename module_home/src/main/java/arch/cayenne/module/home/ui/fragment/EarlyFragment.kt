@@ -176,9 +176,6 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
                 mViewModel.consumeCollapseTournamentDropdown() // 重置事件，避免重複觸發
             }
         }
-        mViewModel.navigationToChampion.observeEvent(viewLifecycleOwner, this) { data ->
-            navigate(Uri.parse("walisport://module_home/championFragment?matchId=${data.championMatchId}&name=${data.name}&icon=${data.icon}"))
-        }
 
         mViewModel.displayDate.observe(viewLifecycleOwner) { display ->
             if (display.timestamp == HomeViewModel.DEFAULT_DATE) return@observe

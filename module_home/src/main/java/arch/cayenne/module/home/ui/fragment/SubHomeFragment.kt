@@ -53,7 +53,7 @@ import arch.cayenne.module.home.databinding.LayoutTournamentSortingMenuBinding
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
-import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
+import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModelV2
 import arch.cayenne.module.home.utils.DateUtils
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.Job
@@ -64,10 +64,10 @@ import kotlin.reflect.KClass
 /**
  * 今日Fragment
  */
-class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>(),
+class SubHomeFragment : BaseFragment<SubHomeViewModelV2, FragmentSubHomeBinding>(),
     ISubFragmentLifecycle {
     override val vbClass: KClass<FragmentSubHomeBinding> = FragmentSubHomeBinding::class
-    override val vmClass: KClass<SubHomeViewModel> = SubHomeViewModel::class
+    override val vmClass: KClass<SubHomeViewModelV2> = SubHomeViewModelV2::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
 
     private var tournamentTabLayoutMediator: CustomTabLayoutMediator? = null
@@ -174,10 +174,6 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
                 toggleTournamentSorting(false)
                 mViewModel.consumeCollapseTournamentDropdown() // 重置事件，避免重複觸發
             }
-        }
-
-        mViewModel.navigationToChampion.observeEvent(viewLifecycleOwner, this) { data ->
-            navigate(Uri.parse("walisport://module_home/championFragment?matchId=${data.championMatchId}&name=${data.name}&icon=${data.icon}"))
         }
 
         mViewModel.tournamentSlideOutEnd.observeEvent(viewLifecycleOwner, this) {
