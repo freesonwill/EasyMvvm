@@ -23,7 +23,6 @@ class PopupSlotRepository(
     override val scope: CoroutineScope,
     private val database: GameDatabase,
     private val httpClient: HttpClient,
-    private val mockHttpClient: HttpClient,
     private val socketManager: WebSocketManager,
     private val preloadResultChange: MutableStateFlow<PreloadEnum>,
     private val manager: UserDataManager,
@@ -78,10 +77,10 @@ class PopupSlotRepository(
 
     private suspend fun queryPopupList(
     ): ApiResponseState {
-        val api = mockHttpClient.create(IPopupApi::class.java)
+        val api = httpClient.create(IPopupApi::class.java)
         return suspendCancellableCoroutine<ApiResponseState> { cancellableContinuation ->
             scope.launch(Dispatchers.IO) {
-                mockHttpClient.safeRequest(
+                httpClient.safeRequest(
                     request = {
                         api.getPopupList()
                     },

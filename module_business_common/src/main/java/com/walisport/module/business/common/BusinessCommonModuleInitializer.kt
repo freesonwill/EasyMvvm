@@ -25,8 +25,7 @@ class BusinessCommonModuleInitializer: DefaultInitializer<Unit> {
             GameFavouriteRepository(
                 get() ,
                 get() ,
-                get(named("3n1")) ,
-                get(named("mock")) ,
+                get(named("3n1_http")) ,
                 get() ,
                 get() ,
                 get()
@@ -37,8 +36,7 @@ class BusinessCommonModuleInitializer: DefaultInitializer<Unit> {
             GameRecentRepository(
                 get() ,
                 get() ,
-                get(named("3n1")) ,
-                get(named("mock")) ,
+                get(named("3n1_http")) ,
                 get() ,
                 get() ,
                 get()
