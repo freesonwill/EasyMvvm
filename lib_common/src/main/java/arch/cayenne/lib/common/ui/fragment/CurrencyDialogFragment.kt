@@ -1,6 +1,7 @@
 package arch.cayenne.lib.common.ui.fragment
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.graphics.Outline
 import android.os.Bundle
@@ -51,6 +52,7 @@ class CurrencyDialogFragment constructor() :
 
     private var dismissListener: (() -> Unit)? = null
     private var onClickListener: ((BaseCurrencyData.CurrencyContentData) -> Unit)? = null
+    private var onFiatListener: ((BaseCurrencyData.CurrencyContentData) -> Unit)? = null
     private val balanceViewModel: BalanceViewModel by viewModel()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -87,14 +89,11 @@ class CurrencyDialogFragment constructor() :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
                 mBinding.root.post {
                     val targetView = mBinding.clCurrencyRoot
-
                     // 1. 設定動畫軸心為 View 的中心點
                     targetView.pivotX = targetView.width / 2f
                     targetView.pivotY = targetView.height / 2f
-
                     // 2. 設定初始狀態：縮小且透明
                     targetView.scaleX = 0f
                     targetView.scaleY = 0f
@@ -128,7 +127,11 @@ class CurrencyDialogFragment constructor() :
             doExitAnim()
         }
     }
-    private val settingAdapter: CurrencySettingAdapter by lazy { CurrencySettingAdapter() }
+    private val settingAdapter: CurrencySettingAdapter by lazy {
+        CurrencySettingAdapter {
+            this.onFiatListener?.invoke(it)
+        }
+    }
 
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -212,13 +215,13 @@ class CurrencyDialogFragment constructor() :
         balanceViewModel.getUserCurrency()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun initListener() {
         balanceViewModel.onUserCurrencyChange.observe(viewLifecycleOwner) { (fiat, crypto) ->
             val list = arrayListOf<BaseCurrencyData>()
             if (fiat.isEmpty() && crypto.isEmpty()) {
                 list.add(BaseCurrencyData.CurrencyTitleData(getString(R.string.currency_empty)))
             }
-
             if (fiat.isNotEmpty()) {
                 list.add(BaseCurrencyData.CurrencyTitleData(getString(R.string.fiat)))
                 list.addAll(fiat)
@@ -232,6 +235,7 @@ class CurrencyDialogFragment constructor() :
                 mBinding.blurView.invalidateOutline()
             }
             settingAdapter.submitList(fiat)
+            settingAdapter.notifyDataSetChanged()
         }
     }
 
@@ -267,5 +271,9 @@ class CurrencyDialogFragment constructor() :
 
     fun setOnItemClickListener(listener: (BaseCurrencyData.CurrencyContentData) -> Unit) {
         this.onClickListener = listener
+    }
+
+    fun setFiatClickListener(listener: (BaseCurrencyData.CurrencyContentData) -> Unit) {
+        this.onFiatListener = listener
     }
 }

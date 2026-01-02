@@ -15,6 +15,7 @@ sealed class BaseCurrencyData {
         val exchangeAmount: String,
         val unit: String,
         val scale: Int = 2,
-        val isSelected: Boolean = false,
+        var isSelected: Boolean = false,
+        var fiatSelected: Boolean = false //是否以该法币金额显示加密货币
     ) : BaseCurrencyData()
 }

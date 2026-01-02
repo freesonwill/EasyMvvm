@@ -10,15 +10,18 @@ import kotlinx.coroutines.launch
 
 class BalanceViewModel(
     private val balanceRepository: BalanceRepository
-): BaseViewModel() {
+) : BaseViewModel() {
 
     private val _onBalanceChange = MutableLiveData<BaseCurrencyData.CurrencyContentData?>()
     val onBalanceChange: LiveData<BaseCurrencyData.CurrencyContentData?> = _onBalanceChange
 
-    var userCurrency: Pair<List<BaseCurrencyData.CurrencyContentData>, List<BaseCurrencyData.CurrencyContentData>>? = null
+    var userCurrency: Pair<List<BaseCurrencyData.CurrencyContentData>, List<BaseCurrencyData.CurrencyContentData>>? =
+        null
 
-    private val _onUserCurrencyChange = MutableLiveData<Pair<List<BaseCurrencyData.CurrencyContentData>, List<BaseCurrencyData.CurrencyContentData>>>()
-    val onUserCurrencyChange: LiveData<Pair<List<BaseCurrencyData.CurrencyContentData>, List<BaseCurrencyData.CurrencyContentData>>> = _onUserCurrencyChange
+    private val _onUserCurrencyChange =
+        MutableLiveData<Pair<List<BaseCurrencyData.CurrencyContentData>, List<BaseCurrencyData.CurrencyContentData>>>()
+    val onUserCurrencyChange: LiveData<Pair<List<BaseCurrencyData.CurrencyContentData>, List<BaseCurrencyData.CurrencyContentData>>> =
+        _onUserCurrencyChange
 
     init {
         viewModelScope.launch {
@@ -49,4 +52,7 @@ class BalanceViewModel(
         balanceRepository.setDefaultCurrency(ccy)
     }
 
+    fun setFiatCurrency(ccy: String) {
+        balanceRepository.setFiatCurrency(ccy)
+    }
 }

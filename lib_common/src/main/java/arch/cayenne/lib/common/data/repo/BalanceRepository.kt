@@ -22,9 +22,9 @@ class BalanceRepository(
     private val userDataDao: UserDataDao,
     private val currencyConfigDao: CurrencyConfigDao,
     private val manager: UserDataManager,
-): BaseRepository() {
+) : BaseRepository() {
 
-    fun observeCurrency() = infoDao.observeCurrency().map { it?: "" }
+    fun observeCurrency() = infoDao.observeCurrency().map { it ?: "" }
 
     fun observeInfo() = infoDao.observeInfo()
 
@@ -40,15 +40,26 @@ class BalanceRepository(
         manager.setKeyValue(UserDataKey.KEY_DEFAULT_CURRENCY, ccy)
     }
 
+    //设置以何种法币金额显示加密货币
+    fun setFiatCurrency(ccy: String) {
+        manager.setKeyValue(UserDataKey.KEY_DEFAULT_FIAT, ccy)
+    }
 
-    private suspend fun mappingCurrency(user: UserDataBean?) : Pair<List<BaseCurrencyData.CurrencyContentData>, List<BaseCurrencyData.CurrencyContentData>> {
+    private suspend fun mappingCurrency(user: UserDataBean?): Pair<List<BaseCurrencyData.CurrencyContentData>, List<BaseCurrencyData.CurrencyContentData>> {
         val currencyList = currencyConfigDao.getCurrencyConfigList()
         val fiat = arrayListOf<BaseCurrencyData.CurrencyContentData>()
         val crypto = arrayListOf<BaseCurrencyData.CurrencyContentData>()
         if (user == null) return Pair(fiat, crypto)
-        val showAllCurrency =  manager.getValue(UserDataKey.KEY_SHOW_ALL_CURRENCY, false)//先暫時為false
-        val exchangeAmountUnit = currencyList.find { it.ccy == manager.getValue<String>(UserDataKey.KEY_DEFAULT_CURRENCY) }?.unit ?: ""
-        val currentSelectedCCY = currencyList.find { it.ccy == manager.getValue<String>(UserDataKey.KEY_DEFAULT_CURRENCY) }?.ccy ?: "USD"
+        val showAllCurrency = manager.getValue(UserDataKey.KEY_SHOW_ALL_CURRENCY, false)//先暫時為false
+        val exchangeAmountUnit =
+            currencyList.find { it.ccy == manager.getValue<String>(UserDataKey.KEY_DEFAULT_CURRENCY) }?.unit
+                ?: ""
+        val currentSelectedCCY =
+            currencyList.find { it.ccy == manager.getValue<String>(UserDataKey.KEY_DEFAULT_CURRENCY) }?.ccy
+                ?: "USD"
+        val currentSelectedFiat =
+            currencyList.find { it.ccy == manager.getValue<String>(UserDataKey.KEY_DEFAULT_FIAT) }?.ccy
+                ?: "USD"
         currencyList.forEach { currency ->
             val wallet = user.list.find { it.currency == currency.ccy }
             if (!currency.crypto) {
@@ -57,7 +68,8 @@ class BalanceRepository(
                         wallet?.balance ?: 0L,
                         null,  //法幣不需要匯率轉換,
                         "",
-                        currentSelectedCCY
+                        currentSelectedCCY,
+                        currentSelectedFiat
                     )
                 )
             } else {
@@ -66,7 +78,8 @@ class BalanceRepository(
                         wallet?.balance ?: 0L,
                         wallet?.convertedAmount,
                         exchangeAmountUnit,
-                        currentSelectedCCY
+                        currentSelectedCCY,
+                        currentSelectedFiat
                     )
                 )
             }
@@ -85,49 +98,48 @@ class BalanceRepository(
                     emit(manager.getValue(UserDataKey.KEY_DEFAULT_CURRENCY))
                 }
         ) { user, defaultCurrency ->
-        // profile/info沒進資料庫
-        if (user == null) {
-            return@combine BaseCurrencyData.CurrencyContentData(
-                id = 0,
-                icon = "",
-                ccy = "",
-                currencyName = "",
-                amount = 0L,
-                amountStr = 0L.getFormalMoney(),
-                exchangeAmount = "",
-                unit = "",
-                scale = 0
-            )
-        }
-
-        val (fait, crypto) = mappingCurrency(user)
-        //之前有紀錄預設顯示的錢包，並且在原本user的內容中
-        if (defaultCurrency != null) {
-            val currency = fait.find { it.ccy == defaultCurrency }
-                ?: crypto.find { it.ccy == defaultCurrency }
-            if (currency != null) {
-                return@combine currency
+            // profile/info沒進資料庫
+            if (user == null) {
+                return@combine BaseCurrencyData.CurrencyContentData(
+                    id = 0,
+                    icon = "",
+                    ccy = "",
+                    currencyName = "",
+                    amount = 0L,
+                    amountStr = 0L.getFormalMoney(),
+                    exchangeAmount = "",
+                    unit = "",
+                    scale = 0
+                )
             }
+
+            val (fait, crypto) = mappingCurrency(user)
+            //之前有紀錄預設顯示的錢包，並且在原本user的內容中
+            if (defaultCurrency != null) {
+                val currency = fait.find { it.ccy == defaultCurrency }
+                    ?: crypto.find { it.ccy == defaultCurrency }
+                if (currency != null) {
+                    return@combine currency
+                }
+            }
+            return@combine fait.firstOrNull()
+                ?: crypto.firstOrNull()
+                ?: BaseCurrencyData.CurrencyContentData(
+                    id = 0,
+                    icon = "",
+                    ccy = "",
+                    currencyName = "",
+                    amount = 0L,
+                    amountStr = 0L.getFormalMoney(),
+                    exchangeAmount = "",
+                    unit = "",
+                    scale = 0,
+                )
         }
-        return@combine fait.firstOrNull()
-            ?: crypto.firstOrNull()
-            ?: BaseCurrencyData.CurrencyContentData(
-                id = 0,
-                icon = "",
-                ccy = "",
-                currencyName = "",
-                amount = 0L,
-                amountStr = 0L.getFormalMoney(),
-                exchangeAmount = "",
-                unit = "",
-                scale = 0,
-            )
-    }
 
     suspend fun getUserCurrency(): Pair<List<BaseCurrencyData.CurrencyContentData>, List<BaseCurrencyData.CurrencyContentData>> {
         val user = userDataDao.getUser()
         return mappingCurrency(user)
-
     }
 
     private fun CurrencyBean.toCurrencyContentData2(
@@ -135,6 +147,7 @@ class BalanceRepository(
         exchangeAmount: Long?,
         exchangeAmountUnit: String,
         currencySelectedCCY: String,
+        currentSelectedFiat: String,
     ): BaseCurrencyData.CurrencyContentData {
         return BaseCurrencyData.CurrencyContentData(
             id = id,
@@ -143,10 +156,11 @@ class BalanceRepository(
             currencyName = name,
             amount = amount,
             amountStr = if (this.crypto && this.ccy != "USDT") amount.getFormalMoney(1) else amount.getFormalMoney(), //TODO 以後會加上rate，根據不同的需求除不同的rate
-            exchangeAmount = if(exchangeAmount == null) "" else "$exchangeAmountUnit${exchangeAmount.getFormalMoney()}",
+            exchangeAmount = if (exchangeAmount == null) "" else "$exchangeAmountUnit${exchangeAmount.getFormalMoney()}",
             unit = unit,
             scale = if (this.crypto && this.ccy != "USDT") 0 else 2,
             isSelected = ccy == currencySelectedCCY,
+            fiatSelected = ccy == currentSelectedFiat
         )
     }
 
@@ -158,27 +172,31 @@ class BalanceRepository(
         val fiat = arrayListOf<BaseCurrencyData.CurrencyContentData>()
         val crypto = arrayListOf<BaseCurrencyData.CurrencyContentData>()
         if (user == null) return Pair(fiat, crypto)
-        val showAllCurrency =  manager.getValue(UserDataKey.KEY_SHOW_ALL_CURRENCY, false)//先暫時為false
-        val exchangeAmountUnit = currencyList.find { it.ccy == manager.getValue<String>(UserDataKey.KEY_DEFAULT_CURRENCY) }?.unit ?: ""
+        val showAllCurrency = manager.getValue(UserDataKey.KEY_SHOW_ALL_CURRENCY, false)//先暫時為false
+        val exchangeAmountUnit =
+            currencyList.find { it.ccy == manager.getValue<String>(UserDataKey.KEY_DEFAULT_CURRENCY) }?.unit
+                ?: ""
 
         currencyList.forEach { currency ->
             val wallet = user.list.find { currency.ccy == it.currency }
             if (!currency.crypto) {
                 fiat.add(
                     currency.toCurrencyContentData2(
-                        wallet?.balance ?:0L,
+                        wallet?.balance ?: 0L,
                         null,
                         "",
                         "",
+                        ""
                     )
                 )
             } else {
                 crypto.add(
                     currency.toCurrencyContentData2(
-                        wallet?.balance ?:0L,
+                        wallet?.balance ?: 0L,
                         wallet?.convertedAmount,
                         exchangeAmountUnit,
                         "",
+                        ""
                     )
                 )
             }

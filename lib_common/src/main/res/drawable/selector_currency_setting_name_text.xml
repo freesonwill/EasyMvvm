@@ -3,6 +3,9 @@
 
     <!-- 狀態：點擊時 (Pressed state) -->
     <!-- 文字顏色為 #00E0E5 -->
+    <item android:state_selected="true"
+        android:color="@color/color_00E0E5" />
+
     <item android:state_pressed="true"
         android:color="@color/color_00E0E5" />
 
