@@ -34,12 +34,13 @@
             app:tabSelectedTextColor="@color/color_00E0E5"
             app:tabTextColor="@color/color_C0C0C0" />
     </arch.cayenne.lib.common.ui.view.BounceTabLayoutContainer>
+
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:id="@+id/ll_btn_sort"
         android:layout_width="51dp"
         android:layout_height="@dimen/dp_32"
         android:layout_marginTop="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_0"
         android:layout_marginBottom="@dimen/dp_3"
         android:background="@drawable/shape_custom_game_tab_button_bg"
         android:gravity="center"

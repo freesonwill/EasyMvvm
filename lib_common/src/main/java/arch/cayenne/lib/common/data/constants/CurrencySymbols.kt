@@ -35,8 +35,7 @@ object CurrencySymbols {
     fun getFormatAmount(currency: String, amount: Float): String {
         return when (currency) {
             "CNY" -> getFormatCNY(amount)
-            "USD" -> getFormatUSD(amount)
-            else -> String.format("%.2f", amount)
+            else -> getFormatUSD(amount)
         }
     }
 
@@ -53,9 +52,8 @@ object CurrencySymbols {
     @SuppressLint("DefaultLocale")
     fun getFormatCNY(amount: Float): String {
         return when {
-            amount >= 100_000_000 -> String.format("%.2f亿元", amount / 100_000_000)
-            amount >= 10_000 -> String.format("%.2f万元", amount / 10_000)
-            else -> String.format("%.2f元", amount)
+            amount >= 10_000 -> String.format("%.2fw", amount / 10_000)
+            else -> String.format("%.2f", amount)
         }
     }
 }

@@ -92,7 +92,7 @@ object GallerySaveManager {
                 // 对于Android Q及以上，需要设置相对路径
                 put(
                     MediaStore.Images.Media.RELATIVE_PATH,
-                    "$path/wls" // 自定义文件夹
+                    "$path/Screenshots" // 自定义文件夹
                 )
 
                 // 设置图片属性
@@ -168,7 +168,7 @@ object GallerySaveManager {
             val picturesDir = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES
             )
-            val appDir = File(picturesDir, "wls") // 自定义文件夹
+            val appDir = File(picturesDir, "Screenshots") // 自定义文件夹
 
             if (!appDir.exists() && !appDir.mkdirs()) {
                 return null
