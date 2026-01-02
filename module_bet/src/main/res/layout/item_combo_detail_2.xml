@@ -4,9 +4,17 @@
     android:id="@+id/cl_root"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_47"
-    android:layout_marginHorizontal="@dimen/dp_12"
+    android:layout_marginHorizontal="@dimen/dp_0"
     android:clickable="false"
     android:focusable="false">
+
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:id="@+id/bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_combination"
+        android:layout_marginHorizontal="@dimen/dp_12"
+        />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_tab_combo"
@@ -16,7 +24,7 @@
         android:fontFamily="@font/sf_pro"
         android:gravity="start|center_vertical"
         android:maxLines="1"
-        android:paddingStart="@dimen/dp_12"
+        android:paddingStart="@dimen/dp_24"
         android:textColor="@color/color_C0C0C0"
         android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -72,7 +80,7 @@
         android:fontFamily="@font/sf_pro"
         android:gravity="end|center_vertical"
         android:maxLines="1"
-        android:paddingEnd="@dimen/dp_12"
+        android:paddingEnd="@dimen/dp_24"
         android:textColor="@color/color_C0C0C0"
         android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toBottomOf="parent"

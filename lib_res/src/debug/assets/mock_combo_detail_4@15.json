@@ -1,1 +1,211 @@
-{"items":[{"items":[{"combo":"1","money":null,"odds":"@1.75","winMoney":null},{"combo":"2","money":null,"odds":"@1.78","winMoney":null},{"combo":"3","money":null,"odds":"@1.85","winMoney":null},{"combo":"4","money":null,"odds":"@1.42","winMoney":null}],"title":"所有单关注单"},{"items":[{"combo":"1·2","money":null,"odds":"@3.11","winMoney":null},{"combo":"1·3","money":null,"odds":"@3.23","winMoney":null},{"combo":"2·3","money":null,"odds":"@3.29","winMoney":null},{"combo":"1·4","money":null,"odds":"@2.48","winMoney":null},{"combo":"2·4","money":null,"odds":"@2.52","winMoney":null},{"combo":"3·4","money":null,"odds":"@2.62","winMoney":null}],"title":"所有2串1注单"},{"items":[{"combo":"1·2·3","money":null,"odds":"@5.76","winMoney":null},{"combo":"1·2·4","money":null,"odds":"@4.42","winMoney":null},{"combo":"1·3·4","money":null,"odds":"@4.59","winMoney":null},{"combo":"2·3·4","money":null,"odds":"@4.67","winMoney":null}],"title":"所有3串1注单"},{"items":[{"combo":"1·2·3·4","money":null,"odds":"@8.18","winMoney":null}],"title":"所有4串1注单"}],"title":"超级组合","titleTips":"超级组合由所有单关、2串1、3串1、4串1注单组成"}
+{
+  "comboK": 4,
+  "comboV": 15,
+  "items": [
+    {
+      "items": [
+        {
+          "combo": [
+            0
+          ],
+          "money": 1000,
+          "moneySymbol": "¥",
+          "oddsList": [
+            175
+          ]
+        },
+        {
+          "combo": [
+            1
+          ],
+          "money": 1000,
+          "moneySymbol": "¥",
+          "oddsList": [
+            184
+          ]
+        },
+        {
+          "combo": [
+            2
+          ],
+          "money": 1000,
+          "moneySymbol": "¥",
+          "oddsList": [
+            183
+          ]
+        },
+        {
+          "combo": [
+            3
+          ],
+          "money": 1000,
+          "moneySymbol": "¥",
+          "oddsList": [
+            191
+          ]
+        }
+      ],
+      "title": "所有单关注单"
+    },
+    {
+      "items": [
+        {
+          "combo": [
+            0,
+            1
+          ],
+          "money": 1000,
+          "moneySymbol": "¥",
+          "oddsList": [
+            175,
+            184
+          ]
+        },
+        {
+          "combo": [
+            0,
+            2
+          ],
+          "money": 1000,
+          "moneySymbol": "¥",
+          "oddsList": [
+            175,
+            183
+          ]
+        },
+        {
+          "combo": [
+            1,
+            2
+          ],
+          "money": 1000,
+          "moneySymbol": "¥",
+          "oddsList": [
+            184,
+            183
+          ]
+        },
+        {
+          "combo": [
+            0,
+            3
+          ],
+          "money": 1000,
+          "moneySymbol": "¥",
+          "oddsList": [
+            175,
+            191
+          ]
+        },
+        {
+          "combo": [
+            1,
+            3
+          ],
+          "money": 1000,
+          "moneySymbol": "¥",
+          "oddsList": [
+            184,
+            191
+          ]
+        },
+        {
+          "combo": [
+            2,
+            3
+          ],
+          "money": 1000,
+          "moneySymbol": "¥",
+          "oddsList": [
+            183,
+            191
+          ]
+        }
+      ],
+      "title": "所有2串1注单"
+    },
+    {
+      "items": [
+        {
+          "combo": [
+            0,
+            1,
+            2
+          ],
+          "money": 1000,
+          "moneySymbol": "¥",
+          "oddsList": [
+            175,
+            184,
+            183
+          ]
+        },
+        {
+          "combo": [
+            0,
+            1,
+            3
+          ],
+          "money": 1000,
+          "moneySymbol": "¥",
+          "oddsList": [
+            175,
+            184,
+            191
+          ]
+        },
+        {
+          "combo": [
+            0,
+            2,
+            3
+          ],
+          "money": 1000,
+          "moneySymbol": "¥",
+          "oddsList": [
+            175,
+            183,
+            191
+          ]
+        },
+        {
+          "combo": [
+            1,
+            2,
+            3
+          ],
+          "money": 1000,
+          "moneySymbol": "¥",
+          "oddsList": [
+            184,
+            183,
+            191
+          ]
+        }
+      ],
+      "title": "所有3串1注单"
+    },
+    {
+      "items": [
+        {
+          "combo": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "money": 1000,
+          "moneySymbol": "¥",
+          "oddsList": [
+            175,
+            184,
+            183,
+            191
+          ]
+        }
+      ],
+      "title": "所有4串1注单"
+    }
+  ],
+  "serialValue": -1
+}

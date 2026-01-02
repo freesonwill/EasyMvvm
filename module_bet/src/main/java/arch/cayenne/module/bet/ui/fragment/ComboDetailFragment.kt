@@ -8,6 +8,7 @@ import androidx.core.animation.addListener
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
@@ -116,7 +117,7 @@ class ComboDetailFragment :
                         title(),
                         ((if(isSuperCombo(serialValue)) 1 else 2)..comboK).joinToString("、") { k ->
                             if (k == 1) arch.cayenne.lib.res.R.string.title_single_bet.getString()
-                            else R.string.title_combo_bet_tittle.getString(k, 1)
+                            else arch.cayenne.lib.common.R.string.title_combo_bet.getString(k, 1)
                         }
                     )
             }
@@ -161,8 +162,8 @@ class ComboDetailFragment :
             rvContent.adapter = listAdapter
         }
         val screenHeight = getScreenHeight()
-        val minHeight = (screenHeight * 0.52).toInt()
-        val maxHeight = (screenHeight * 0.84).toInt()
+        val minHeight = 386.dp2px
+        val maxHeight = 660.dp2px
         mBinding.clRoot.maxHeight = maxHeight
         mBinding.clRoot.layoutParams = mBinding.clRoot.layoutParams.apply {
             if (data.items.size > 12) {
