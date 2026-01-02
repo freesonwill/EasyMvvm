@@ -45,6 +45,7 @@ class OddsDiffCallback : DiffUtil.ItemCallback<Pair<MarketBeanLite, List<Selecti
 
         oldSelections.forEachIndexed { index, old ->
             val new = newSelections[index]
+            if (old.oddsDisplayType != new.oddsDisplayType) diff.add("odds")
             if (old.odds != new.odds) diff.add("odds")
             if (old.shortName != new.shortName) diff.add("shortName")
             if (old.active != new.active) diff.add("active")

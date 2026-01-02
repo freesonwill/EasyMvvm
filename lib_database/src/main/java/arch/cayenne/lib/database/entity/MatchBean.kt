@@ -177,14 +177,27 @@ data class SelectionBeanLite(
     val marketId: Long,
     val name: String,
     val shortName: String?,
-    val odds: Int,
+    val odds: Int,//赔率，始终为欧洲盘
     val active: Boolean,
     val parlay: Boolean,
     var isSelected: Boolean = false,
     var trend: Int = 0,
-){
-    fun oddsDisplay(oddsType:Int):Int {
-        return odds - 100 * oddsType
+    val oddsDisplayType: Int //查询此条数据时，系统设置的赔率显示方式， 注意和odds不关联， odds始终为欧洲盘赔率
+) {
+    fun oddsDisplay(oddsType: Int): Int {
+        /**
+         * 根据赔率显示类型返回对应的赔率值。
+         *
+         * @param oddsType 显示赔率的类型：
+         *                 - 0: 返回原始赔率值。欧洲盘
+         *                 - 其他值: 返回原始赔率值减去100。目前只有香港盘
+         * @return 根据赔率显示类型计算后的赔率值。
+         */
+        return if (oddsType == 0) {
+            odds
+        } else {
+            odds - 100
+        }
     }
 }
 
@@ -197,7 +210,7 @@ interface MatchListItem
 
 data class MatchWithMarkets(
     val match: MatchBean,
-    val markets: List<MarketWithSelections>
+    val markets: List<MarketWithSelections>,
 ) : MatchListItem
 
 //用來做notify收到時組合起來更新資料表用的

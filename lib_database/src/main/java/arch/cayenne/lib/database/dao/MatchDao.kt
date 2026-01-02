@@ -14,6 +14,7 @@ import arch.cayenne.lib.database.entity.MatchBean
 import arch.cayenne.lib.database.entity.MatchBeanLite
 import arch.cayenne.lib.database.entity.MatchMarketCrossRef
 import arch.cayenne.lib.database.entity.MatchWithMarkets
+import arch.cayenne.lib.database.entity.OddsStatusEnum
 import arch.cayenne.lib.database.entity.OldSelectionLite
 import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.lib.database.entity.SelectionBeanLite
@@ -202,7 +203,8 @@ abstract class MatchDao : BaseDao<MatchBean>() {
                 "sel.detail_active as detailActive, " +
                 "sel.name as name, " +
                 "sel.shortName as shortName, " +
-                "CASE WHEN :isEuropeOddsDisplay THEN sel.odds ELSE sel.odds END as odds, " +
+                "sel.odds odds," +
+                ":oddsDisplayType as oddsDisplayType, " +
                 "sel.active as active, " +
                 "sel.parlay as parlay, " +
                 "0 as isSelected," +
@@ -214,7 +216,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     abstract suspend fun getSelectionLites(
         matchId: Long,
         marketId: Long,
-        isEuropeOddsDisplay: Boolean = true
+        oddsDisplayType: Int
     ): List<SelectionBeanLite>
 
     @Transaction
@@ -225,7 +227,8 @@ abstract class MatchDao : BaseDao<MatchBean>() {
                 "sel.detail_active as detailActive, " +
                 "sel.name as name, " +
                 "sel.shortName as shortName, " +
-                "sel.odds as odds, " +
+                "sel.odds as odds," +
+                ":oddsDisplayType as oddsDisplayType ," +
                 "sel.active as active, " +
                 "sel.parlay as parlay, " +
                 "0 as isSelected," +
@@ -236,6 +239,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     )
     abstract suspend fun getSelectionLites(
         matchIds: List<Long>,
+        oddsDisplayType: Int
     ): List<SelectionBeanLite>
 
     @Transaction
@@ -245,13 +249,12 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Transaction
     @Query(
         "SELECT bean.selectionId as selectionId, " +
-                "CASE WHEN :isEuropeOddsDisplay THEN bean.odds ELSE bean.odds END as odds " +
+                "bean.odds as odds " +
                 "FROM SelectionBean bean " +
                 "WHERE selectionId IN (:selectionIds)"
     )
     abstract suspend fun getOddSelectionsByIds(
         selectionIds: List<Long>,
-        isEuropeOddsDisplay: Boolean
     ): List<OldSelectionLite>
 
     @Query("DELETE FROM MatchBean")
@@ -437,6 +440,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     open suspend fun updateOnlyMatch(
         updateIds: List<Long>,     //更新的賽事id
         matchLites: List<MatchBeanLite>,
+        oddsDisplayType: Int
     ): List<MatchWithMarkets> {
         matchLites.forEach { bean ->
             updateNotifyMatchBasic(
@@ -460,7 +464,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
                 )
             }
         }
-        return getOneMatchByIds(updateIds)
+        return getOneMatchByIds(updateIds, oddsDisplayType)
     }
 
     @Transaction
@@ -471,7 +475,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         selections: List<SelectionBean>,
         marketCrossRef: List<MatchMarketCrossRef>,
         marketSelectCrossRefs: List<MarketSelectCrossRef>,
-        isEuropeOddsDisplay: Boolean,
+        oddsDisplayType: Int,
     ): List<MatchWithMarkets> {
         matchLites.forEach { bean ->
             updateNotifyMatchBasic(
@@ -495,7 +499,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
                 )
             }
         }
-        val oldOdds = getOddSelectionsByIds(selections.map { it.selectionId }, isEuropeOddsDisplay)
+        val oldOdds = getOddSelectionsByIds(selections.map { it.selectionId })
         insertMarkets(markets)
         insertSelections(selections)
         insertMatchMarketCrossRef(marketCrossRef)
@@ -504,7 +508,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
             marketCrossRef.map { it.matchId },
             marketCrossRef.map { it.marketId })
         insertMarketSelectionCrossRef(marketSelectCrossRefs)
-        return getOneMatchByIds(updateIds).onEach {
+        return getOneMatchByIds(updateIds, oddsDisplayType).onEach {
             //加入賠率趨勢
             it.markets.forEach { markets ->
                 markets.selections.forEach { selection ->
@@ -534,10 +538,11 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Transaction
     open suspend fun getOneMatchByIds(
         matchId: List<Long>,
+        oddsDisplayType: Int
     ): List<MatchWithMarkets> {
         val matchBeans = getMatchByIds(matchId)
         val marketBeans = getMarketsForMatches(matchId)
-        val selectionBeans = getSelectionLites(matchId)
+        val selectionBeans = getSelectionLites(matchId, oddsDisplayType)
 
         return matchBeans.map { matchBean ->
             val markets =
@@ -554,13 +559,13 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Transaction
     open suspend fun getOneMatchById(
         matchId: Long,
-        isEuropeOddsDisplay: Boolean
+        oddsDisplayType: Int
     ): MatchWithMarkets {
         return getMatchById(matchId).let { matchBean ->
             val markets = getMarkets(matchBean.matchId).map { marketBean ->
                 val selections = specialHandling(
                     marketBean.marketId,
-                    getSelectionLites(matchBean.matchId, marketBean.marketId, isEuropeOddsDisplay)
+                    getSelectionLites(matchBean.matchId, marketBean.marketId, oddsDisplayType)
                 )
                 MarketWithSelections(marketBean, selections)
             }

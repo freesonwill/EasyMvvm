@@ -273,7 +273,6 @@ open class SubHomeViewModel : BaseViewModel() {
 
     //切換當前的二級選項(各項運動)
     open fun setCurrentSport(sportId: Int) {
-        "setCurrentSport: $sportId, playType: $currentPlayTypeId".logi("dataIssue")
         viewModelScope.launch(Dispatchers.IO) {
             _currentSportId.value = sportId
             repository.updateSelectedSportId(currentPlayTypeId, currentSportId)
