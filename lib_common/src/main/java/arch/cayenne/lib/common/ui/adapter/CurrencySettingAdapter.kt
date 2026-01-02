@@ -1,5 +1,6 @@
 package arch.cayenne.lib.common.ui.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -8,16 +9,18 @@ import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.databinding.ItemCurrencySettingBinding
 import arch.cayenne.lib.common.ui.viewholder.CurrencySettingViewHolder
 
-class CurrencySettingAdapter(val listener: ((BaseCurrencyData.CurrencyContentData) -> Unit)? = null):
+class CurrencySettingAdapter :
     BaseAdapter<BaseCurrencyData.CurrencyContentData, CurrencySettingViewHolder, ItemCurrencySettingBinding>(
         CurrencySettingCompare()
     ) {
+    private var clicklistener: OnItemClickListener? = null
+
     override fun convertPlus(
         holder: CurrencySettingViewHolder,
         binding: ItemCurrencySettingBinding,
         position: Int
     ) {
-        holder.bind(getItem(position), listener)
+        holder.bind(getItem(position), clicklistener)
     }
 
     override fun createViewBinding(
@@ -33,6 +36,22 @@ class CurrencySettingAdapter(val listener: ((BaseCurrencyData.CurrencyContentDat
         viewType: Int
     ): CurrencySettingViewHolder {
         return CurrencySettingViewHolder(binding)
+    }
+
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        clicklistener = listener
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(bean: BaseCurrencyData.CurrencyContentData)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateSelect(ccy: String) {
+        currentList.forEach{ bean ->
+            bean.fiatSelected = bean.ccy == ccy
+        }
+        notifyDataSetChanged()
     }
 }
 

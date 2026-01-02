@@ -1,7 +1,6 @@
 package arch.cayenne.lib.common.ui.fragment
 
 import android.animation.ObjectAnimator
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.graphics.Outline
 import android.os.Bundle
@@ -52,7 +51,6 @@ class CurrencyDialogFragment constructor() :
 
     private var dismissListener: (() -> Unit)? = null
     private var onClickListener: ((BaseCurrencyData.CurrencyContentData) -> Unit)? = null
-    private var onFiatListener: ((BaseCurrencyData.CurrencyContentData) -> Unit)? = null
     private val balanceViewModel: BalanceViewModel by viewModel()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -127,12 +125,7 @@ class CurrencyDialogFragment constructor() :
             doExitAnim()
         }
     }
-    private val settingAdapter: CurrencySettingAdapter by lazy {
-        CurrencySettingAdapter {
-            this.onFiatListener?.invoke(it)
-        }
-    }
-
+    private val settingAdapter: CurrencySettingAdapter by lazy { CurrencySettingAdapter() }
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
@@ -191,7 +184,6 @@ class CurrencyDialogFragment constructor() :
                 }
             )
         }
-
         //解決搜尋時動態改變Recycleview高度後，blurView下方左右的圓角消失問題
         mBinding.blurView.apply {
             clipToOutline = true // 開啟裁剪
@@ -207,7 +199,6 @@ class CurrencyDialogFragment constructor() :
                 }
             }
         }
-
     }
 
     override fun initData() {
@@ -215,7 +206,6 @@ class CurrencyDialogFragment constructor() :
         balanceViewModel.getUserCurrency()
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun initListener() {
         balanceViewModel.onUserCurrencyChange.observe(viewLifecycleOwner) { (fiat, crypto) ->
             val list = arrayListOf<BaseCurrencyData>()
@@ -235,8 +225,13 @@ class CurrencyDialogFragment constructor() :
                 mBinding.blurView.invalidateOutline()
             }
             settingAdapter.submitList(fiat)
-            settingAdapter.notifyDataSetChanged()
         }
+        settingAdapter.setOnItemClickListener(object : CurrencySettingAdapter.OnItemClickListener {
+            override fun onItemClick(bean: BaseCurrencyData.CurrencyContentData) {
+                balanceViewModel.setFiatCurrency(bean.ccy)
+                settingAdapter.updateSelect(bean.ccy)
+            }
+        })
     }
 
     override fun onStart() {
@@ -271,9 +266,5 @@ class CurrencyDialogFragment constructor() :
 
     fun setOnItemClickListener(listener: (BaseCurrencyData.CurrencyContentData) -> Unit) {
         this.onClickListener = listener
-    }
-
-    fun setFiatClickListener(listener: (BaseCurrencyData.CurrencyContentData) -> Unit) {
-        this.onFiatListener = listener
     }
 }

@@ -51,9 +51,6 @@ class BalanceView : FrameLayout {
                 setMoney(it)
                 setMoney(it.amountStr)
             }
-            f.setFiatClickListener {
-                setFiat(it)
-            }
             f.show(childFragmentManager)
         }
 
@@ -87,7 +84,7 @@ class BalanceView : FrameLayout {
         viewModel?.setFiatCurrency(data.ccy)
     }
 
-    fun setIcon(icon: String) {
+    private fun setIcon(icon: String) {
         Glide.with(context)
             .load(icon)
             .placeholder(R.drawable.ic_wali_demo)
