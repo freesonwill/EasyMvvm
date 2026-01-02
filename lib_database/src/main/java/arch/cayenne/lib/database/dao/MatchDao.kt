@@ -225,7 +225,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
                 "sel.detail_active as detailActive, " +
                 "sel.name as name, " +
                 "sel.shortName as shortName, " +
-                "CASE WHEN :isEuropeOddsDisplay THEN sel.odds ELSE sel.odds END as odds, " +
+                "sel.odds as odds, " +
                 "sel.active as active, " +
                 "sel.parlay as parlay, " +
                 "0 as isSelected," +
@@ -236,7 +236,6 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     )
     abstract suspend fun getSelectionLites(
         matchIds: List<Long>,
-        isEuropeOddsDisplay: Boolean = true
     ): List<SelectionBeanLite>
 
     @Transaction
@@ -438,7 +437,6 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     open suspend fun updateOnlyMatch(
         updateIds: List<Long>,     //更新的賽事id
         matchLites: List<MatchBeanLite>,
-        isEuropeOddsDisplay: Boolean,   //目前設定是否是歐洲盤
     ): List<MatchWithMarkets> {
         matchLites.forEach { bean ->
             updateNotifyMatchBasic(
@@ -462,7 +460,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
                 )
             }
         }
-        return getOneMatchByIds(updateIds, isEuropeOddsDisplay)
+        return getOneMatchByIds(updateIds)
     }
 
     @Transaction
@@ -506,7 +504,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
             marketCrossRef.map { it.matchId },
             marketCrossRef.map { it.marketId })
         insertMarketSelectionCrossRef(marketSelectCrossRefs)
-        return getOneMatchByIds(updateIds, isEuropeOddsDisplay).onEach {
+        return getOneMatchByIds(updateIds).onEach {
             //加入賠率趨勢
             it.markets.forEach { markets ->
                 markets.selections.forEach { selection ->
@@ -536,11 +534,10 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Transaction
     open suspend fun getOneMatchByIds(
         matchId: List<Long>,
-        isEuropeOddsDisplay: Boolean
     ): List<MatchWithMarkets> {
         val matchBeans = getMatchByIds(matchId)
         val marketBeans = getMarketsForMatches(matchId)
-        val selectionBeans = getSelectionLites(matchId, isEuropeOddsDisplay)
+        val selectionBeans = getSelectionLites(matchId)
 
         return matchBeans.map { matchBean ->
             val markets =

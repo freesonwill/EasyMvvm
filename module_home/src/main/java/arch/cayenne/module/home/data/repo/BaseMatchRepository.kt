@@ -132,7 +132,7 @@ abstract class BaseMatchRepository(
      * 取得特定的match，藉由matchId
      * */
     suspend fun getOneMatchById(matchId: Long): MatchWithMarkets? {
-        return matchDao.getOneMatchByIds(arrayListOf(matchId), isEuropeOddsDisplay).setSelected(betDao).firstOrNull()
+        return matchDao.getOneMatchByIds(arrayListOf(matchId)).setSelected(betDao).firstOrNull()
     }
 
     /**
@@ -195,7 +195,7 @@ abstract class BaseMatchRepository(
                 )
             )
         }
-        return matchDao.updateOnlyMatch(matchLites.map { it.matchId }, matchLites, isEuropeOddsDisplay).setSelected(betDao)
+        return matchDao.updateOnlyMatch(matchLites.map { it.matchId }, matchLites).setSelected(betDao)
     }
 
     /**
@@ -203,7 +203,7 @@ abstract class BaseMatchRepository(
      * @return 根據條件query的賽事資料
      * */
     suspend fun queryFullMatches(matchIds: List<Long>, selectedIds: List<Long>? = null) : List<MatchWithMarkets> {
-        val result = matchDao.getOneMatchByIds(matchIds, isEuropeOddsDisplay).setSelected(betDao, selectedIds)
+        val result = matchDao.getOneMatchByIds(matchIds).setSelected(betDao, selectedIds)
         return matchIds.mapNotNull { id -> result.find { it.match.matchId == id } }
     }
 
