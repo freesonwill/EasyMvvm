@@ -116,7 +116,7 @@ class ModuleInitializer : DefaultInitializer<String> {
     private val repoModules = module {
         factory { CoroutineScope(Dispatchers.IO) }
         single { MutableStateFlow(PreloadEnum.INIT) }
-        factory { ModuleRepository(get(), get(), get(named("3n1")), get(named("mock")), get(), get(), get()) }
+        factory { ModuleRepository(get(), get(), get(named("sport_http")), get(named("3n1_http")), get(), get(), get()) }
         factory { (scope: CoroutineScope) -> MainRepository(scope, get(), get(), get(), get(), get()) }
         factory { (scope: CoroutineScope) -> SplashRepository(scope, get(), get()) }
     }

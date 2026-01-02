@@ -25,8 +25,8 @@ class HttpModuleInitializer : DefaultInitializer<String> {
         "$TAG create ....".logd(TAG)
         loadKoinModules(module {
             single(named("wnlApi")) {  HttpClient.Builder("http://co-api.51wnl.com",5000).build()  }
-            single(named("3n1")) {  HttpClient.Builder("https://betwavepro.ja700.com/",5000).build()  }
-            single(named("mock")) {
+            single(named("sport_http")) {  HttpClient.Builder("https://betwavepro.ja700.com/",5000).build()  }
+            single(named("3n1_http")) {
                 HttpClient.Builder("$BASE_URL/" ,5000)
                     .addInterceptor(HeaderInterceptor(get()))
                     .build()

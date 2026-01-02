@@ -27,8 +27,7 @@ class PopUpSlotModuleInitializer : DefaultInitializer<String> {
             PopupSlotRepository(
                 get() ,
                 get() ,
-                get(named("3n1")) ,
-                get(named("mock")) ,
+                get(named("3n1_http")) ,
                 get() ,
                 get() ,
                 get()
