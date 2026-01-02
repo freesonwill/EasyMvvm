@@ -168,7 +168,7 @@ class ChatServerController(
             replaceUserName = "",
             msgType = msgType,
             extraData = extraData,
-            chatType = chatType
+            chatType = chatType,
         )
 //        "addLocalMsg msg=${Gson().toJson(msg)}".logd(TAG)
         return msg

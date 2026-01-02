@@ -277,6 +277,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                 onAnimEnd = {
                     updateInputIcon(it)
                 })
+            keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD,9)
         }
     }
 
@@ -721,13 +722,13 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                     })
                 }
                 onEnd.invoke()
-                if (chatAtHelper.shouldOpenAtDialog) { //如果点击了输入框@btn，动画完成后添加@到输入框框
-                    chatAtHelper.shouldOpenAtDialog = false
-                    lifecycleScope.launch {
-                        delay(500)
-                        chatAtHelper.addAtInEt()
-                    }
-                }
+//                if (chatAtHelper.shouldOpenAtDialog) { //如果点击了输入框@btn，动画完成后添加@到输入框框
+//                    chatAtHelper.shouldOpenAtDialog = false
+//                    lifecycleScope.launch {
+//                        delay(500)
+//                        chatAtHelper.addAtInEt()
+//                    }
+//                }
             })
             if (isFirstOpen) {
                 mainAnim?.startDelay = 200L

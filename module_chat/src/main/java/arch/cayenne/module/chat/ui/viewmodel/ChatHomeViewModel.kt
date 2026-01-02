@@ -90,6 +90,12 @@ class ChatHomeViewModel() : BaseViewModel() {
 
     var currentSelectBetShare: BetShareBean? = null
 
+    var myUid: String = ""
+
+    override fun initViewModel() {
+        super.initViewModel()
+        myUid = userDataManager.getValue(UserDataKey.KEY_UID,-1L).toString()
+    }
 
     fun setArguments(matchId: Long?, chatType: ChatType) {
         //直播间重新从联赛进入时，刷新matchId 重新进入聊天室
@@ -136,7 +142,6 @@ class ChatHomeViewModel() : BaseViewModel() {
         }
     }
 
-
     /**
      *推出聊天室
      * */
@@ -154,7 +159,7 @@ class ChatHomeViewModel() : BaseViewModel() {
         refUid: List<String>? = null,
         chatType: ChatType,
         msgType: MsgType,
-        extraData: Map<String,String>?,
+        extraData: Map<String, String>?,
     ) {
         matchId?.let {
             chatServer.sendMsgToServer(it, content, chatType, msgType, extraData, refUid)
@@ -207,7 +212,7 @@ class ChatHomeViewModel() : BaseViewModel() {
                 refUids,
                 users
             ) ?: return null
-            msgBean = ChatMsgPageBean.toChatPageBean(localMsg)
+            msgBean = ChatMsgPageBean.toChatPageBean(localMsg,myUid)
             "localMsg msgBean:${Gson().toJson(localMsg)}".logd(TAG)
         } else {
             val localMsg =
@@ -220,7 +225,7 @@ class ChatHomeViewModel() : BaseViewModel() {
                     null
                 )
                     ?: return null
-            msgBean = ChatMsgPageBean.toChatPageBean(localMsg)
+            msgBean = ChatMsgPageBean.toChatPageBean(localMsg,myUid)
         }
 //        "createLocalMsg msgBean:${Gson().toJson(msgBean)}".logd(TAG)
         return msgBean
@@ -236,9 +241,9 @@ class ChatHomeViewModel() : BaseViewModel() {
             return null
         }
         val chatMsg =
-            chatServer.addLocalMsg(emojiKey, chatType, MsgType.MSG_TYPE_TEXT, null, null,null)
+            chatServer.addLocalMsg(emojiKey, chatType, MsgType.MSG_TYPE_TEXT, null, null, null)
                 ?: return null
-        return ChatMsgPageBean.toChatPageBean(chatMsg)
+        return ChatMsgPageBean.toChatPageBean(chatMsg,myUid)
     }
 
 

@@ -35,6 +35,7 @@ class ChatATHelper(
     private val context: Context,
     private val chatEtInput: EditText,
 ) {
+    private val TAG = ChatATHelper::class.java.simpleName
     private val atPattern = "@[^\\s@]+\\s".toRegex()
     private val atPopupWindow = SearchAtPopupWindow()
 
@@ -74,13 +75,13 @@ class ChatATHelper(
 //            }
 //            closeAtPopup = false
 
-            if (startInputPosition == -1 && !isAtInput && !isEditDelete) {
-                atPopupWindow.dismiss()
-            }
+//            if (startInputPosition == -1 && !isAtInput && !isEditDelete) {
+//                atPopupWindow.dismiss()
+//            }
 //            if (!isEditDelete && startInputPosition >= 0) {
 //                listenEditInput()
 //            }
-            isAtInput = false
+//            isAtInput = false
             etWatchListen?.invoke(s)
         }
     }
@@ -197,30 +198,42 @@ class ChatATHelper(
         }
     }
 
-    fun addAtInEt() {
-        chatEtInput.apply {
-            text.insert(selectionStart, "@")
-        }
-    }
+//    fun addAtInEt() {
+//        chatEtInput.apply {
+//            text.insert(selectionStart, "@")
+//        }
+//    }
 
     // 移除at消息背景
     fun removeMentionSpan(editText: EditText, position: Int, count: Int) {
-        val spannable = SpannableStringBuilder(editText.text)
+        var spannable = SpannableStringBuilder(editText.text)
         val spans = spannable.getSpans(position, position + 1, MentionSpan::class.java)
         spans.forEach { mention ->
             val spanStart = spannable.getSpanStart(mention)
             val spanEnd = spannable.getSpanEnd(mention)
+            "removeMentionSpan position $position spanStart $spanStart spanEnd $spanEnd count $count ".logd(
+                TAG
+            )
             //两个@中间，在后一个@前面插入
-
-            if (position in spanStart + 1..<spanEnd) {
+            if (position in spanStart..<spanEnd) {
                 spannable.removeSpan(mention)
-                if (spanStart + 1 == position) {
-                    val tv = spannable.substring(spanStart + 3, spanEnd)
-                    val mentionSpan = MentionSpan(mention.msgType, tv, null, atClick)
-                    spannable.setSpan(
-                        mentionSpan, spanStart + 2, spanEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
+                val checkLastIndex = position + count
+                if (checkLastIndex >= spanEnd) {
+                    return
                 }
+
+                //检查是否在空字符串前面加的字符 如果是重新设置需要添加背景色
+                if (spannable[checkLastIndex] == ' ') {
+                    val mentionSpan = MentionSpan(mention.msgType, "", null, atClick)
+                    spannable.setSpan(
+                        mentionSpan,
+                        spanStart,
+                        position,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    spannable = spannable.replace(checkLastIndex,checkLastIndex+1,"")
+                }
+
                 editText.text = spannable
                 editText.setSelection(position)
             }
@@ -269,7 +282,14 @@ class ChatATHelper(
                     val spans = spannable.getSpans(
                         cursorPositionStart, cursorPositionEnd, MentionSpan::class.java
                     )
-
+                    if (spans.size == 1) {//在一个at消息中多选删除时，先全选，如果是全选就直接删除
+                        val spanStart = spannable.getSpanStart(spans[0])
+                        val spanEnd = spannable.getSpanEnd(spans[0])
+                        if (spanStart != cursorPositionStart || spanEnd != cursorPositionEnd) {
+                            editText.setSelection(spanStart, spanEnd)
+                            return@setOnKeyListener true
+                        }
+                    }
                     val list: List<String> = spans.map {
                         editText.text.removeSpan(it)
                         it.tv

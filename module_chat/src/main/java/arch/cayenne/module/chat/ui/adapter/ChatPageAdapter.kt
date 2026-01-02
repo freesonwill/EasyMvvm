@@ -17,6 +17,7 @@ import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 import arch.cayenne.module.chat.data.model.ColorSpan
 import arch.cayenne.module.chat.data.model.MentionSpan
 import arch.cayenne.module.chat.databinding.ItemLiveChatBinding
+import arch.cayenne.module.chat.manager.SoftKeyBoardAnim
 import arch.cayenne.module.chat.utils.ChatMsgUtils
 
 class ChatPageAdapter(
@@ -49,7 +50,7 @@ class ChatPageAdapter(
                         if (widget != null && buffer != null && event?.action == MotionEvent.ACTION_DOWN) {
                             val msgId = widget.tag as String
                             val position = currentList.indexOfFirst { it.msgId == msgId }
-                            if(getItem(position).msgType == ChatMsgType.SYSTEM){
+                            if (getItem(position).msgType == ChatMsgType.SYSTEM) {
                                 return true
                             }
                             isLongPress = false
@@ -57,7 +58,7 @@ class ChatPageAdapter(
                         } else if (widget != null && buffer != null && event?.action == MotionEvent.ACTION_UP) {
                             val msgId = widget.tag as String
                             val position = currentList.indexOfFirst { it.msgId == msgId }
-                            if(getItem(position).msgType == ChatMsgType.SYSTEM){
+                            if (getItem(position).msgType == ChatMsgType.SYSTEM) {
                                 return true
                             }
                             // 获取点击位置
@@ -130,6 +131,11 @@ class ChatPageAdapter(
                 arch.cayenne.lib.common.R.color.color_0FFFFFFF
             }
         )
+        if (item.flashFlag) {
+            item.flashFlag = false
+            SoftKeyBoardAnim.atFlashNotifyAnim(holder.nBinding.tv)
+        }
+
     }
 
     override fun createViewBinding(
@@ -144,7 +150,6 @@ class ChatPageAdapter(
         holder.initListener()
         return holder
     }
-
 
 
 }
