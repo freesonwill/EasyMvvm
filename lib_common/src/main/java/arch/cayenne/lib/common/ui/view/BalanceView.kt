@@ -20,27 +20,23 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.bumptech.glide.Glide
 
 class BalanceView : FrameLayout {
-    private val mBinding: ViewBalanceBinding
+
+    private val mBinding: ViewBalanceBinding = ViewBalanceBinding.inflate(LayoutInflater.from(context), this, true)
+
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
 
-    }
     var onAddClickListener: (() -> Unit)? = null
     var viewModel: BalanceViewModel? = null
-    init {
-        mBinding = ViewBalanceBinding.inflate(LayoutInflater.from(context), this, true)
-    }
 
     fun init(
         childFragmentManager: FragmentManager
     ) {
         mBinding.root.clickNoRepeat {
             rotateArrow(true)
-
             val location = IntArray(2)
             mBinding.root.getLocationInWindow(location)
-
             val offset = if(isPortrait()) {
                 val h = ViewUtils.getStatusBarHeight(mBinding.root.context)
                 location.last() - h + mBinding.root.measuredHeight - 1.dp2px
@@ -51,7 +47,7 @@ class BalanceView : FrameLayout {
             f.setOnDismissListener {
                 rotateArrow(false)
             }
-            f.setonItemClickListener {
+            f.setOnItemClickListener {
                 setMoney(it)
                 setMoney(it.amountStr)
             }
@@ -80,11 +76,15 @@ class BalanceView : FrameLayout {
         mBinding.tvWalletBalance.text = money
     }
 
-    fun setMoney(data: BaseCurrencyData.CurrencyContentData2) {
+    private fun setMoney(data: BaseCurrencyData.CurrencyContentData) {
         viewModel?.setDefaultCurrency(data.ccy)
     }
 
-    fun setIcon(icon: String) {
+    private fun setFiat(data: BaseCurrencyData.CurrencyContentData){
+        viewModel?.setFiatCurrency(data.ccy)
+    }
+
+    private fun setIcon(icon: String) {
         Glide.with(context)
             .load(icon)
             .placeholder(R.drawable.ic_wali_demo)

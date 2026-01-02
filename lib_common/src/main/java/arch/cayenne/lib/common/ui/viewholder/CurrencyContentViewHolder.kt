@@ -11,8 +11,8 @@ import com.bumptech.glide.Glide
 
 class CurrencyContentViewHolder(
     val mBinding: ItemCurrencyContentBinding,
-    val listener: ((BaseCurrencyData.CurrencyContentData2) -> Unit)?) : BaseViewHolder(mBinding) {
-    fun bind(item: BaseCurrencyData.CurrencyContentData2?, isLastItem: Boolean) {
+    val listener: ((BaseCurrencyData.CurrencyContentData) -> Unit)?) : BaseViewHolder(mBinding) {
+    fun bind(item: BaseCurrencyData.CurrencyContentData?, isLastItem: Boolean) {
         if (item == null) return
         with(mBinding) {
             if (isLastItem) {
