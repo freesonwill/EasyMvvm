@@ -52,6 +52,7 @@
         app:layout_constraintWidth_percent="0.25"
         app:skinnableFontWeight="400"
         android:paddingBottom="1.6dp"
+        android:paddingEnd="3dp"
         tools:text="$10.00" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -60,7 +61,7 @@
         android:layout_height="0dp"
         android:fontFamily="@font/sf_pro"
         android:gravity="center"
-        android:paddingStart="@dimen/dp_13"
+        android:paddingStart="@dimen/dp_8"
         android:textColor="@color/color_C0C0C0"
         android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toBottomOf="parent"
