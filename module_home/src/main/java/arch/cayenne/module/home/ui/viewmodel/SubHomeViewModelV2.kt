@@ -10,7 +10,6 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.ui.viewmodel.Event
-import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.database.entity.UserDataBean
@@ -53,14 +52,6 @@ open class SubHomeViewModelV2 : BaseViewModel() {
     val tournaments by lazy { MutableLiveData<Event<List<TournamentCombo>>>() } // 今日/早盤
 
     val tournamentsPlain by lazy { MutableLiveData<Event<List<TournamentDataModel>>>() } // 今日/滚球/早盤
-
-
-    //聯賽收回上滑動畫結束事件
-    private val _tournamentSlideOutEnd = MutableLiveData<Event<Unit>>()
-    val tournamentSlideOutEnd: LiveData<Event<Unit>> = _tournamentSlideOutEnd
-
-    private val _collapseTournamentDropdown = MutableLiveData<Event<Boolean>>()
-    val collapseTournamentDropdown: MutableLiveData<Event<Boolean>> = _collapseTournamentDropdown
 
     private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
     private val _selectedSkinType = MutableLiveData<Event<String>>()
@@ -330,18 +321,6 @@ open class SubHomeViewModelV2 : BaseViewModel() {
         }
     }
 
-
-    fun requestCollapseTournamentDropdown() {
-        _collapseTournamentDropdown.value = Event(true)
-    }
-
-    fun consumeCollapseTournamentDropdown() {
-        _collapseTournamentDropdown.value = Event(false)
-    }
-
-    fun notifyTournamentSlideOutEnd() {
-        _tournamentSlideOutEnd.value = Event(Unit)
-    }
 
     // 標記外部tab是否有切換（用於判斷是否需要清空彈窗的篩選結果）
     var hasTournamentTabSwitched = false

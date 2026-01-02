@@ -161,19 +161,6 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModelV2, FragmentSubHomeV2Bind
             setupMatchFragment()
         }
 
-        mViewModel.collapseTournamentDropdown.observeEvent(
-            viewLifecycleOwner,
-            this
-        ) { shouldCollapse ->
-            if (shouldCollapse && isExpanded) {
-                toggleTournamentSorting(false)
-                mViewModel.consumeCollapseTournamentDropdown() // 重置事件，避免重複觸發
-            }
-        }
-
-        mViewModel.tournamentSlideOutEnd.observeEvent(viewLifecycleOwner, this) {
-            mBinding.layoutContainer.llTournamentsDropdown.visibility = View.GONE
-        }
 
         mViewModel.savedTournamentSelections.observe(viewLifecycleOwner) { selections ->
             if (selections.size > 1) {
@@ -264,7 +251,6 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModelV2, FragmentSubHomeV2Bind
 
     // 設置更多按鈕的顯示狀態
     override fun onFragmentUnSelected() {
-        mViewModel.requestCollapseTournamentDropdown()
         // 收起排序選單
         if (isExpanded) {
             toggleTournamentSorting(false)
