@@ -76,5 +76,9 @@ class  PersonalInfoFragment : BaseFragment<PersonalInfoViewModel, FragmentPerson
 
             }
         }
+
+        mViewModel.uploadResult.observe(viewLifecycleOwner) { filePath ->
+               mViewModel.getAccountInfo()
+        }
     }
 }
