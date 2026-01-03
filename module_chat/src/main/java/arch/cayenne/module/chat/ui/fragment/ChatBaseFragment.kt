@@ -267,6 +267,10 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
             sendText()
         }
         mViewModel.atLiveData.observe(viewLifecycleOwner) {
+            //TODO 暂时去除  去除相同的at用户
+//            if(!chatAtHelper.checkAtInEtInput(it.uid)){
+//                return@observe
+//            }
             chatAtHelper.addAtMentionSpan(it.userName, ChatRefUser(it.uid,it.userName,it.avatarId,it.replaceUserName))
             SoftKeyBoardAnim.etAnimWhenEtContentChange(
                 mBinding,
@@ -277,6 +281,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                 onAnimEnd = {
                     updateInputIcon(it)
                 })
+            keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD,9)
         }
     }
 
@@ -721,13 +726,13 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                     })
                 }
                 onEnd.invoke()
-                if (chatAtHelper.shouldOpenAtDialog) { //如果点击了输入框@btn，动画完成后添加@到输入框框
-                    chatAtHelper.shouldOpenAtDialog = false
-                    lifecycleScope.launch {
-                        delay(500)
-                        chatAtHelper.addAtInEt()
-                    }
-                }
+//                if (chatAtHelper.shouldOpenAtDialog) { //如果点击了输入框@btn，动画完成后添加@到输入框框
+//                    chatAtHelper.shouldOpenAtDialog = false
+//                    lifecycleScope.launch {
+//                        delay(500)
+//                        chatAtHelper.addAtInEt()
+//                    }
+//                }
             })
             if (isFirstOpen) {
                 mainAnim?.startDelay = 200L

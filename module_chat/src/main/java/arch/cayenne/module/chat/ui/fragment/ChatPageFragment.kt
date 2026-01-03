@@ -51,7 +51,7 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
         }
         val adapter = ChatPageAdapter(
             specialClick = { bean, clickSpane, clickType ->
-                "bean.msgType=${bean.msgType},clickType=$clickType".logd(TAG)
+                "click bean.msgType=${bean.msgType},clickType=$clickType".logd(TAG)
                 if(bean.msgType == ChatMsgType.SYSTEM){
                     return@ChatPageAdapter
                 }
@@ -80,7 +80,7 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                 }
             },
             longClick = { bean ->
-                "bean.msgType=${bean.msgType}".logd(TAG)
+                "longClick bean.msgType=${bean.msgType}".logd(TAG)
 
                 if(bean.msgType == ChatMsgType.SYSTEM){
                     return@ChatPageAdapter
@@ -123,7 +123,7 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-            }, 100)
+            }, 500)
         }
     }
 
@@ -168,7 +168,6 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
             ChatPersonalDialogFragment.CHAT_PERSONAL_REQUEST,
             this
         ) { key, bundle ->
-            "listenFragmentResult $key ".logd("aaa")
             val result = bundle.getInt(ChatPersonalDialogFragment.CHAT_PERSONAL_RESULT, -1)
             if (result != -1) {
                 //处理结果 0 title 1 @ta 2 复制评论 3 举报评论

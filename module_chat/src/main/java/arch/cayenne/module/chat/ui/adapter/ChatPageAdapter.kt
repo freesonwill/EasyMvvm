@@ -10,14 +10,14 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.chat.data.compare.ChatCompare
 import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.module.chat.data.model.ChatMsgPageBean
-import arch.cayenne.module.chat.data.model.ClickSpan
 import arch.cayenne.module.chat.data.model.ColorSpan
+import arch.cayenne.module.chat.data.model.MentionSpan
 import arch.cayenne.module.chat.databinding.ItemLiveChatBinding
+import arch.cayenne.module.chat.manager.SoftKeyBoardAnim
 import arch.cayenne.module.chat.utils.ChatMsgUtils
 
 class ChatPageAdapter(
@@ -27,14 +27,23 @@ class ChatPageAdapter(
     BaseAdapter<ChatMsgPageBean, ChatPageAdapter.LiveChatViewHolder, ItemLiveChatBinding>(
         ChatCompare()
     ) {
-    private var isLongPress = false
-    private val longPressTimeout = 500L
+    private val longPressTimeout = 700L
     private val longPressHandler = android.os.Handler()
-    private val longPressRunnable = Runnable {
-        isLongPress = true
-        // 这里处理长按逻辑
+    private val longPressRunnable = object : LongClickListener() {
+        override fun run() {
+            bean?.let {
+                longClick.invoke(it)
+            }
+        }
     }
 
+    private abstract inner class LongClickListener : Runnable {
+        open var bean: ChatMsgPageBean? = null
+
+        fun updateBean(newBean: ChatMsgPageBean) {
+            this.bean = newBean
+        }
+    }
 
     inner class LiveChatViewHolder(binding: ItemLiveChatBinding) : BaseViewHolder(binding) {
         val nBinding = binding
@@ -47,29 +56,37 @@ class ChatPageAdapter(
                         buffer: Spannable?,
                         event: MotionEvent?
                     ): Boolean {
-                        if (widget != null && buffer != null && event?.action == MotionEvent.ACTION_DOWN) {
-                            isLongPress = false
-                            longPressHandler.postDelayed(longPressRunnable, longPressTimeout)
-                        } else if (widget != null && buffer != null && event?.action == MotionEvent.ACTION_UP) {
-                            // 获取点击位置
-                            val x = event.x.toInt() - widget.totalPaddingLeft + widget.scrollX
-                            val y = event.y.toInt() - widget.totalPaddingTop + widget.scrollY
+                        if(event == null || widget == null || buffer == null){
+                            return super.onTouchEvent(widget, buffer, event)
+                        }
+                        val msgId = widget.tag as String
+                        val position = currentList.indexOfFirst { it.msgId == msgId }
+                        if (getItem(position).msgType == ChatMsgType.SYSTEM) {
+                            return true
+                        }
+                        // 获取点击位置
+                        val x = event.x.toInt() - widget.totalPaddingLeft + widget.scrollX
+                        val y = event.y.toInt() - widget.totalPaddingTop + widget.scrollY
 
-                            val layout = widget.layout
-                            val line = layout.getLineForVertical(y)
-                            val off = layout.getOffsetForHorizontal(line, x.toFloat())
-                            val position = widget.tag as Int
+                        val layout = widget.layout
+                        val line = layout.getLineForVertical(y)
+                        val off = layout.getOffsetForHorizontal(line, x.toFloat())
+                        val nameSpans =
+                            buffer.getSpans(off - 1, off + 1, ColorSpan::class.java)
+                        if (event.action == MotionEvent.ACTION_DOWN) {
 
-                            if (isLongPress) {
-                                val colorSpans =
-                                    buffer.getSpans(off - 1, off + 1, ColorSpan::class.java)
-                                if (colorSpans.isNotEmpty()) {
-                                    longClick.invoke(getItem(position))
-                                }
+                            if (nameSpans.isNotEmpty()) {
+                                longPressRunnable.updateBean(getItem(position))
+                                longPressHandler.postDelayed(longPressRunnable, longPressTimeout)
                                 return true
-
                             }
-                            val spans = buffer.getSpans(off - 1, off + 1, ClickSpan::class.java)
+
+                        } else if (event.action == MotionEvent.ACTION_UP) {
+                            longPressHandler.removeCallbacks(longPressRunnable)
+                            val spans = buffer.getSpans(off - 1, off + 1, MentionSpan::class.java)
+                            if(nameSpans.isNotEmpty()){
+                                return true
+                            }
                             if (spans.isNotEmpty()) {
                                 spans.first().also {
                                     specialClick.invoke(getItem(position), it.tv, it.msgType)
@@ -105,7 +122,7 @@ class ChatPageAdapter(
             builder.append(second)
 
             nBinding.tv.text = builder
-            nBinding.tv.tag = position
+            nBinding.tv.tag = bean.msgId
         }
     }
 
@@ -126,6 +143,11 @@ class ChatPageAdapter(
                 arch.cayenne.lib.common.R.color.color_0FFFFFFF
             }
         )
+        if (item.flashFlag) {
+            item.flashFlag = false
+            SoftKeyBoardAnim.atFlashNotifyAnim(holder.nBinding.tv, item.msgType)
+        }
+
     }
 
     override fun createViewBinding(
@@ -140,5 +162,6 @@ class ChatPageAdapter(
         holder.initListener()
         return holder
     }
+
 
 }

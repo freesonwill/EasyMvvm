@@ -23,16 +23,17 @@ data class ChatMsgPageBean(
     val replaceUserName: String? = null,
     val refUid: List<String>? = null,
     val refInfos: Map<String, ChatRefUser>? = null,
-    val extraData: Map<String,String>? = null
+    val extraData: Map<String,String>? = null,
+    var flashFlag:Boolean = false
 ) : Comparable<ChatMsgPageBean> {
 
     companion object {
 
         fun toChatPageBean(
             bean: ChatMsg,
+            myUid:String,
         ): ChatMsgPageBean {
 //            "toChatMsg ${Gson().toJson(bean)}".logd("ChatMsgPageBean")
-//                "toChatPageBean ${Gson().toJson(bean)}".logd("ChatMsgPageBean")
             val content = bean.content
             return ChatMsgPageBean(
                 uid = bean.uid,
@@ -46,7 +47,8 @@ data class ChatMsgPageBean(
                 onlyForSelf = bean.onlyForSelf,
                 replaceUserName = bean.replaceUserName,
                 msgType = ChatMsgType.getChatMsgType(bean.msgType),
-                extraData = bean.extraData
+                extraData = bean.extraData,
+                flashFlag = bean.refUids?.contains(myUid) ?: false
             )
         }
     }

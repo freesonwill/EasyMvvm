@@ -9,7 +9,6 @@ import arch.cayenne.lib.websocket.chat.data.ChatRefUser
 import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 import arch.cayenne.module.chat.data.model.MentionSpan
 import arch.cayenne.module.order.data.model.BetShareBean
-import com.google.gson.Gson
 
 /**
  * @author: wenxi
