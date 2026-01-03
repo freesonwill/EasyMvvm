@@ -66,7 +66,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
     private var sortingMenuBinding: LayoutTournamentSortingMenuBinding? = null
 
     // 當前排序類型，預設為按熱門聯賽排序
-    private var currentSortType = MatchListSortType.BY_TIME
+    private var currentSortType = MatchListSortType.BY_HOT
 
     private val defaultAnimDuration = 300L
 
