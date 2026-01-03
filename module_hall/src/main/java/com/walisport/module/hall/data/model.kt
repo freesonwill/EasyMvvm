@@ -1,5 +1,8 @@
 package com.walisport.module.hall.data
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import arch.cayenne.lib.database.entity.DailyBetMatchDataBean
 import arch.cayenne.lib.http.data.AvatarVo
 import arch.cayenne.lib.http.data.PaginationVo
 
@@ -60,22 +63,21 @@ data class BettingPageVo(val pagination: PaginationVo , val list: List<BettingVo
  * @property remainingTime 活动剩余时长/s
  */
 data class DailyBetMatchVo(
-    val ccy: String , // 货币缩写(ISO4217)
-    val betScore: Long , // 投注奖金金额
-    val remainingTime: Long // 活动剩余时长/s
+    val ccy: String, // 货币缩写(ISO4217)
+    val betScore: Long, // 投注奖金金额
+    val remainingTime: Long, // 活动剩余时长/s
+    val myBetScore: Long, // 我的投注金额，未投注则为0
+    val myRank: Int? // 我的排名，未上榜则为null
 )
 
-data class DailyBetMatchData(
-    val ccy: String , // 货币缩写(ISO4217)
-    val betScore: Long , // 投注奖金金额
-    val remainingTime: Long // 活动剩余时长/s
-)
 
-fun DailyBetMatchVo.toDailyBetMatchData(): DailyBetMatchData {
-    return DailyBetMatchData(
+fun DailyBetMatchVo.toDailyBetMatchData(): DailyBetMatchDataBean {
+    return DailyBetMatchDataBean(
         ccy = ccy ,
         betScore = betScore ,
-        remainingTime = remainingTime
+        remainingTime = remainingTime,
+        myBetScore = myBetScore ,
+        myRank = myRank
     )
 }
 

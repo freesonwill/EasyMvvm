@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/iv_competition"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_game_all_bonus">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_bonus_mid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <TextView
+        tools:ignore="RtlHardcoded"
+        android:layout_width="@dimen/dp_66"
+        android:layout_height="17dp"
+        android:layout_marginTop="@dimen/dp_4"
+        android:background="@drawable/bg_game_all_daily"
+        android:gravity="left|center_vertical"
+        android:includeFontPadding="false"
+        android:paddingStart="@dimen/dp_5"
+        android:text="@string/daily_game"
+        android:textColor="@color/color_F6E6C9"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintHorizontal_bias="0.842"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/gl_bonus_mid"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_timer"
+        android:layout_width="@dimen/dp_78"
+        android:layout_height="17dp"
+        android:layout_marginStart="-14dp"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:background="@drawable/bg_game_all_timer"
+        android:gravity="left"
+        android:paddingLeft="@dimen/dp_6"
+        android:text="23 : 59 : 59"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintLeft_toLeftOf="@id/gl_bonus_mid"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_5"
+        android:layout_marginBottom="@dimen/dp_4"
+        android:background="@drawable/bg_game_all_inner_bonus"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_timer">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_bonus_title"
+            android:layout_width="116dp"
+            android:layout_height="28dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_game_all_bonus_title" />
+
+        <TextView
+            android:id="@+id/tv_currency_symbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:text="¥"
+            android:textColor="@color/color_965F25"
+            android:textSize="@dimen/sp_16"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_bonus"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_bonus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginTop="-3dp"
+            android:fontFamily="@font/sf_pro_display_bold"
+            android:includeFontPadding="false"
+            android:text="1,457,000"
+            android:textColor="@color/color_965F25"
+            android:textSize="28sp"
+            app:layout_constraintLeft_toRightOf="@+id/tv_currency_symbol"
+            app:layout_constraintTop_toBottomOf="@+id/iv_bonus_title" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_line"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_1"
+            android:layout_marginEnd="@dimen/dp_5"
+            android:background="@color/color_513D301A"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_bonus" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_money"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginStart="@dimen/dp_7"
+            android:layout_marginTop="@dimen/dp_5"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_line"
+            app:srcCompat="@drawable/ic_game_all_bonus" />
+
+        <TextView
+            android:id="@+id/tv_money"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="9dp"
+            android:fontFamily="@font/sf_pro_display_bold"
+            android:includeFontPadding="false"
+            android:text="¥49999"
+            android:textColor="@color/color_464136"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_money"
+            app:layout_constraintLeft_toRightOf="@+id/tv_currency_symbol"
+            app:layout_constraintTop_toTopOf="@+id/iv_money"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_rank"
+            android:layout_width="15dp"
+
+            android:layout_height="15dp"
+            android:layout_marginTop="@dimen/dp_4"
+            app:layout_constraintRight_toLeftOf="@+id/tv_rank"
+            app:layout_constraintTop_toBottomOf="@+id/iv_line"
+            app:srcCompat="@drawable/ic_game_all_cup" />
+
+        <TextView
+            android:id="@+id/tv_rank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:fontFamily="@font/sf_pro_display_bold"
+            android:includeFontPadding="false"
+            android:paddingLeft="1dp"
+            android:text="115名"
+            android:textColor="@color/color_464136"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_rank"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/iv_rank" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,81 @@
+package com.walisport.module.hall.ui.fragment
+
+import android.annotation.SuppressLint
+import android.os.Bundle
+import android.os.CountDownTimer
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.DateUtils
+import arch.cayenne.lib.common.utils.ext.ccyToSymbol
+import com.walisport.module.hall.databinding.FragmentDailyMatchInfoBinding
+import com.walisport.module.hall.ui.viewmodel.DailyMatchInfoViewModel
+import kotlin.reflect.KClass
+
+/**
+ * 每日比赛信息fragment,  用在游戏大厅的“全部”子页面banner区域
+ */
+class DailyMatchInfoFragment :
+    BaseFragment<DailyMatchInfoViewModel, FragmentDailyMatchInfoBinding>() {
+
+    override val vbClass: KClass<FragmentDailyMatchInfoBinding> =
+        FragmentDailyMatchInfoBinding::class
+    override val vmClass: KClass<DailyMatchInfoViewModel> = DailyMatchInfoViewModel::class
+
+
+    private var timer: CountDownTimer? = null
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun initView(savedInstanceState: Bundle?) {
+
+    }
+
+    override fun initListener() {
+
+    }
+
+    override suspend fun createObserver() {
+
+        mViewModel.dailyBetMatchDataBeanFlow.collect {
+            it?.let {
+                mBinding.tvTimer.text = DateUtils.formatMillisToHMS(it.remainingTime)
+                //启动定时器，每秒对剩余时间进行减一，并更新UI
+                var remainingTime = it.remainingTime
+                timer?.cancel()
+                timer = object : CountDownTimer(remainingTime * 1000, 1000) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        remainingTime--
+                        mBinding.tvTimer.text = DateUtils.formatMillisToHMS(remainingTime)
+                    }
+
+                    override fun onFinish() {
+                        mBinding.tvTimer.text = DateUtils.formatMillisToHMS(0)
+                    }
+                }
+                timer?.start()
+
+                mBinding.tvCurrencySymbol.text = it.ccy.ccyToSymbol()
+                mBinding.tvBonus.text = String.format("%,d", it.betScore)
+
+                mBinding.tvMoney.text = String.format("${it.ccy.ccyToSymbol()}%,d", it.myBetScore)
+
+                mBinding.tvRank.text =
+                    if (it.myRank == null) {
+                        "--"
+                    } else {
+                        "${it.myRank.toString()}名"
+                    }
+            }
+        }
+    }
+
+    override fun initData() {
+        super.initData()
+        mViewModel.getDayMatchDetail()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        timer?.cancel()
+    }
+
+
+}
