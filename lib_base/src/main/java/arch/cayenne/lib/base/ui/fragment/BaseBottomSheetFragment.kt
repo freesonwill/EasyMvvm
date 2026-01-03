@@ -87,7 +87,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     private val statusBar: IStatusBar by lazy { StatusBarDelegate(this) }
 
     protected var otherViewAnimation: ObjectAnimator? = null
-    private val dimController by lazy { DimController.getInstance(this) }
+    private var dimController:DimController? = null
     protected open var isHorizontalGestureEnable = true
     protected open var isVerticalGestureEnable = true
     private var popupAnimatorSet: AnimatorSet? = null
@@ -95,10 +95,19 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, theme)
+        dimController = if(isDimControllerEnabled()){
+            DimController.getInstance(this)
+        } else {
+            null
+        }
     }
 
     override fun getTheme(): Int {
         return R.style.BottomSheetDialogTheme
+    }
+
+    open fun isDimControllerEnabled(): Boolean {
+        return true
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -212,10 +221,10 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
         val sheetAnimator = ObjectAnimator.ofFloat(sheet, "translationY", sheet.translationY, sheet.height.toFloat())
 
-        val dimAnimator = dimController.getHideAnimator()
+        val dimAnimator = dimController?.getHideAnimator()
 
         val animatorSet = AnimatorSet().apply {
-            playTogether(sheetAnimator, dimAnimator)
+            if (dimAnimator != null) playTogether(sheetAnimator, dimAnimator) else play(sheetAnimator)
             duration = sheetContainerSheetAnim.duration
             interpolator = sheetContainerSheetAnim.interpolator
             doOnStart {
@@ -410,9 +419,14 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     private fun initDim() {
-        dialog?.window?.setDimAmount(0f)
-        dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        dialog?.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+        if(isDimControllerEnabled()) {
+            dialog?.window?.setDimAmount(0f)
+            dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            dialog?.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+        } else {
+            dialog?.window?.setDimAmount(0.5f)
+            dialog?.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+        }
     }
 
     override fun getHostFragment(): Fragment {
@@ -542,23 +556,23 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         val h = sheetContainer?.height ?: return
         val dimAlpha = DimController.TARGET_DIM
         val targetDim = dimAlpha - dimAlpha * (scrollY.toFloat() / h.toFloat())
-        dimController.setDimAlpha(targetDim)
+        dimController?.setDimAlpha(targetDim)
     }
 
     protected fun hideDim() {
-        if (dimController.findAnyShowing(this) || !isDismissing) {
+        if (dimController?.findAnyShowing(this)==true || !isDismissing) {
             return
         }
-        dimController.hideDim()
+        dimController?.hideDim()
     }
 
     protected fun prepareShowDim() {
-        dimController.prepareShowDim()
+        dimController?.prepareShowDim()
     }
 
     protected fun showDim() {
         if (isDismissing) return
-        dimController.showDim()
+        dimController?.showDim()
     }
 
     override fun setArguments(args: Bundle?) {

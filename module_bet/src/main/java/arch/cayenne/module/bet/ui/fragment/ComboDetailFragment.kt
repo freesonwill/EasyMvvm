@@ -177,6 +177,10 @@ class ComboDetailFragment :
         listAdapter.submitList(data.items)
     }
 
+    override fun isDimControllerEnabled(): Boolean {
+        return false
+    }
+
     override fun initListener() {
         mBinding.ivBetClose.clickNoRepeat {
             dismiss()
