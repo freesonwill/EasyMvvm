@@ -21,7 +21,6 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             android:overScrollMode="never"
-            android:paddingEnd="35dp"
             android:background="@android:color/transparent"
             app:tabPaddingBottom="@dimen/dp_0"
             app:tabPaddingTop="@dimen/dp_0"
