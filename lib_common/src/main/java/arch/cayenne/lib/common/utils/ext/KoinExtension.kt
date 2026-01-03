@@ -2,6 +2,7 @@ package arch.cayenne.lib.common.utils.ext
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
+import androidx.navigation.fragment.NavHostFragment
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -44,7 +45,8 @@ inline fun <reified F : Fragment> Fragment.findRelative(filter: (f: F) -> Boolea
 val Fragment.rootFragment: Fragment
     get() {
         var root = this
-        while (root.parentFragment != null)
+        while (root.parentFragment != null){
             root = root.requireParentFragment()
+        }
         return root
     }

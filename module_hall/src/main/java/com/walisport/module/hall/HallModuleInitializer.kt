@@ -28,8 +28,7 @@ class HallModuleInitializer : DefaultInitializer<String> {
             HallRepository(
                 get() ,
                 get() ,
-                get(named("3n1")) ,
-                get(named("mock")) ,
+                get(named("3n1_http")) ,
                 get() ,
                 get() ,
                 get()
@@ -39,8 +38,7 @@ class HallModuleInitializer : DefaultInitializer<String> {
             GameSupplierListRepository(
                 get() ,
                 get() ,
-                get(named("3n1")) ,
-                get(named("mock")) ,
+                get(named("3n1_http")) ,
                 get() ,
                 get() ,
                 get()
@@ -50,8 +48,7 @@ class HallModuleInitializer : DefaultInitializer<String> {
             RankingRepository(
                 get() ,
                 get() ,
-                get(named("3n1")) ,
-                get(named("mock")) ,
+                get(named("3n1_http")) ,
                 get() ,
                 get() ,
                 get()

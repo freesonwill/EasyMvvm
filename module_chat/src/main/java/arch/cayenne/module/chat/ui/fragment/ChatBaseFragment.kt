@@ -27,6 +27,7 @@ import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.websocket.chat.data.ChatRefUser
 import arch.cayenne.lib.websocket.chat.data.ChatType
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.R
@@ -216,16 +217,16 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
             }
             launch {//选择注单返回监听
                 observeResult<Bundle>(ChatChooseBetFragment.SHARE_BET_LISTEN) {
+                    ChatMsgUtils.checkAndReplaceBetShareInEditable(mBinding.chatEtInput)
                     val data =
                         it.getParcelable<BetShareBean>(ChatChooseBetFragment.SHARE_BET_RESULT)
                     val type = it.getInt(ChatChooseBetFragment.SHARE_BET_TYPE, 0)
-                    val content = data?.content?.let { betStr ->
-                        ChatMsgUtils.addNoDivideCharInBetShar(betStr)
-                    } ?: ""
+                    val tv = data?.content?.let { ChatMsgUtils.addNoDivideCharInBetShar(it) } ?: ""
                     chatAtHelper.addShareBetSpan(
-                        content,
+                        tv,
                         if (type == 0) ChatMsgType.BET_GAME else ChatMsgType.BET_SPORT
                     )
+                    mViewModel.currentSelectBetShare = data
                     SoftKeyBoardAnim.etAnimWhenEtContentChange(
                         mBinding,
                         mViewModel.currentKeyBoardType,
@@ -266,7 +267,11 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
             sendText()
         }
         mViewModel.atLiveData.observe(viewLifecycleOwner) {
-            chatAtHelper.addAtMentionSpan(it.userName)
+            //TODO 暂时去除  去除相同的at用户
+//            if(!chatAtHelper.checkAtInEtInput(it.uid)){
+//                return@observe
+//            }
+            chatAtHelper.addAtMentionSpan(it.userName, ChatRefUser(it.uid,it.userName,it.avatarId,it.replaceUserName))
             SoftKeyBoardAnim.etAnimWhenEtContentChange(
                 mBinding,
                 mViewModel.currentKeyBoardType,
@@ -276,6 +281,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                 onAnimEnd = {
                     updateInputIcon(it)
                 })
+            keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD,9)
         }
     }
 
@@ -311,7 +317,6 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
 
     private fun toChooseBet() {
         findNavController().navigate("walisport://module_betslip/chatChooseBetFragment".deeplink())
-        ChatMsgUtils.checkAndReplaceBetShareInEditable(mBinding.chatEtInput)
     }
 
     private fun initSoftKeyBoardFragment() {
@@ -721,13 +726,13 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                     })
                 }
                 onEnd.invoke()
-                if (chatAtHelper.shouldOpenAtDialog) { //如果点击了输入框@btn，动画完成后添加@到输入框框
-                    chatAtHelper.shouldOpenAtDialog = false
-                    lifecycleScope.launch {
-                        delay(500)
-                        chatAtHelper.addAtInEt()
-                    }
-                }
+//                if (chatAtHelper.shouldOpenAtDialog) { //如果点击了输入框@btn，动画完成后添加@到输入框框
+//                    chatAtHelper.shouldOpenAtDialog = false
+//                    lifecycleScope.launch {
+//                        delay(500)
+//                        chatAtHelper.addAtInEt()
+//                    }
+//                }
             })
             if (isFirstOpen) {
                 mainAnim?.startDelay = 200L

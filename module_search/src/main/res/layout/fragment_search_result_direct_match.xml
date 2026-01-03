@@ -87,6 +87,19 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- 遊戲供應商 Tab 欄（僅在供應商/分類模式顯示） -->
+    <arch.cayenne.lib.common.ui.view.CustomGameTabGroupLayout
+        android:id="@+id/custom_tab_group"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_14"
+        android:visibility="gone"
+        app:defaultTabIcon="@drawable/ic_wali_demo"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_basic_info"
+        app:tabIconSize="@dimen/dp_25" />
+
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/cl_list_bg"
         android:layout_width="match_parent"
@@ -133,6 +146,27 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_search_result_date_arrow" />
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+        <!-- 遊戲供應商模式：返獎率提示（僅在火熱/冰冷模式顯示） -->
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_reward_tips"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_36"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_12"
+            android:background="@drawable/hall_reward_tips_bkg"
+            android:ellipsize="end"
+            android:gravity="center_vertical|start"
+            android:maxLines="1"
+            android:paddingStart="@dimen/dp_12"
+            android:paddingEnd="@dimen/dp_0"
+            android:text="@string/reward_tips"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_13"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/cl_date"
+            app:skinnableFontWeight="400" />
 
         <arch.cayenne.lib.common.ui.view.InterceptedRecyclerView
             android:id="@+id/recycler_view"

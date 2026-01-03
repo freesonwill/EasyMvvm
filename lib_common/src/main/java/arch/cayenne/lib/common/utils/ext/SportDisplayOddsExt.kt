@@ -1,5 +1,6 @@
 package arch.cayenne.lib.common.utils.ext
 
+import arch.cayenne.lib.common.data.constants.OddsDisplayEnum
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import org.koin.java.KoinJavaComponent.inject
@@ -12,7 +13,7 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 object SportDisplayOddsExt {
 
     private val manager: UserDataManager = inject<UserDataManager>(UserDataManager::class.java).value
-    private val oddsType: Int get() = manager.getValue(UserDataKey.KEY_ODDS, 0)
+    private val oddsType: Int get() = manager.getValue(UserDataKey.KEY_ODDS, OddsDisplayEnum.EU.value)
 
     /**
      * 香港盘赔率（不含本金）

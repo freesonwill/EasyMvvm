@@ -1,9 +1,11 @@
 package arch.cayenne.module.chat.utils
 
+import android.annotation.SuppressLint
 import android.text.SpannableStringBuilder
 import android.widget.EditText
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.ChatMsgType
+import arch.cayenne.lib.websocket.chat.data.ChatRefUser
 import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 import arch.cayenne.module.chat.data.model.MentionSpan
 import arch.cayenne.module.order.data.model.BetShareBean
@@ -63,29 +65,54 @@ object ChatMsgUtils {
             spans.find { it.msgType == ChatMsgType.BET_SPORT || it.msgType == ChatMsgType.BET_GAME }
         sharSpan?.let {
             val replaceTv = it.tv.replace("\u2060", "")
-            "sharSpan tv=${it.tv}".logd(TAG)
             newStr = newStr.replace(replaceTv, "[***]")
         }
-        "content after replace $newStr ".logd(TAG)
         return newStr
     }
 
     /**
      * 恢复内容中的占位符
+     *  @用户：[**]
+     *  分享：[***]
      * */
     fun recoveryContent(
-        content: String,
         bean: ChatMsgPageBean
     ): SpannableStringBuilder {
-        val spannable = SpannableStringBuilder(content)
+        var spannable = SpannableStringBuilder(bean.content)
+        //添加at消息
         bean.refUid?.forEach { uid ->
             val user = bean.refInfos?.get(uid)
             val newChar = "@${user?.userName} "
-            val index = content.indexOf("[**]")
+            val index = spannable.indexOf("[**]")
             val endIndex = index + newChar.length
+            spannable = spannable.replace(index, index + 4, newChar)
+            val span = MentionSpan(ChatMsgType.AT, bean.userName, bean.refInfos?.get(uid), click = {})
+            spannable.setSpan(
+                span,
+                index,
+                endIndex,
+                SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+//            "recoveryAtChar $newChar  ${Gson().toJson(bean)} ".logd(TAG)
         }
+//        "recoveryAtChar ${Gson().toJson(bean)} ".logd(TAG)
 
         if (bean.msgType == ChatMsgType.BET_GAME || bean.msgType == ChatMsgType.BET_SPORT) {
+            bean.extraData?.let {
+             val betShareBean = recoveryExtraDataBetShareBean(bean.extraData)
+             val index = spannable.indexOf("[***]")
+             val newChar = addNoDivideCharInBetShar(betShareBean?.content ?: "")
+             val endIndex = index + newChar.length
+             spannable = spannable.replace(index, index + 5, newChar)
+             val span = MentionSpan(bean.msgType, newChar, null, click = {})
+                spannable.setSpan(
+                    span,
+                    index,
+                    endIndex,
+                    SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+//             "recoveryBetShar $newChar ".logd(TAG)
+            }
         }
         return spannable
 
@@ -115,19 +142,18 @@ object ChatMsgUtils {
         return map
     }
 
-//    fun createUserInfo(spans: Array<MentionSpan>): List<ChatRefUser>? {
-//        val users =
-//            spans.filter { it.msgType == ChatMsgType.AT && it.user != null }.map { it.user!! }
-//                .toList()
-//        return users.ifEmpty { null }
-//    }
+    fun createUserInfo(spans: Array<MentionSpan>): Map<String,ChatRefUser>? {
+        val users =
+            spans.filter { it.msgType == ChatMsgType.AT && it.user != null }.map {it.user!!.uid to it.user }
+                .toMap()
+        return users.ifEmpty { null }
+    }
 
     fun recoveryExtraDataBetShareBean(
         extraData: Map<String, String>,
-        msgType: ChatMsgType
     ): BetShareBean? {
         var betShareBean: BetShareBean? = null
-        if (msgType == ChatMsgType.BET_GAME || msgType == ChatMsgType.BET_SPORT) {
+        if (extraData.isNotEmpty()) {
             betShareBean = BetShareBean(
                 userId = extraData["userId"]?.toLongOrNull() ?: 0L,
                 settleId = extraData["settleId"] ?: "",
@@ -141,11 +167,8 @@ object ChatMsgUtils {
                 content = extraData["content"] ?: ""
             )
         }
-        return betShareBean
-    }
 
-    fun replaceNoDivideChar(value: String): String {
-        return value.replace("\u2060", "")
+        return betShareBean
     }
 
     /*
@@ -160,7 +183,6 @@ object ChatMsgUtils {
                     spannable.getSpanStart(it),
                     spannable.getSpanEnd(it)
                 ))
-                "edittext.setSelection(edittext.text.length)".logd("aaa")
             }
     }
 

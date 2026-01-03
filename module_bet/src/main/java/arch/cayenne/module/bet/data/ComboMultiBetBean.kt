@@ -47,7 +47,7 @@ data class ComboMultiBetBean(
     fun title():String {
         return when {
             isSuperCombo -> R.string.title_combo_bet_super.getString()
-            else -> R.string.title_combo_bet_odds.getString(comboK,comboV)
+            else -> R.string.title_combo_bet_tittle.getString(comboK,comboV)
         }
     }
 }

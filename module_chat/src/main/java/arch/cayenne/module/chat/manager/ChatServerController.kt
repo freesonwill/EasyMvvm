@@ -5,6 +5,7 @@ import arch.cayenne.lib.websocket.chat.data.ChatEnterRoomResponse
 import arch.cayenne.lib.websocket.chat.data.ChatLeaveRoomResponse
 import arch.cayenne.lib.websocket.chat.data.ChatLoginResponseData
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
+import arch.cayenne.lib.websocket.chat.data.ChatRefUser
 import arch.cayenne.lib.websocket.chat.data.ChatSendMsgResponse
 import arch.cayenne.lib.websocket.chat.data.ChatType
 import arch.cayenne.lib.websocket.chat.data.GetChatHistoryResponse
@@ -12,6 +13,7 @@ import arch.cayenne.lib.websocket.chat.data.MsgNotify
 import arch.cayenne.lib.websocket.chat.data.MsgType
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.data.constants.CheckBetResultEnum
+import com.google.gson.Gson
 import game.chat.proto.GameChat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -113,8 +115,8 @@ class ChatServerController(
         content: String,
         chatType: ChatType,
         msgType: MsgType,
-        extraData: Map<String, String>?,
-        refUid: List<Long>?,
+        extraData: Map<String,String>?,
+        refUid: List<String>?,
     ) {
         scope.launch(Dispatchers.IO) {
             val value =
@@ -143,29 +145,32 @@ class ChatServerController(
         content: String,
         chatType: ChatType,
         msgType: MsgType,
-        extraData: Map<String, String>?
+        extraData: Map<String,String>?,
+        refUid: List<String>?,
+        refInfos: Map<String, ChatRefUser>?
     ): ChatMsg? {
-        if (getManagerLoginFlow()?.value == null) {
+        if (getManagerLoginFlow().value == null) {
             "login is null".logd(TAG)
             return null
         }
         val id = System.currentTimeMillis().toString()
-        val loginValue = getManagerLoginFlow()?.value
+        val loginValue = getManagerLoginFlow().value
         val msg = ChatMsg(
-            uid = loginValue?.uid.toString(),
+            uid = loginValue?.uid ?: "",
             userName = loginValue?.username ?: "",
             avatarId = loginValue?.avatarId ?: 0,
             content = content,
             msgId = id,
             timestamp = id,
-            refUid = null,
-            refInfos = null,
+            refUids = refUid,
+            refInfos = refInfos,
             onlyForSelf = 0,
             replaceUserName = "",
-            msgType = MsgType.MSG_TYPE_TEXT,
+            msgType = msgType,
             extraData = extraData,
-            chatType = ChatType.LOBBY
+            chatType = chatType,
         )
+//        "addLocalMsg msg=${Gson().toJson(msg)}".logd(TAG)
         return msg
     }
 
