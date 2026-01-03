@@ -1,8 +1,6 @@
 package arch.cayenne.module.home.ui.fragment
 
 import android.annotation.SuppressLint
-import android.graphics.LinearGradient
-import android.graphics.Shader
 import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
@@ -48,15 +46,15 @@ import arch.cayenne.module.home.databinding.FragmentSubHomeV2Binding
 import arch.cayenne.module.home.databinding.LayoutTournamentSortingMenuBinding
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
-import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
+import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModelV2
 import kotlinx.coroutines.Job
 import kotlin.reflect.KClass
 
-class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Binding>(),
+class SubHomeFragmentV2 : BaseFragment<SubHomeViewModelV2, FragmentSubHomeV2Binding>(),
     ISubFragmentLifecycle {
 
     override val vbClass: KClass<FragmentSubHomeV2Binding> = FragmentSubHomeV2Binding::class
-    override val vmClass: KClass<SubHomeViewModel> = SubHomeViewModel::class
+    override val vmClass: KClass<SubHomeViewModelV2> = SubHomeViewModelV2::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
 
     private var allTabCompleteObserveJob: Job? = null
@@ -146,7 +144,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
 
         mViewModel.tournamentsPlain.observeEvent(viewLifecycleOwner, this) { list ->
             val l = ArrayList<SimpleTabDataModel>()
-            list.take(10)
+            list.take(11)
                 .forEach { item ->
                     l.add(
                         SimpleTabDataModel(
@@ -163,23 +161,6 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
             setupMatchFragment()
         }
 
-        mViewModel.collapseTournamentDropdown.observeEvent(
-            viewLifecycleOwner,
-            this
-        ) { shouldCollapse ->
-            if (shouldCollapse && isExpanded) {
-                toggleTournamentSorting(false)
-                mViewModel.consumeCollapseTournamentDropdown() // 重置事件，避免重複觸發
-            }
-        }
-
-        mViewModel.navigationToChampion.observeEvent(viewLifecycleOwner, this) { data ->
-            navigate(Uri.parse("walisport://module_home/championFragment?matchId=${data.championMatchId}&name=${data.name}&icon=${data.icon}"))
-        }
-
-        mViewModel.tournamentSlideOutEnd.observeEvent(viewLifecycleOwner, this) {
-            mBinding.layoutContainer.llTournamentsDropdown.visibility = View.GONE
-        }
 
         mViewModel.savedTournamentSelections.observe(viewLifecycleOwner) { selections ->
             if (selections.size > 1) {
@@ -270,7 +251,6 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
 
     // 設置更多按鈕的顯示狀態
     override fun onFragmentUnSelected() {
-        mViewModel.requestCollapseTournamentDropdown()
         // 收起排序選單
         if (isExpanded) {
             toggleTournamentSorting(false)

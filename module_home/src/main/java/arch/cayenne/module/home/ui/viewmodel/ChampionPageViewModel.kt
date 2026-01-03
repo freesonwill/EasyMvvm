@@ -21,7 +21,7 @@ import org.koin.core.component.inject
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-class ChampionViewModel : BaseViewModel() {
+class ChampionPageViewModel : BaseViewModel() {
     private val championRepository: ChampionRepository  by inject()
     private val betRepository: BetRepository by inject()
     private val balanceRepository: BalanceRepository by inject()
