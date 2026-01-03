@@ -254,6 +254,11 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
         }
     }
 
+    override fun initData() {
+        super.initData()
+        mViewModel.setSortType(currentSortType)
+    }
+
     override fun onFragmentSelected() {
         mViewModel.getCurrentSportStatistical()
         mViewModel.getCurrentTournament()
@@ -374,7 +379,8 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
         //生成MatchListPagerFragmentV2， 添加到fragment_game_list_container节点
         MatchListPagerFragmentV2.newInstance(
             playTypeId = mViewModel.currentPlayTypeId,
-            sportId = mViewModel.currentSportId
+            sportId = mViewModel.currentSportId,
+            sortType = currentSortType.type
         ).also {
 
             childFragmentManager.beginTransaction()
