@@ -1,5 +1,6 @@
 package arch.cayenne.module.account.ui.fragment
 
+import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -57,15 +58,20 @@ class  PersonalInfoFragment : BaseFragment<PersonalInfoViewModel, FragmentPerson
                     mBinding.HalfCircle.visibility = android.view.View.GONE
                 }else{
                     mBinding.HalfCircle.visibility = android.view.View.VISIBLE
-                    val thumbBitmap = ThumbHashUtils.getBitmapFromThumbHash(it.avatar.thumbhash)  //返回 Bitmap?
-                    thumbBitmap?.let { bitmap ->
-                        val placeholderDrawable = BitmapDrawable(resources, bitmap)
-                        Glide.with(this@PersonalInfoFragment)
-                            .load(it.avatar.url.trim())
-                            .placeholder(placeholderDrawable)
-                            .transition(DrawableTransitionOptions.withCrossFade()) // 淡入动画
-                            .into(mBinding.ivAvatar)
+                    val placeholderDrawable = try {
+                        ThumbHashUtils.getBitmapFromThumbHash(it.avatar.thumbhash)?.let { bitmap ->
+                            BitmapDrawable(resources, bitmap)
+                        }
+                    } catch (_: Exception) {
+                        null
                     }
+
+                    Glide.with(this@PersonalInfoFragment)
+                        .load(it.avatar.url.trim())
+                        .placeholder(placeholderDrawable)
+                        .transition(DrawableTransitionOptions.withCrossFade())
+                        .into(mBinding.ivAvatar)
+
                 }
 
             }
