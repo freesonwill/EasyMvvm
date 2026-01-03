@@ -167,6 +167,10 @@ class ChatATHelper(
 //        }
 //    }
 
+    fun checkAtInEtInput(): Boolean {
+        
+
+    }
 
     fun addAtMentionSpan(name: String, user: ChatRefUser) {
         chatEtInput.apply {
@@ -231,7 +235,6 @@ class ChatATHelper(
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
                 }
-
                 editText.text = spannable
                 editText.setSelection(position)
             }

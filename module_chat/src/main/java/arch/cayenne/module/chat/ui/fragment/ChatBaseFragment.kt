@@ -267,6 +267,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
             sendText()
         }
         mViewModel.atLiveData.observe(viewLifecycleOwner) {
+            mViewModel.myUid
             chatAtHelper.addAtMentionSpan(it.userName, ChatRefUser(it.uid,it.userName,it.avatarId,it.replaceUserName))
             SoftKeyBoardAnim.etAnimWhenEtContentChange(
                 mBinding,

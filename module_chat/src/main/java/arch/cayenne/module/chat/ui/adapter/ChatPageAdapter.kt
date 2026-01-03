@@ -27,14 +27,23 @@ class ChatPageAdapter(
     BaseAdapter<ChatMsgPageBean, ChatPageAdapter.LiveChatViewHolder, ItemLiveChatBinding>(
         ChatCompare()
     ) {
-    private var isLongPress = false
     private val longPressTimeout = 300L
     private val longPressHandler = android.os.Handler()
-    private val longPressRunnable = Runnable {
-        isLongPress = true
-        // 这里处理长按逻辑
+    private val longPressRunnable = object : LongClickListener() {
+        override fun run() {
+            bean?.let {
+                longClick.invoke(it)
+            }
+        }
     }
 
+    private abstract inner class LongClickListener : Runnable {
+        open var bean: ChatMsgPageBean? = null
+
+        fun updateBean(newBean: ChatMsgPageBean) {
+            this.bean = newBean
+        }
+    }
 
     inner class LiveChatViewHolder(binding: ItemLiveChatBinding) : BaseViewHolder(binding) {
         val nBinding = binding
@@ -53,14 +62,6 @@ class ChatPageAdapter(
                             if (getItem(position).msgType == ChatMsgType.SYSTEM) {
                                 return true
                             }
-                            isLongPress = false
-                            longPressHandler.postDelayed(longPressRunnable, longPressTimeout)
-                        } else if (widget != null && buffer != null && event?.action == MotionEvent.ACTION_UP) {
-                            val msgId = widget.tag as String
-                            val position = currentList.indexOfFirst { it.msgId == msgId }
-                            if (getItem(position).msgType == ChatMsgType.SYSTEM) {
-                                return true
-                            }
                             // 获取点击位置
                             val x = event.x.toInt() - widget.totalPaddingLeft + widget.scrollX
                             val y = event.y.toInt() - widget.totalPaddingTop + widget.scrollY
@@ -69,15 +70,29 @@ class ChatPageAdapter(
                             val line = layout.getLineForVertical(y)
                             val off = layout.getOffsetForHorizontal(line, x.toFloat())
 
-                            if (isLongPress) {
-                                val colorSpans =
-                                    buffer.getSpans(off - 1, off + 1, ColorSpan::class.java)
-                                if (colorSpans.isNotEmpty()) {
-                                    longClick.invoke(getItem(position))
-                                }
-                                return true
-
+                            val nameSpans =
+                                buffer.getSpans(off - 1, off + 1, ColorSpan::class.java)
+                            if (nameSpans.isNotEmpty()) {
+                                longPressRunnable.updateBean(getItem(position))
+                                longPressHandler.postDelayed(longPressRunnable, longPressTimeout)
                             }
+
+                        } else if (widget != null && buffer != null && event?.action == MotionEvent.ACTION_UP) {
+                            longPressHandler.removeCallbacks(longPressRunnable)
+                            val msgId = widget.tag as String
+                            val position = currentList.indexOfFirst { it.msgId == msgId }
+                            if (getItem(position).msgType == ChatMsgType.SYSTEM) {
+                                return true
+                            }
+
+                            // 获取点击位置
+                            val x = event.x.toInt() - widget.totalPaddingLeft + widget.scrollX
+                            val y = event.y.toInt() - widget.totalPaddingTop + widget.scrollY
+
+                            val layout = widget.layout
+                            val line = layout.getLineForVertical(y)
+                            val off = layout.getOffsetForHorizontal(line, x.toFloat())
+
                             val spans = buffer.getSpans(off - 1, off + 1, MentionSpan::class.java)
                             if (spans.isNotEmpty()) {
                                 spans.first().also {
@@ -133,7 +148,7 @@ class ChatPageAdapter(
         )
         if (item.flashFlag) {
             item.flashFlag = false
-            SoftKeyBoardAnim.atFlashNotifyAnim(holder.nBinding.tv,item.msgType)
+            SoftKeyBoardAnim.atFlashNotifyAnim(holder.nBinding.tv, item.msgType)
         }
 
     }
