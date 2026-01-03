@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.DateUtils
+import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ccyToSymbol
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.hall.databinding.FragmentDailyMatchInfoBinding
 import com.walisport.module.hall.ui.viewmodel.DailyMatchInfoViewModel
 import kotlin.reflect.KClass
@@ -20,7 +23,6 @@ class DailyMatchInfoFragment :
         FragmentDailyMatchInfoBinding::class
     override val vmClass: KClass<DailyMatchInfoViewModel> = DailyMatchInfoViewModel::class
 
-
     private var timer: CountDownTimer? = null
 
     @SuppressLint("ClickableViewAccessibility")
@@ -29,7 +31,9 @@ class DailyMatchInfoFragment :
     }
 
     override fun initListener() {
-
+        mBinding.root.clickNoRepeat {
+            navigate(arch.cayenne.lib.res.R.string.nav_module_competition_fragment.deeplink())
+        }
     }
 
     override suspend fun createObserver() {
