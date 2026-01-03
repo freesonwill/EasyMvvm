@@ -297,6 +297,12 @@ class ChatATHelper(
                             return@setOnKeyListener true
                         }
                     }
+                    if(spans.isNotEmpty()){
+                        spans.forEach {
+                            editText.text.removeSpan(it)
+                        }
+                    }
+
 //                    val list: List<String> = spans.map {
 //                        editText.text.removeSpan(it)
 //                        it.tv
