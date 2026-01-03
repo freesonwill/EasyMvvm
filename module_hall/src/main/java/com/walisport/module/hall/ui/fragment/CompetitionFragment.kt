@@ -9,11 +9,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.BizUrl
+import arch.cayenne.lib.common.ui.fragment.AllInfoDialogFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.DateUtils
+import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.TextViewExt.hasShownEllipsize
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.ccyToSymbol
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -78,6 +82,21 @@ class CompetitionFragment : BaseFragment<CompetitionViewModel , FragmentCompetit
             ivHelper.clickNoRepeat {
                 //跳转到帮助页面
                 navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment.deeplink("url" to BizUrl.HELP.url))
+            }
+
+            tvBonus.clickNoRepeat {
+                if (tvBonus.hasShownEllipsize()) {
+                    val location = IntArray(2)
+                    tvBonus.getLocationInWindow(location)
+                    val h = ViewUtils.getStatusBarHeight(requireContext())
+                    val positionX = location.first() + tvBonus.width / 2
+                    val positionY = location.last() - h - 1.dp2px
+                    AllInfoDialogFragment.newInstance(
+                        positionX,
+                        positionY,
+                        tvBonus.text.toString()
+                    ).show(childFragmentManager, "AllInfoDialogFragment")
+                }
             }
         }
 
