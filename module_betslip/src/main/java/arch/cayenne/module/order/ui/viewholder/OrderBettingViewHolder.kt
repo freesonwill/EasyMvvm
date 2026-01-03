@@ -24,7 +24,7 @@ class OrderBettingViewHolder(mBinding: ItemOrderSportBettingBinding): BaseOrderV
         mBinding.tvCombo.text = if (item.selectionsList.size == 1) {
             mBinding.root.context.getString(arch.cayenne.lib.res.R.string.title_single_bet)
         } else {
-            mBinding.root.context.getString(R.string.title_combo_bet_odds, item.comboK, item.comboV)
+            mBinding.root.context.getString(arch.cayenne.lib.res.R.string.title_combo_bet_odds, item.comboK, item.comboV)
         }
 
 //        mBinding.rvContent.addItemDecoration(OrderItemSelectionDecoration(18.dp2px))

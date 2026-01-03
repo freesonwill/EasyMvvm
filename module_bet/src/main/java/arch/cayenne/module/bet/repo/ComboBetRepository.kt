@@ -538,7 +538,7 @@ class ComboBetRepository(
         return kList.map { k ->
             val title = R.string.title_combo_bet_detail.getString(
                 if(k==1) arch.cayenne.lib.res.R.string.title_single_bet.getString()
-                else R.string.title_combo_bet_odds.getString(k,1)
+                else arch.cayenne.lib.res.R.string.title_combo_bet_odds.getString(k,1)
             )
             val listItems = data.combination(k).map { l ->
                 val ret = ComboDetailFragment.ParameterItems2(

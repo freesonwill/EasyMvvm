@@ -1,3 +1,13 @@
+def localProps = new Properties()
+def localPropsFile = rootProject.file("local.properties")
+if (localPropsFile.exists()) {
+    localPropsFile.withInputStream { localProps.load(it) }
+}
+
+def qatestDebuggable = localProps.getProperty("qatest.debuggable", "false")
+        .trim()
+        .toBoolean()
+
 android {
     signingConfigs {
         debug {
@@ -40,7 +50,7 @@ android {
 
         //测试专用
         qatest {
-            debuggable false
+            debuggable qatestDebuggable
             zipAlignEnabled true
             minifyEnabled false
             signingConfig signingConfigs.qatest

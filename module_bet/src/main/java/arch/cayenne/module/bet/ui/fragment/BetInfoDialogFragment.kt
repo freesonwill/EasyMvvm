@@ -71,9 +71,13 @@ class BetInfoDialogFragment : BasePositionDialogFragment<EmptyViewModel, Fragmen
             layoutParams.gravity = Gravity.TOP or Gravity.START
             layoutParams.x = locationX - offsetX
             if (tip?.length!! > 16) {
-                layoutParams.y = locationY - clRoot.measuredHeight - 47.dp2px
+                layoutParams.x += 1.dp2px
+                layoutParams.y = locationY - clRoot.measuredHeight - 44.dp2px
+                mBinding.tvBetInfo.setPadding(16.dp2px,11.5.dp2px,17.dp2px,11.dp2px)
+                mBinding.tvBetInfo.minHeight = 60.dp2px
             } else {
-                layoutParams.y = locationY - clRoot.measuredHeight - 27.dp2px
+                layoutParams.y = locationY - clRoot.measuredHeight - 28.dp2px
+                mBinding.tvBetInfo.setPadding(12.dp2px,12.dp2px,12.dp2px,12.dp2px)
             }
             w.attributes = layoutParams
             mBinding.root.visibility = View.VISIBLE

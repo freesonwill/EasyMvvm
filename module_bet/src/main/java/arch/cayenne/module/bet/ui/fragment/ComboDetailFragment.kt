@@ -8,7 +8,8 @@ import androidx.core.animation.addListener
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimensionPixelSize
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
@@ -34,8 +35,7 @@ class ComboDetailFragment :
     override val vmClass: KClass<BetCombViewModel> = BetCombViewModel::class
     private val listAdapter by lazy { ComboDetailAdapter() }
     private var tipStr = ""
-    private var isExpand: Boolean = false    //是否已经展开
-    private var isCanExpand: Boolean = false //是否可以展开
+
 
     companion object {
         private const val PARAMETER = "PARAMETER"
@@ -100,7 +100,7 @@ class ComboDetailFragment :
         fun title():String {
             return when {
                 isSuperCombo(serialValue) -> R.string.title_combo_bet_super.getString()
-                else -> R.string.title_combo_bet_odds.getString(comboK,comboV)
+                else -> R.string.title_combo_bet_tittle.getString(comboK,comboV)
             }
         }
 
@@ -109,7 +109,7 @@ class ComboDetailFragment :
                 comboV == 1 -> {
                     R.string.title_combo_bet_detail_tips.getString(
                         title(),
-                        R.string.title_combo_bet_odds.getString(comboK,comboV)
+                        arch.cayenne.lib.res.R.string.title_combo_bet_odds.getString(comboK,comboV)
                     )
                 }
                 else ->
@@ -117,7 +117,7 @@ class ComboDetailFragment :
                         title(),
                         ((if(isSuperCombo(serialValue)) 1 else 2)..comboK).joinToString("、") { k ->
                             if (k == 1) arch.cayenne.lib.res.R.string.title_single_bet.getString()
-                            else R.string.title_combo_bet_odds.getString(k, 1)
+                            else arch.cayenne.lib.common.R.string.title_combo_bet.getString(k, 1)
                         }
                     )
             }
@@ -162,19 +162,23 @@ class ComboDetailFragment :
             rvContent.adapter = listAdapter
         }
         val screenHeight = getScreenHeight()
-        val minHeight = (screenHeight * 0.52).toInt()
-        val maxHeight = (screenHeight * 0.84).toInt()
+        val minHeight = R.dimen.bet_pop_min_height.getDimensionPixelSize()
+        val maxHeight = R.dimen.bet_pop_max_height.getDimensionPixelSize()
         mBinding.clRoot.maxHeight = maxHeight
         mBinding.clRoot.layoutParams = mBinding.clRoot.layoutParams.apply {
             if (data.items.size > 12) {
-                isCanExpand = false
                 height = maxHeight
+                mViewModel.isExpand = BetCombViewModel.ExpandState.EXPANDED
             } else {
-                isCanExpand = true
                 height = minHeight
+                mViewModel.isExpand = BetCombViewModel.ExpandState.COLLAPSED
             }
         }
         listAdapter.submitList(data.items)
+    }
+
+    override fun isDimControllerEnabled(): Boolean {
+        return false
     }
 
     override fun initListener() {
@@ -190,24 +194,49 @@ class ComboDetailFragment :
                 .show(parentFragmentManager)
         }
         mBinding.ivBetExpand.clickNoRepeat {
-            onCollapses()
+            toggleExpandOrCollapse()
         }
     }
 
-    override suspend fun createObserver() {}
+    override suspend fun createObserver() {
+        launch {
+            mViewModel.isExpandFlow.collect {
+                when(it){
+                    BetCombViewModel.ExpandState.EXPANDED -> {
+                        mBinding.ivBetExpand.setImageResource(arch.cayenne.lib.common.R.drawable.icon_expand_none)
+                    }
+                    BetCombViewModel.ExpandState.COLLAPSED -> {
+                        mBinding.ivBetExpand.setImageResource(arch.cayenne.lib.common.R.drawable.icon_expand)
+                    }
+                    else -> Unit
+                }
+
+            }
+        }
+    }
 
     private fun getScreenHeight(): Int {
         return requireContext().resources.displayMetrics.heightPixels
     }
 
-    private fun onCollapses() {
-        if (!isCanExpand) return
-        isExpand = !isExpand
-        val screenHeight = getScreenHeight() ?: return
-        val max = (screenHeight * 0.84).toInt()
-        val min = (screenHeight * 0.52).toInt()
-        val start = if (isExpand) min else max
-        val end = if (isExpand) max else min
+    private fun toggleExpandOrCollapse() {
+        if(mViewModel.isExpand == BetCombViewModel.ExpandState.EXPANDING
+            || mViewModel.isExpand == BetCombViewModel.ExpandState.COLLAPSING){
+            return
+        }
+
+        val endState = if(mViewModel.isExpand == BetCombViewModel.ExpandState.EXPANDED){
+            mViewModel.isExpand = BetCombViewModel.ExpandState.COLLAPSING
+            BetCombViewModel.ExpandState.COLLAPSED
+        }
+        else{
+            mViewModel.isExpand = BetCombViewModel.ExpandState.EXPANDING
+            BetCombViewModel.ExpandState.EXPANDED
+        }
+        val min = R.dimen.bet_pop_min_height.getDimensionPixelSize()
+        val max = R.dimen.bet_pop_max_height.getDimensionPixelSize()
+        val start = if (mViewModel.isExpand == BetCombViewModel.ExpandState.EXPANDING) min else max
+        val end = if (mViewModel.isExpand == BetCombViewModel.ExpandState.EXPANDING) max else min
         val layoutParams = mBinding.clRoot.layoutParams
         ValueAnimator.ofInt(start, end).apply {
             duration = 150
@@ -216,14 +245,9 @@ class ComboDetailFragment :
                 layoutParams.height = value
                 mBinding.clRoot.layoutParams = layoutParams
             }
-            addListener(
-                onEnd = {
-                    if (isExpand) {
-                        mBinding.ivBetExpand.setImageResource(arch.cayenne.lib.common.R.drawable.icon_expand_none)
-                    } else {
-                        mBinding.ivBetExpand.setImageResource(arch.cayenne.lib.common.R.drawable.icon_expand)
-                    }
-                })
+            addListener(onEnd = {
+                mViewModel.isExpand = endState
+            })
         }.start()
     }
 

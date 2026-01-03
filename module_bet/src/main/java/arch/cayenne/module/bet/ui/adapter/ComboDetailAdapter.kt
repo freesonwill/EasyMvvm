@@ -9,6 +9,7 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.ItemComboDetail1Binding
 import arch.cayenne.module.bet.databinding.ItemComboDetail2Binding
@@ -63,7 +64,7 @@ class ComboDetailAdapter : BaseAdapter<ParameterUIItem, BaseViewHolder, ViewBind
             }
             val params = binding.root.layoutParams as ViewGroup.MarginLayoutParams
             if (position > 0) {
-                params.topMargin = 30.dp2px
+                params.topMargin = 15.5.dp2px
             } else {
                 params.topMargin = 0
             }
@@ -79,9 +80,9 @@ class ComboDetailAdapter : BaseAdapter<ParameterUIItem, BaseViewHolder, ViewBind
                 tvTabWin.text = bean.winMoneyStr
                 tvTabOdds.text = bean.oddsStr
                 if (position % 2 != 0) {
-                    clRoot.setBackgroundColor(Color.TRANSPARENT)
+                    bg.background = null
                 } else {
-                    clRoot.setBackgroundResource(R.drawable.shape_combination)
+                    bg.background = R.drawable.shape_combination.getDrawable()
                 }
             }
         }
