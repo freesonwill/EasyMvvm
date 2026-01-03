@@ -45,7 +45,8 @@ class MatchItemCompare : DiffUtil.ItemCallback<MatchListItem>() {
                     oldSelection.shortName != newSelection.shortName ||
                     oldSelection.parlay != newSelection.parlay ||
                     oldSelection.isSelected != newSelection.isSelected ||
-                    newSelection.trend != 0
+                    newSelection.trend != 0||
+                    oldSelection.oddsDisplayType != newSelection.oddsDisplayType
                 ) {
                     diff.add("odds") // 如果有其中任何一個不同就記錄 odds
                     return@forEachIndexed

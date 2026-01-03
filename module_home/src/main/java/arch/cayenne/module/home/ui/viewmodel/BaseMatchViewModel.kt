@@ -7,6 +7,7 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.lib.database.entity.MarketWithSelections
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.bet.data.AddSelectionStatus
@@ -14,13 +15,16 @@ import arch.cayenne.module.bet.data.BetInsertBean
 import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.repo.BaseMatchRepository
+import com.walisport.module.business.common.data.OddsTypeChangedRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
 
 abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
 
@@ -37,6 +41,8 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
     private val subscribeMatchSet by lazy { HashSet<Long>() }
 
     private var matchNotifyJob: Job? = null
+
+    private val oddsTypeChangedRepository: OddsTypeChangedRepository by inject { parametersOf(viewModelScope) }
 
     override fun initViewModel() {
         super.initViewModel()
@@ -76,6 +82,44 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
 
                 }
         }
+
+        viewModelScope.launch {
+            oddsTypeChangedRepository.getOddsTypeChangedFlow().collect { oddsType ->
+                if (matchListChange.value == null) return@collect
+//                "receive odds type changed : $oddsType".logi("dataIssue")
+                matchListChange.value = matchListChange.value!!.map {
+                    //重新構造MatchWithMarkets，更新selection的oddsDisplayType, 避免直接修改原有对象，recyclerView无法感知变化
+                    MatchWithMarkets(
+                        it.match,
+                        it.markets.map { marketWithSelections ->
+                            //
+                            MarketWithSelections(
+                                marketWithSelections.market,
+                                //重新构造selection，更新oddsDisplayType, 避免直接修改原有对象，recyclerView无法感知变化
+                                marketWithSelections.selections.map { selectionBeanLite ->
+                                    SelectionBeanLite(
+                                        selectionBeanLite.selectionId,
+                                        selectionBeanLite.detailActive,
+                                        selectionBeanLite.matchId,
+                                        selectionBeanLite.marketId,
+                                        selectionBeanLite.name,
+                                        selectionBeanLite.shortName,
+                                        selectionBeanLite.odds,
+                                        selectionBeanLite.active,
+                                        selectionBeanLite.parlay,
+                                        selectionBeanLite.isSelected,
+                                        selectionBeanLite.trend,
+                                        oddsType
+                                    )
+
+                                }
+                            )
+                        }
+                    )
+                }
+            }
+        }
+
     }
 
     fun loadNextPage() {

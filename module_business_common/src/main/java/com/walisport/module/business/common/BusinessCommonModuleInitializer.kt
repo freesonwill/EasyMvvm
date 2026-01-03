@@ -5,6 +5,7 @@ import arch.cayenne.lib.base.data.DefaultInitializer
 import com.walisport.module.business.common.data.FavouriteChangedRepository
 import com.walisport.module.business.common.data.GameFavouriteRepository
 import com.walisport.module.business.common.data.GameRecentRepository
+import com.walisport.module.business.common.data.OddsTypeChangedRepository
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
@@ -47,6 +48,11 @@ class BusinessCommonModuleInitializer: DefaultInitializer<Unit> {
             FavouriteChangedRepository(
             get() ,
         ) }
+
+        single {
+            OddsTypeChangedRepository(
+                get() ,
+            ) }
 
     }
 
