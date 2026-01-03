@@ -35,7 +35,8 @@
             android:layout_height="@dimen/dp_90"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:background="@drawable/account_avatar_default"
+            android:scaleType="centerCrop"
+            android:src="@drawable/account_avatar_default"
             tool:ignore="MissingConstraints" />
 
 

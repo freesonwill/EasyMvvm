@@ -3,52 +3,32 @@ package arch.cayenne.module.account.ui.fragment
 import android.Manifest
 import android.companion.CompanionDeviceManager.RESULT_OK
 import android.content.Intent
-import androidx.fragment.app.viewModels
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.navigation.fragment.findNavController
-import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.module.account.R
-import arch.cayenne.module.account.ui.viewmodel.AvatarViewModel
-import arch.cayenne.module.account.databinding.FragmentAvatarBinding
-import kotlin.reflect.KClass
-import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.module.account.databinding.TitleBarPreviewAvatarBinding
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.widget.Button
-import android.widget.ImageView
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
-import arch.cayenne.lib.common.utils.FileUtils
+import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ThumbHashUtils
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.module.account.databinding.FragmentAvatarBinding
+import arch.cayenne.module.account.databinding.TitleBarPreviewAvatarBinding
+import arch.cayenne.module.account.ui.viewmodel.AvatarViewModel
 import arch.cayenne.module.account.ui.viewmodel.PersonalInfoViewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
-import com.davemorrissey.labs.subscaleview.ImageSource
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP
+import java.io.File
+import kotlin.reflect.KClass
 
 class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
 
@@ -146,22 +126,16 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
             })
         }.show(childFragmentManager)
     }
-    fun showAvatar() {
-        val bitmap = FileUtils.loadLocalBitmap(requireContext())
-        mBinding.ivUserAvatar.maxScale = 1f
-        mBinding.ivUserAvatar.minScale = 1f
-        mBinding.ivUserAvatar.setMinimumScaleType(SCALE_TYPE_CENTER_CROP)
-        bitmap?.let { mBinding.ivUserAvatar.setImage(ImageSource.cachedBitmap(it)) }
+    fun showAvatar(url:String) {
+
+        Glide.with(this@AvatarFragment)
+            .load(url)
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .into(mBinding.ivUserAvatar)
+
     }
 
     override suspend fun createObserver() {
-        observeResult<Bundle>(CHANGE_FILE_PATH) {
-            val newArgs: AvatarFragmentArgs = AvatarFragmentArgs.fromBundle(it)
-            this.filePath = newArgs.filePath
-            filePath?.let {
-                showAvatar()
-            }
-        }
         // 初始化拍照结果回调AvatarPreviewFragment
         takePictureLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -259,26 +233,10 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
                 } catch (_: Exception) {
                     null
                 }
-
                 Glide.with(this@AvatarFragment)
-                    .downloadOnly()  // 只下载，不解码成 Bitmap
                     .load(avatar?.url?.trim())
                     .placeholder(placeholderDrawable)
-                    .into(object : CustomTarget<File>() {
-                        override fun onResourceReady(
-                            resource: File,
-                            transition: Transition<in File>?
-                        ) {
-                            mBinding.ivUserAvatar.setImage(ImageSource.uri(Uri.fromFile(resource)))
-                        }
-
-                        override fun onLoadCleared(placeholder: Drawable?) {
-                            // 清理时调用
-                        }
-
-                        override fun onLoadFailed(errorDrawable: Drawable?) {
-                        }
-                    })
+                    .into(mBinding.ivUserAvatar)
 
             }
         }

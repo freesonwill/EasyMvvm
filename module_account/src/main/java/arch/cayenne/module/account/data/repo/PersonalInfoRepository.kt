@@ -1,5 +1,7 @@
 package arch.cayenne.module.account.data.repo
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.LogUtils
@@ -13,12 +15,19 @@ import arch.cayenne.lib.http.HttpClient
 import arch.cayenne.lib.http._interface.IAccount
 import arch.cayenne.lib.http.data.AccountInfo
 import arch.cayenne.lib.http.data.ApiNickname
+import arch.cayenne.lib.http.data.ApiUpAvatar
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.module.account.R
 import arch.cayenne.module.account.data.model.PersonalInfoData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 
 /**
  * @author: ricky.chang
@@ -32,6 +41,12 @@ class PersonalInfoRepository(
     private val database: GameDatabase,
     private val httpClient: HttpClient ,
 ) : BaseRepository() {
+
+    private val _uploadAvatarResult = MutableLiveData<String>()
+    val uploadAvatarResult: LiveData<String> = _uploadAvatarResult
+
+    private val _uploadResult = MutableLiveData<String>()
+    val uploadResult: LiveData<String> = _uploadResult
      fun getAccountNicknameRecommendations(): UnPeekLiveData<List<String>> {
         val nicknameRecommenListLiveData = UnPeekLiveData<List<String>>()
         val api = httpClient.create(IAccount::class.java)
@@ -71,6 +86,57 @@ class PersonalInfoRepository(
         }
         return changeNickNameLiveData
     }
+
+    //更新用户头像
+    fun updateAvatar(avatarUrl: String, type: String, avatarId: String) {
+        scope.launch(Dispatchers.IO) {
+            val api = httpClient.create(IAccount::class.java)
+            httpClient.safeRequest(
+                request = {
+                    api.updateAvatar(ApiUpAvatar(type=type, url = avatarUrl, avatarId =avatarId))
+                },
+                onSuccess = { resp ->
+                    LogUtils.d("updateAvatar", "Response: $resp")
+                    if (resp.code == 0) _uploadAvatarResult.postValue(avatarUrl)
+                },
+                onFailure = { code, msg, throwable ->
+                    LogUtils.d("updateAvatar", "Response: $code, $msg")
+                    _uploadAvatarResult.postValue("")
+                }
+            )
+        }
+    }
+
+
+    fun uploadAvatar(uid:String,token:String,filePath: String){
+        scope.launch(Dispatchers.IO) {
+            val api = httpClient.create(IAccount::class.java)
+            httpClient.safeRequest(
+                request = {
+                    val file = File(filePath)
+                    val requestFile = file.asRequestBody("image/*".toMediaType())
+                    val filePart = MultipartBody.Part.createFormData("files", file.name, requestFile)
+                    val uidBody = uid.toRequestBody("text/plain".toMediaType())
+                    val tokenBody = token.toRequestBody("text/plain".toMediaType())
+                    api.upAvatar(filePart,uidBody,tokenBody)
+                },
+                onSuccess = { resp ->
+                    LogUtils.d("UploadAvatar", "Response: ${resp.data.filenames}")
+                    if (resp.code == 0) {
+                        getAccountInfo()
+                        _uploadResult.postValue(resp.data.filenames[0])
+                    }
+                },
+                onFailure = { code, msg, throwable ->
+                    LogUtils.d("UploadAvatar", "Response: $code, $msg")
+                    _uploadResult.postValue("") }
+            )
+        }
+    }
+
+
+
+
     fun getAccountInfo() {
         val api = httpClient.create(IAccount::class.java)
         scope.launch(Dispatchers.IO) {

@@ -45,12 +45,8 @@ inline fun <reified F : Fragment> Fragment.findRelative(filter: (f: F) -> Boolea
 val Fragment.rootFragment: Fragment
     get() {
         var root = this
-        var child = root
         while (root.parentFragment != null){
-            child = root
             root = root.requireParentFragment()
         }
-        //For NavHostFragment, treat its child as root
-        if(root is NavHostFragment) root = child
         return root
     }

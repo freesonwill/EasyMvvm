@@ -18,7 +18,7 @@
         android:layout_weight="1"
         android:background="@color/tran_0">
 
-        <arch.cayenne.module.account.view.CircularPhotoView
+        <arch.cayenne.module.account.view.AvatarCircleImageView
             android:id="@+id/ivUserAvatar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
