@@ -572,8 +572,10 @@ class TournamentListBottomSheetFragment :
         // 如果選中狀態改變 或 原選中的聯賽消失，顯示"查看最新結果"
         if (isChanged || !isInitialValid) {
             mBinding.tvConfirm.text = getString(R.string.tournament_view_latest_results)
+            mBinding.tvReset.isEnabled = true
         } else {
             mBinding.tvConfirm.text = getString(R.string.tournament_confirm)
+            mBinding.tvReset.isEnabled = false
         }
     }
 
