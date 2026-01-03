@@ -27,7 +27,7 @@ class ChatPageAdapter(
     BaseAdapter<ChatMsgPageBean, ChatPageAdapter.LiveChatViewHolder, ItemLiveChatBinding>(
         ChatCompare()
     ) {
-    private val longPressTimeout = 300L
+    private val longPressTimeout = 700L
     private val longPressHandler = android.os.Handler()
     private val longPressRunnable = object : LongClickListener() {
         override fun run() {
@@ -56,44 +56,37 @@ class ChatPageAdapter(
                         buffer: Spannable?,
                         event: MotionEvent?
                     ): Boolean {
-                        if (widget != null && buffer != null && event?.action == MotionEvent.ACTION_DOWN) {
-                            val msgId = widget.tag as String
-                            val position = currentList.indexOfFirst { it.msgId == msgId }
-                            if (getItem(position).msgType == ChatMsgType.SYSTEM) {
-                                return true
-                            }
-                            // 获取点击位置
-                            val x = event.x.toInt() - widget.totalPaddingLeft + widget.scrollX
-                            val y = event.y.toInt() - widget.totalPaddingTop + widget.scrollY
+                        if(event == null || widget == null || buffer == null){
+                            return super.onTouchEvent(widget, buffer, event)
+                        }
+                        val msgId = widget.tag as String
+                        val position = currentList.indexOfFirst { it.msgId == msgId }
+                        if (getItem(position).msgType == ChatMsgType.SYSTEM) {
+                            return true
+                        }
+                        // 获取点击位置
+                        val x = event.x.toInt() - widget.totalPaddingLeft + widget.scrollX
+                        val y = event.y.toInt() - widget.totalPaddingTop + widget.scrollY
 
-                            val layout = widget.layout
-                            val line = layout.getLineForVertical(y)
-                            val off = layout.getOffsetForHorizontal(line, x.toFloat())
+                        val layout = widget.layout
+                        val line = layout.getLineForVertical(y)
+                        val off = layout.getOffsetForHorizontal(line, x.toFloat())
+                        val nameSpans =
+                            buffer.getSpans(off - 1, off + 1, ColorSpan::class.java)
+                        if (event.action == MotionEvent.ACTION_DOWN) {
 
-                            val nameSpans =
-                                buffer.getSpans(off - 1, off + 1, ColorSpan::class.java)
                             if (nameSpans.isNotEmpty()) {
                                 longPressRunnable.updateBean(getItem(position))
                                 longPressHandler.postDelayed(longPressRunnable, longPressTimeout)
-                            }
-
-                        } else if (widget != null && buffer != null && event?.action == MotionEvent.ACTION_UP) {
-                            longPressHandler.removeCallbacks(longPressRunnable)
-                            val msgId = widget.tag as String
-                            val position = currentList.indexOfFirst { it.msgId == msgId }
-                            if (getItem(position).msgType == ChatMsgType.SYSTEM) {
                                 return true
                             }
 
-                            // 获取点击位置
-                            val x = event.x.toInt() - widget.totalPaddingLeft + widget.scrollX
-                            val y = event.y.toInt() - widget.totalPaddingTop + widget.scrollY
-
-                            val layout = widget.layout
-                            val line = layout.getLineForVertical(y)
-                            val off = layout.getOffsetForHorizontal(line, x.toFloat())
-
+                        } else if (event.action == MotionEvent.ACTION_UP) {
+                            longPressHandler.removeCallbacks(longPressRunnable)
                             val spans = buffer.getSpans(off - 1, off + 1, MentionSpan::class.java)
+                            if(nameSpans.isNotEmpty()){
+                                return true
+                            }
                             if (spans.isNotEmpty()) {
                                 spans.first().also {
                                     specialClick.invoke(getItem(position), it.tv, it.msgType)

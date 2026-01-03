@@ -167,9 +167,14 @@ class ChatATHelper(
 //        }
 //    }
 
-    fun checkAtInEtInput(): Boolean {
-        
-
+    fun checkAtInEtInput(uid: String): Boolean {
+        val spannable = SpannableStringBuilder(chatEtInput.text)
+        val spans = spannable.getSpans(0, spannable.length, MentionSpan::class.java)
+        val atSpan = spans.filter { it.msgType == ChatMsgType.AT }.find {
+            it.user?.uid == uid
+        }
+        "checkAtInEtInput uid $atSpan ".logd("aaa")
+        return atSpan == null
     }
 
     fun addAtMentionSpan(name: String, user: ChatRefUser) {
@@ -212,12 +217,14 @@ class ChatATHelper(
     fun removeMentionSpan(editText: EditText, position: Int, count: Int) {
         var spannable = SpannableStringBuilder(editText.text)
         val spans = spannable.getSpans(position, position + 1, MentionSpan::class.java)
+        "removeMentionSpan1 ${spans.size} $position".logd(TAG)
         spans.forEach { mention ->
             val spanStart = spannable.getSpanStart(mention)
             val spanEnd = spannable.getSpanEnd(mention)
             "removeMentionSpan position $position spanStart $spanStart spanEnd $spanEnd count $count ".logd(
                 TAG
             )
+
             //两个@中间，在后一个@前面插入
             if (position in spanStart..<spanEnd) {
                 spannable.removeSpan(mention)
@@ -229,11 +236,9 @@ class ChatATHelper(
                     val mentionSpan =
                         MentionSpan(mention.msgType, mention.tv, mention.user, atClick)
                     spannable.setSpan(
-                        mentionSpan,
-                        spanStart,
-                        position,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        mentionSpan, spanStart, position, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
+
                 }
                 editText.text = spannable
                 editText.setSelection(position)
@@ -286,16 +291,17 @@ class ChatATHelper(
                     if (spans.size == 1) {//在一个at消息中多选删除时，先全选，如果是全选就直接删除
                         val spanStart = spannable.getSpanStart(spans[0])
                         val spanEnd = spannable.getSpanEnd(spans[0])
-                        if (spanStart <= cursorPositionStart  && cursorPositionEnd <= spanEnd ) {
+                        //光标在at消息中间，选中整个at消息，如果光标全选at消息就直接删除
+                        if ((spanStart <= cursorPositionStart && cursorPositionEnd <= spanEnd) && !(spanStart == cursorPositionStart && spanEnd == cursorPositionEnd)) {
                             editText.setSelection(spanStart, spanEnd)
                             return@setOnKeyListener true
                         }
                     }
-                    val list: List<String> = spans.map {
-                        editText.text.removeSpan(it)
-                        it.tv
-                    }.toList()
-                    atPopupWindow.deleteAdapterSelect(list)
+//                    val list: List<String> = spans.map {
+//                        editText.text.removeSpan(it)
+//                        it.tv
+//                    }.toList()
+//                    atPopupWindow.deleteAdapterSelect(list)
                     return@setOnKeyListener false
                 }
 

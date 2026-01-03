@@ -267,7 +267,10 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
             sendText()
         }
         mViewModel.atLiveData.observe(viewLifecycleOwner) {
-            mViewModel.myUid
+            //TODO 暂时去除  去除相同的at用户
+//            if(!chatAtHelper.checkAtInEtInput(it.uid)){
+//                return@observe
+//            }
             chatAtHelper.addAtMentionSpan(it.userName, ChatRefUser(it.uid,it.userName,it.avatarId,it.replaceUserName))
             SoftKeyBoardAnim.etAnimWhenEtContentChange(
                 mBinding,
