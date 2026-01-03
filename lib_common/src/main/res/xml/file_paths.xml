@@ -4,4 +4,7 @@
     <external-files-path name="camera_photos" path="Pictures" />
     <!-- 相册访问路径 -->
     <external-path name="external_files" path="." />
+
+    <cache-path name="cache" path="." />
+    <external-cache-path name="external_cache" path="." />
 </paths>

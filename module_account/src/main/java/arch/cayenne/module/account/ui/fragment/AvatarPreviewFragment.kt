@@ -42,11 +42,11 @@ class AvatarPreviewFragment : BaseFragment<AvatarPreviewViewModel, FragmentAvata
             mBinding.ivUserAvatar.minScale = 1f
             mBinding.ivUserAvatar.setMinimumScaleType(SCALE_TYPE_CENTER_CROP)
             mBinding.ivUserAvatar.setBitmaps(FileUtils.getBitmapFromUri(requireContext(),Uri.parse(uri)))
-            // 设置模糊背景
-            Glide.with(this)
-                .load(Uri.parse(uri))
-                .transform(BlurTransformation(25, 4))
-                .into(mBinding.backgroundImage)
+//            // 设置模糊背景
+//            Glide.with(this)
+//                .load(Uri.parse(uri))
+//                .transform(BlurTransformation(25, 4))
+//                .into(mBinding.backgroundImage)
         }
 
         mBinding.titleBar.post {

@@ -21,6 +21,7 @@ import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.module.account.databinding.TitleBarPreviewAvatarBinding
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -56,7 +57,9 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
     private val personalViewModel: PersonalInfoViewModel by sharedViewModel<PersonalInfoViewModel, PersonalInfoFragment>()
     private var currentPhotoPath: String? = null
     private lateinit var takePictureLauncher: ActivityResultLauncher<Intent>
-    private lateinit var galleryLauncher: ActivityResultLauncher<String>
+    private var galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        // 这里只会返回单个 Uri
+    }
     companion object {
         const val CHANGE_FILE_PATH = "CHANGE_FILE_PATH"
     }
@@ -66,17 +69,38 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
     // 权限数组
     private val PERMISSIONS_REQUEST_CAMERA = arrayOf(
         Manifest.permission.CAMERA,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
 
-    private val PERMISSIONS_REQUEST_STORAGE = arrayOf(
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
-    )
+    private val PERMISSIONS_REQUEST_STORAGE =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(
+                Manifest.permission.READ_MEDIA_IMAGES,
+            )
+        } else {
+            arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+        }
 
     private val titleBarBinding: TitleBarPreviewAvatarBinding by lazy {
         TitleBarPreviewAvatarBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
+    }
+
+    private val permissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val allGranted = permissions.all { it.value }
+        if (allGranted) {
+            // 权限全部通过
+            onPermissionsGranted(
+                if (permissions.keys.containsAll(PERMISSIONS_REQUEST_CAMERA.toList())
+                ) camera else storage
+            )
+        } else {
+            Toast.makeText(requireContext(), "权限被拒绝，无法使用相机或相册", Toast.LENGTH_SHORT)
+                .show()
+        }
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -122,11 +146,11 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
             })
         }.show(childFragmentManager)
     }
-    fun showAvatar(){
-      val  bitmap = FileUtils.loadLocalBitmap(requireContext())
-            mBinding.ivUserAvatar.maxScale = 1f
-            mBinding.ivUserAvatar.minScale = 1f
-            mBinding.ivUserAvatar.setMinimumScaleType(SCALE_TYPE_CENTER_CROP)
+    fun showAvatar() {
+        val bitmap = FileUtils.loadLocalBitmap(requireContext())
+        mBinding.ivUserAvatar.maxScale = 1f
+        mBinding.ivUserAvatar.minScale = 1f
+        mBinding.ivUserAvatar.setMinimumScaleType(SCALE_TYPE_CENTER_CROP)
         bitmap?.let { mBinding.ivUserAvatar.setImage(ImageSource.cachedBitmap(it)) }
     }
 
@@ -138,7 +162,7 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
                 showAvatar()
             }
         }
-        // 初始化拍照结果回调
+        // 初始化拍照结果回调AvatarPreviewFragment
         takePictureLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == RESULT_OK) {
@@ -162,17 +186,8 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
 
     // 请求权限
     fun permissions(permissions: Array<String>, requestCode: Int) {
-        val permissionsToRequest = permissions.filter {
-            ContextCompat.checkSelfPermission(
-                requireContext(),
-                it
-            ) != PackageManager.PERMISSION_GRANTED
-        }.toTypedArray()
-        if (permissionsToRequest.isNotEmpty()) {
-            requestPermissions(permissionsToRequest, requestCode)
-        } else {
-            onPermissionsGranted(requestCode)
-        }
+        //
+        permissionLauncher.launch(permissions)
     }
 
     fun goToAvatarFragment(imgUrl: String) {
@@ -184,20 +199,6 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
         })
     }
 
-    // 权限请求结果处理
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
-            onPermissionsGranted(requestCode)
-        } else {
-            Toast.makeText(requireContext(), "权限被拒绝，无法使用相机或相册", Toast.LENGTH_SHORT)
-                .show()
-        }
-    }
 
     // 权限通过后的操作
     private fun onPermissionsGranted(requestCode: Int) {
@@ -251,27 +252,34 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
 
         personalViewModel.onUserInfoListener.value.apply {
             this?.avatar.let { avatar ->
-                val thumbBitmap =
-                    ThumbHashUtils.getBitmapFromThumbHash(avatar?.thumbhash)  //返回 Bitmap?
-                thumbBitmap?.let { bitmap ->
-                    val placeholderDrawable = BitmapDrawable(resources, bitmap)
-                    Glide.with(this@AvatarFragment)
-                        .downloadOnly()  // 只下载，不解码成 Bitmap
-                        .load(avatar?.url?.trim())
-                        .placeholder(placeholderDrawable)
-                        .into(object : CustomTarget<File>() {
-                            override fun onResourceReady(resource: File, transition: Transition<in File>?) {
-                                mBinding.ivUserAvatar.setImage(ImageSource.uri(Uri.fromFile(resource)))
-                            }
-
-                            override fun onLoadCleared(placeholder: Drawable?) {
-                                // 清理时调用
-                            }
-
-                            override fun onLoadFailed(errorDrawable: Drawable?) {
-                            }
-                        })
+                val placeholderDrawable = try {
+                    ThumbHashUtils.getBitmapFromThumbHash(avatar?.thumbhash)?.let { bitmap ->
+                        BitmapDrawable(resources, bitmap)
+                    }
+                } catch (_: Exception) {
+                    null
                 }
+
+                Glide.with(this@AvatarFragment)
+                    .downloadOnly()  // 只下载，不解码成 Bitmap
+                    .load(avatar?.url?.trim())
+                    .placeholder(placeholderDrawable)
+                    .into(object : CustomTarget<File>() {
+                        override fun onResourceReady(
+                            resource: File,
+                            transition: Transition<in File>?
+                        ) {
+                            mBinding.ivUserAvatar.setImage(ImageSource.uri(Uri.fromFile(resource)))
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {
+                            // 清理时调用
+                        }
+
+                        override fun onLoadFailed(errorDrawable: Drawable?) {
+                        }
+                    })
+
             }
         }
     }
