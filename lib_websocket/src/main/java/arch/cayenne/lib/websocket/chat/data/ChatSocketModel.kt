@@ -168,19 +168,19 @@ data class ChatRefUser(
  * 消息Bean
  * */
 data class ChatMsg(
-    val uid: String,
-    val userName: String,
-    val avatarId: Int,
-    val msgId: String,
-    val content: String,
-    val timestamp: String,
+    val uid: String = "",
+    val userName: String = "",
+    val avatarId: Int = -1,
+    val msgId: String = "",
+    val content: String = "",
+    val timestamp: String = "",
     val refUids: List<String>? = null,
     val refInfos: Map<String, ChatRefUser>? = null,
-    val onlyForSelf: Int,
+    val onlyForSelf: Int = -1,
     val replaceUserName: String? = null,
-    val msgType: MsgType,
+    val msgType: MsgType = MsgType.MSG_TYPE_TEXT,
     val extraData: Map<String,String>? = null,
-    val chatType: ChatType
+    val chatType: ChatType = ChatType.LOBBY
 ) {
 }
 //{"avatarId":1,"content":"官方推荐大家多多交流！","msgId":"1766242779790","onlyForSelf":0,"platform":0,"refAvatarId":0,"timestamp":"2025-12-20T14:59:39.790Z","uid":"18446744073709551615","userName":"我是官方"}

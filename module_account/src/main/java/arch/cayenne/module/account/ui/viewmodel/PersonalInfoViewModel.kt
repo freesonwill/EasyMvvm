@@ -22,6 +22,12 @@ class PersonalInfoViewModel : BaseViewModel() {
     private val repository: PersonalInfoRepository by inject()
     private val _onUserInfoListener = MutableLiveData<UserDataBean>()
     val onUserInfoListener: LiveData<UserDataBean> get() = _onUserInfoListener
+
+
+    private val _uploadResult = MutableLiveData<String>()
+    val uploadResult: LiveData<String> = _uploadResult
+
+
     override fun initViewModel() {
         super.initViewModel()
         viewModelScope.launch {
@@ -29,6 +35,10 @@ class PersonalInfoViewModel : BaseViewModel() {
                 _onUserInfoListener.value = it
             }
         }
+    }
+
+    fun setUploadResul(filePath: String) {
+        _uploadResult.value = filePath
     }
 
     //获取账户信息
