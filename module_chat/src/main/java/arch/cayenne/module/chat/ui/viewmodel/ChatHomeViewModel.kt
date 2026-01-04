@@ -28,10 +28,12 @@ import arch.cayenne.module.chat.utils.ChatMsgUtils
 import arch.cayenne.module.order.data.model.BetShareBean
 import com.google.gson.Gson
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import java.util.Locale
@@ -67,12 +69,14 @@ class ChatHomeViewModel() : BaseViewModel() {
 //    //判断聊天记录是不是空的
 //    val chatHistoryIsEmpty: LiveData<Boolean> = _chatHistoryIsEmpty
 
+
     //聊天api相关
     val chatHistoryFlow = chatServer.historyFlow
     val sendMsgToServerFlow = chatServer.sendMsgResultFlow
     val loginFlow = chatServer.getManagerLoginFlow()
     val checkBetAmountFlow = chatServer.checkBetAmountFlow
     val enterRoomFlow = chatServer.enterRoomFlow
+    val leaveRoomFLow = chatServer.leaveRoomFlow
 
     //emojiFragment 发送emoji到et显示
     val emojiFlow: SharedFlow<EmojiModel?> = _emojiFlow
@@ -89,11 +93,13 @@ class ChatHomeViewModel() : BaseViewModel() {
 
     //聊天键盘切换监听
     val currentKeyBoardTypeLiveData: LiveData<KeyBoardType> = _currentKeyBoardType
-    var languageSelectPosition: Int = 1
+    var languageSelectPosition: Int = 0
 
     var currentSelectBetShare: BetShareBean? = null
     var myUid: String = ""
     var mainChatLanguagePosition = 1
+
+//    var updateRoom:Boolean = false
 
     override fun initViewModel() {
         super.initViewModel()
@@ -302,14 +308,21 @@ class ChatHomeViewModel() : BaseViewModel() {
     }
 
     fun updateLanguageSelect(position: Int,chatType:ChatType) {
+        "updateLanguageSelect position:$position   $languageSelectPosition".logd(TAG)
+
         if(position < 0 || position >= ChatMsgUtils.mainChatRoom().size){
             return
         }
+
         if(languageSelectPosition != position){
+//            updateRoom = true
             leaveRoom(chatType)
             languageSelectPosition = position
             this.matchId = ChatMsgUtils.mainChatRoom()[position]
-            enterRoom(chatType)
+            viewModelScope.launch {
+                delay(500)
+                enterRoom(chatType)
+            }
         }
     }
 
