@@ -46,5 +46,6 @@ enum class UserDataKey(val key: String) {
     KEY_DAY("KEY_DAY"),
 
     //软件盘配置相关
-    KEY_SOFT_CONFIG("soft_config")
+    KEY_SOFT_CONFIG("soft_config"),
+    MAIN_CHAT_LANGUAGE("main_chat_language"),
 }
