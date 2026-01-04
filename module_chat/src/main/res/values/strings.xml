@@ -41,6 +41,13 @@
         <item>ภาษาไทย</item>
         <item>Русский</item>
         <item>Tiếng Việt</item>
+        <item>한국어</item>
+        <item>Español</item>
+        <item>اَلْعَرَبِيَّةُ</item>
+        <item>Indonesia</item>
+
+
+
     </string-array>
     
     <string name="follow_bet">跟单</string>
