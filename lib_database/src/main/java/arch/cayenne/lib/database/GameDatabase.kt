@@ -12,6 +12,7 @@ import arch.cayenne.lib.database.dao.ChatConfigDao
 import arch.cayenne.lib.database.dao.CoinDao
 import arch.cayenne.lib.database.dao.CollectListDao
 import arch.cayenne.lib.database.dao.CurrencyConfigDao
+import arch.cayenne.lib.database.dao.DailyBetMatchDataDao
 import arch.cayenne.lib.database.dao.GameDao
 import arch.cayenne.lib.database.dao.GameSupplierDao
 import arch.cayenne.lib.database.dao.HomeSelectedDao
@@ -35,6 +36,7 @@ import arch.cayenne.lib.database.entity.ChatConfigBean
 import arch.cayenne.lib.database.entity.CoinBean
 import arch.cayenne.lib.database.entity.CollectListBean
 import arch.cayenne.lib.database.entity.CurrencyBean
+import arch.cayenne.lib.database.entity.DailyBetMatchDataBean
 import arch.cayenne.lib.database.entity.EarlyTournamentMatchRef
 import arch.cayenne.lib.database.entity.GameBean
 import arch.cayenne.lib.database.entity.HomeSelectedBean
@@ -95,6 +97,7 @@ import arch.cayenne.lib.database.entity.UserDataBean
         CurrencyBean::class,
         GameSupplierDataModel::class,
         GameBean::class,
+        DailyBetMatchDataBean::class,
         SystemAvatarBean::class
     ],
     version = 1,
@@ -149,6 +152,7 @@ abstract class GameDatabase: RoomDatabase() {
     abstract fun gameDao(): GameDao
     abstract fun userDataDao(): UserDataDao
     abstract fun currencyConfigDao(): CurrencyConfigDao
+    abstract fun dailyBetMatchDataDao(): DailyBetMatchDataDao
     abstract fun systemAvatarDao(): SystemAvatarDao
 
 }
