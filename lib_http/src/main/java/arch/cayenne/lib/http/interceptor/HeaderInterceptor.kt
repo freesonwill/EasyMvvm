@@ -28,7 +28,7 @@ class HeaderInterceptor(
             .addHeader("Uid", "100")
             .addHeader("Token", "MTAwXzE3NjU0Mzc1NTk1MDk6ZFBoc3dpelQwazRTaUJnbg")
             .addHeader("Lang", "zh-CN")
-            .addHeader("Ccy", manager.getValue(UserDataKey.KEY_DEFAULT_CURRENCY, "USD"))
+            .addHeader("Ccy", manager.getValue(UserDataKey.KEY_DEFAULT_FIAT, "USD"))
             .addHeader("Uuid", "1B3B3ED86CB54E20905AE441BD694A33")
             .addHeader("Base", "0.0.1")
             .addHeader("Version", "0.0.1")

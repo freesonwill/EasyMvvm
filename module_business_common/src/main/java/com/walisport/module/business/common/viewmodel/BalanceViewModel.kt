@@ -1,11 +1,13 @@
-package arch.cayenne.lib.common.ui.viewmodel
+package com.walisport.module.business.common.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.constants.BaseCurrencyData
-import arch.cayenne.lib.common.data.repo.BalanceRepository
+import com.walisport.module.business.common.repo.BalanceRepository
 import kotlinx.coroutines.launch
 
 class BalanceViewModel(
@@ -52,7 +54,10 @@ class BalanceViewModel(
         balanceRepository.setDefaultCurrency(ccy)
     }
 
-    fun setFiatCurrency(ccy: String) {
+    //切换法币币种后请求接口获取返回后监听
+    fun changeFiat(ccy: String) : UnPeekLiveData<Boolean>{
+        "切换法币====$ccy".loge("测试")
         balanceRepository.setFiatCurrency(ccy)
+        return balanceRepository.changeFiat()
     }
 }
