@@ -24,7 +24,15 @@
         <item name="layout_constraintTop_toTopOf">parent</item>
         <item name="layout_constraintBottom_toBottomOf">parent</item>
     </style>
-
+    <style name="CustomToolbarImgStyle2">
+        <item name="android:layout_height">@dimen/dp_24</item>
+        <item name="android:layout_width">@dimen/dp_24</item>
+        <item name="android:stateListAnimator">@animator/layout_alpha_animator</item>
+        <item name="srcCompat">@drawable/universal_icon_back</item>
+        <item name="layout_constraintLeft_toLeftOf">parent</item>
+        <item name="layout_constraintTop_toTopOf">parent</item>
+        <item name="layout_constraintBottom_toBottomOf">parent</item>
+    </style>
     <style name="CustomToolbarCancelStyle">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
