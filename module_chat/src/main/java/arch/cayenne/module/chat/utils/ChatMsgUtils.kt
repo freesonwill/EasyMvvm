@@ -29,12 +29,12 @@ object ChatMsgUtils {
         if (value.contains("游戏注单")) {
             return value.replace(
                 "#游戏注单:",
-                "\u2060游\u2060戏\u2060注\u2060单\u2060:\u2060"
+                "#\u2060游\u2060戏\u2060注\u2060单\u2060:\u2060"
             )
         } else if (value.contains("体育注单")) {
             return value.replace(
                 "#体育注单:",
-                "\u2060体\u2060育\u2060注\u2060单\u2060:\u2060"
+                "#\u2060体\u2060育\u2060注\u2060单\u2060:\u2060"
             )
         }
         return value

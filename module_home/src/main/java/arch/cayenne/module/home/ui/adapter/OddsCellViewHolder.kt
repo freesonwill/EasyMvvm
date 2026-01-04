@@ -6,13 +6,10 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.animation.addListener
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.common.data.constants.UserDataKey
-import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.data.constants.OddsCellState
 import arch.cayenne.module.home.databinding.ItemOddsCellBinding
-import org.koin.java.KoinJavaComponent.getKoin
 import java.lang.ref.WeakReference
 
 class OddsCellViewHolder(
@@ -26,8 +23,10 @@ class OddsCellViewHolder(
     fun bind(item: SelectionBeanLite) {
         with(mBinding) {
             tvShortName.text = item.shortName
-            val oddChange = getKoin().get<UserDataManager>(UserDataManager::class).getValue(UserDataKey.KEY_ODDS,0)
-            tvOdds.text = item.oddsDisplay(oddChange).getOdds()
+            // 设置赔率文本为根据显示类型计算后的赔率值
+            tvOdds.text = item.oddsDisplay(item.oddsDisplayType).getOdds()
+
+            // 获取当前项是否处于激活状态
             val isActive = item.active
             updateState(isActive, item.isSelected)
 
@@ -81,8 +80,9 @@ class OddsCellViewHolder(
         with(mBinding) {
 
             if ("odds" in diff) {
-                if (tvOdds.text.toString() != item.odds.getOdds()) {
-                    tvOdds.text = item.odds.getOdds()
+                if (tvOdds.text.toString() != item.oddsDisplay(item.oddsDisplayType).getOdds()) {
+                    val text = item.oddsDisplay(item.oddsDisplayType).getOdds()
+                    tvOdds.text = text
                 }
             }
 

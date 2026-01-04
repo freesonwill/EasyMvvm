@@ -177,7 +177,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0"
                     android:paddingHorizontal="@dimen/dp_0"
-                    tools:visibility="gone">
+                    tools:visibility="visible">
 
                     <arch.cayenne.lib.skin.widget.SkinnableImageView
                         android:id="@+id/iv_reserve_hint"
@@ -205,7 +205,9 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@id/iv_reserve_hint"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:skinnableFontWeight="500" />
+                        app:skinnableFontWeight="500"
+                        android:paddingBottom="@dimen/dp_1"
+                        />
 
 
                 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
@@ -220,7 +222,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
                         android:id="@+id/tv_cancel_reserve"
@@ -351,7 +353,9 @@
                     app:layout_constraintHorizontal_chainStyle="packed"
                     android:layout_marginStart="@dimen/dp_25"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginBottom="0dp"
+                    />
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:id="@+id/tv_collusion_hint"
@@ -364,10 +368,11 @@
                     android:textSize="14sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/iv_collusion_hint"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/iv_collusion_hint"
                     app:skinnableFontWeight="500"
                     android:fontFamily="@font/sf_pro"
+                    android:layout_marginBottom="2dp"
                     />
 
 
@@ -397,7 +402,9 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     android:fontFamily="@font/sf_pro"
-                    app:skinnableFontWeight="500" />
+                    app:skinnableFontWeight="500"
+                    android:layout_marginBottom="2dp"
+                    tools:visibility="visible"/>
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:id="@+id/tv_bet_money"
@@ -413,13 +420,14 @@
                     app:skinnableFontWeight="500"
                     tools:text="可赢 ¥98"
                     android:fontFamily="@font/sf_pro"
-                    tools:visibility="visible" />
+                    />
 
                 <androidx.constraintlayout.widget.Group
                     android:id="@+id/groupBetText"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     app:constraint_referenced_ids="tv_bet_hint,tv_bet_money"
+                    tools:visibility="visible"
                     />
 
                 <ProgressBar

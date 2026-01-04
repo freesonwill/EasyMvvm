@@ -28,7 +28,7 @@ class ResultMultiBetAdapter(private val listener: OnResultMultiBetListener) :
             text = when(item.serialValue){
                 ComboMultiBetBean.SERIAL_VALUE_SUPER -> R.string.title_combo_bet_super.getString()
                 else -> {
-                    val combo = holder.getString(R.string.title_combo_bet_odds).format(item.comboK, item.comboV)
+                    val combo = holder.getString(R.string.title_combo_bet_tittle).format(item.comboK, item.comboV)
                     combo
                 }
             }

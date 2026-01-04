@@ -44,11 +44,10 @@ abstract class BaseMatchRepository(
         const val DEFAULT_MATCH_SIZE = 10
     }
 
-    protected val isEuropeOddsDisplay : Boolean
-    get() {
-        val value = userDataManager.getValue(UserDataKey.KEY_ODDS, OddsDisplayEnum.EU.value)
-        return value == OddsDisplayEnum.EU.value
-    }
+    protected val oddsDisplayType: Int
+        get() {
+            return userDataManager.getValue(UserDataKey.KEY_ODDS, OddsDisplayEnum.EU.value)
+        }
 
     /**
      * 訂閱賽事，並且訂閱成功後會先馬上回傳一次訂閱賽事的資料
@@ -122,7 +121,7 @@ abstract class BaseMatchRepository(
         }
         if (res.error == null && res.data != null) {
             matchDao.updateOnlyMatchCollect(item.match.matchId, collect)
-            return ApiResponseState.Succeeded(matchDao.getOneMatchById(item.match.matchId, isEuropeOddsDisplay).setSelected(betDao))
+            return ApiResponseState.Succeeded(matchDao.getOneMatchById(item.match.matchId, oddsDisplayType).setSelected(betDao))
         } else {
             return ApiResponseState.Failed(res.error)
         }
@@ -132,7 +131,7 @@ abstract class BaseMatchRepository(
      * 取得特定的match，藉由matchId
      * */
     suspend fun getOneMatchById(matchId: Long): MatchWithMarkets? {
-        return matchDao.getOneMatchByIds(arrayListOf(matchId), isEuropeOddsDisplay).setSelected(betDao).firstOrNull()
+        return matchDao.getOneMatchByIds(arrayListOf(matchId), oddsDisplayType).setSelected(betDao).firstOrNull()
     }
 
     /**
@@ -165,7 +164,7 @@ abstract class BaseMatchRepository(
             updateData.selections,
             updateData.matchMarketCrossRefs,
             updateData.marketSelectCrossRefs,
-            isEuropeOddsDisplay,
+            oddsDisplayType,
         ).setSelected(betDao)
     }
 
@@ -195,7 +194,7 @@ abstract class BaseMatchRepository(
                 )
             )
         }
-        return matchDao.updateOnlyMatch(matchLites.map { it.matchId }, matchLites, isEuropeOddsDisplay).setSelected(betDao)
+        return matchDao.updateOnlyMatch(matchLites.map { it.matchId }, matchLites, oddsDisplayType).setSelected(betDao)
     }
 
     /**
@@ -203,7 +202,7 @@ abstract class BaseMatchRepository(
      * @return 根據條件query的賽事資料
      * */
     suspend fun queryFullMatches(matchIds: List<Long>, selectedIds: List<Long>? = null) : List<MatchWithMarkets> {
-        val result = matchDao.getOneMatchByIds(matchIds, isEuropeOddsDisplay).setSelected(betDao, selectedIds)
+        val result = matchDao.getOneMatchByIds(matchIds, oddsDisplayType).setSelected(betDao, selectedIds)
         return matchIds.mapNotNull { id -> result.find { it.match.matchId == id } }
     }
 
@@ -215,6 +214,7 @@ abstract class BaseMatchRepository(
         sportId = match.basicInfo.sportId,
         matchId = selectionBean.matchId,
         marketId = selectionBean.marketId,
+        matchStatus = match.basicInfo.status,
         marketName = market.marketName,
         score = match.liveInfo.score,
         selectionId = selectionBean.selectionId,

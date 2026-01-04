@@ -63,10 +63,10 @@ class DimController private constructor() {
             isVisible = false
         }.apply {
             setOnClickListener {
-                "Dim View Clicked,alpha:${it.alpha}, translationX:${it.translationX},translationY:${it.translationY}".loge(TAG)
+                "aaaa----Dim View Clicked,alpha:${it.alpha}, isVisible:${it.isVisible},canChangeDim:$canChangeDim, translationX:${it.translationX},translationY:${it.translationY}".logd(TAG)
             }
             setOnLongClickListener {
-                "Dim View removed".loge(TAG)
+                "aaaa----Dim View removed".logd(TAG)
                 hideDim()
                 true
             }
@@ -173,7 +173,7 @@ class DimController private constructor() {
 
     fun hideDim() {
         val v = dimView ?: return
-        if (v.alpha == 0f || !canChangeDim) return
+        if ((v.alpha == 0f && !v.isVisible) || !canChangeDim) return
         v.alpha = 0f
         v.post {
             v.isVisible = false

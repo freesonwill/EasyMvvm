@@ -5,8 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.ui.viewmodel.Event
-import arch.cayenne.lib.database.entity.BaseTournamentData
-import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.BiDirectionalDate
@@ -23,7 +21,7 @@ import plugin.koin.KoinViewModel
 import java.util.Locale
 
 @KoinViewModel
-class EarlyViewModel : SubHomeViewModel() {
+class EarlyViewModel : SubHomeViewModelV2() {
 
     private val _dateList = MutableLiveData<List<BiDirectionalDate>>()
 
@@ -106,19 +104,16 @@ class EarlyViewModel : SubHomeViewModel() {
     }
 
 
-    override fun onTournamentListSelected(tournament: BaseTournamentData) {
+    override fun onTournamentListSelected(tournament: TournamentDataModel) {
         // 標記外部tab已切換，下次打開彈窗時需要清空篩選
         hasTournamentTabSwitched = true
 
-        if (tournament is TournamentDataModel) {
-            val currentList = tournaments.value?.peekContent() ?: return
-            setCurrentTournamentIdList(listOf(tournament.id))
-            currentList.forEach { tournamentCombo ->
-                tournamentCombo.isSelected = false
-            }
-        } else if (tournament is ChampionTournamentDataModel) {
-            _navigateToChampion.value = Event(tournament)
+        val currentList = tournaments.value?.peekContent() ?: return
+        setCurrentTournamentIdList(listOf(tournament.id))
+        currentList.forEach { tournamentCombo ->
+            tournamentCombo.isSelected = false
         }
+
     }
 
 

@@ -9,7 +9,6 @@
     <string name="btn_collusion">串关</string>
     <string name="btn_bet">投注</string>
     <string name="et_money_hint">限额%s&#8211;%s</string>
-    <string name="bet_sheet_stop">盘口失效</string>
     <string name="btn_bet_hint">投注</string>
     <string name="btn_bet_win_money">可赢 %s %s</string>
     <string name="btn_confirm">确定</string>
@@ -31,7 +30,7 @@
     <string name="title_combo_bet_money">共投注：</string>
     <string name="title_combo_bet_odds_amount">本金：</string>
     <string name="title_combo_bet_odds_max_money">预计最高可赢：</string>
-    <string name="title_combo_bet_odds">%d串%d</string>
+    <string name="title_combo_bet_tittle">%d串%d组合</string>
     <string name="title_combo_bet_super">超级组合</string>
     <string name="title_combo_bet_detail">所有%s注单</string>
     <string name="title_combo_bet_detail_tips">%s由所有%s注单组成</string>

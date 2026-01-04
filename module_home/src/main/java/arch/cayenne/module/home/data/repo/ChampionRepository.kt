@@ -44,11 +44,11 @@ class ChampionRepository(
                 marketCrossRef = matchFullData.matchMarketCrossRefs,
                 marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
             )
-            return matchDao.getOneMatchById(matchId, isEuropeOddsDisplay).setSelected(betDao)
+            return matchDao.getOneMatchById(matchId, oddsDisplayType).setSelected(betDao)
         }
         return null
     }
 
     suspend fun getOnCurrentMatch(matchId: Long, selectedIds: List<Long>) : MatchWithMarkets? =
-        matchDao.getOneMatchById(matchId, isEuropeOddsDisplay).setSelected(betDao, selectedIds)
+        matchDao.getOneMatchById(matchId, oddsDisplayType).setSelected(betDao, selectedIds)
 }

@@ -1,15 +1,16 @@
 package arch.cayenne.module.home.ui.fragment
 
 import android.annotation.SuppressLint
-import android.graphics.LinearGradient
-import android.graphics.Shader
 import android.net.Uri
 import android.os.Bundle
+import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +23,7 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
 import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
+import arch.cayenne.lib.common.ui.view.WLLinearGradientFontSpan
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -44,15 +46,15 @@ import arch.cayenne.module.home.databinding.FragmentSubHomeV2Binding
 import arch.cayenne.module.home.databinding.LayoutTournamentSortingMenuBinding
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
-import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
+import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModelV2
 import kotlinx.coroutines.Job
 import kotlin.reflect.KClass
 
-class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Binding>(),
+class SubHomeFragmentV2 : BaseFragment<SubHomeViewModelV2, FragmentSubHomeV2Binding>(),
     ISubFragmentLifecycle {
 
     override val vbClass: KClass<FragmentSubHomeV2Binding> = FragmentSubHomeV2Binding::class
-    override val vmClass: KClass<SubHomeViewModel> = SubHomeViewModel::class
+    override val vmClass: KClass<SubHomeViewModelV2> = SubHomeViewModelV2::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
 
     private var allTabCompleteObserveJob: Job? = null
@@ -61,8 +63,8 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
     private var isExpanded = false
     private var sortingMenuBinding: LayoutTournamentSortingMenuBinding? = null
 
-    // 当前排序类型，默认为按时间排序
-    private var currentSortType = MatchListSortType.BY_TIME
+    // 當前排序類型，預設為按熱門聯賽排序
+    private var currentSortType = MatchListSortType.BY_HOT
 
     private val defaultAnimDuration = 300L
 
@@ -142,7 +144,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
 
         mViewModel.tournamentsPlain.observeEvent(viewLifecycleOwner, this) { list ->
             val l = ArrayList<SimpleTabDataModel>()
-            list.take(10)
+            list.take(11)
                 .forEach { item ->
                     l.add(
                         SimpleTabDataModel(
@@ -159,23 +161,6 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
             setupMatchFragment()
         }
 
-        mViewModel.collapseTournamentDropdown.observeEvent(
-            viewLifecycleOwner,
-            this
-        ) { shouldCollapse ->
-            if (shouldCollapse && isExpanded) {
-                toggleTournamentSorting(false)
-                mViewModel.consumeCollapseTournamentDropdown() // 重置事件，避免重複觸發
-            }
-        }
-
-        mViewModel.navigationToChampion.observeEvent(viewLifecycleOwner, this) { data ->
-            navigate(Uri.parse("walisport://module_home/championFragment?matchId=${data.championMatchId}&name=${data.name}&icon=${data.icon}"))
-        }
-
-        mViewModel.tournamentSlideOutEnd.observeEvent(viewLifecycleOwner, this) {
-            mBinding.layoutContainer.llTournamentsDropdown.visibility = View.GONE
-        }
 
         mViewModel.savedTournamentSelections.observe(viewLifecycleOwner) { selections ->
             if (selections.size > 1) {
@@ -241,7 +226,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
                 }
                 val cny = CurrencySymbols.getSymbol(it.ccy) +
                         CurrencySymbols.getFormatAmount(it.ccy, reqScore)
-                val info = getString(arch.cayenne.lib.common.R.string.vip_level_require, cny)
+                val info = getString(arch.cayenne.lib.common.R.string.vip_level_need, cny)
                 updateVIPInfo(
                     vipLevel = it.vipLevel,
                     vipStage = it.vipStage,
@@ -251,6 +236,11 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
                 )
             }
         }
+    }
+
+    override fun initData() {
+        super.initData()
+        mViewModel.setSortType(currentSortType)
     }
 
     override fun onFragmentSelected() {
@@ -266,7 +256,6 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
 
     // 設置更多按鈕的顯示狀態
     override fun onFragmentUnSelected() {
-        mViewModel.requestCollapseTournamentDropdown()
         // 收起排序選單
         if (isExpanded) {
             toggleTournamentSorting(false)
@@ -322,25 +311,24 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
             ivLevel.setImageResource(VIPResourceHelper.getIconResource(level))
             ivLevelName.setImageResource(VIPResourceHelper.getLevelNameResource(level))
             // 設置文字漸變效果 - 使用 VIPResourceHelper
-            val bottom = 20.dp2px.toFloat()
-            val linearGradient = LinearGradient(
-                0f, 0f,
-                0f, bottom,
-                intArrayOf(
-                    VIPResourceHelper.getShaderStartColor().getColor(requireContext()),
-                    VIPResourceHelper.getShaderEndColor(level).getColor(requireContext())
-                ),
-                null,
-                Shader.TileMode.CLAMP
-            )
-            tvLevel.paint.shader = linearGradient
-            tvLevel.text = getString(arch.cayenne.lib.common.R.string.vip_level_format, vipLevel)
+            val levelStr = getString(arch.cayenne.lib.common.R.string.vip_level_format, vipLevel)
+            val start = VIPResourceHelper.getShaderStartColor().getColor(requireContext())
+            val end = VIPResourceHelper.getShaderEndColor(level).getColor(requireContext())
+            val span = getGradientSpan(levelStr,start,end)
+            tvLevel.setText(span, TextView.BufferType.SPANNABLE)
             tvPercent.text = percent
             val color = VIPResourceHelper.getProgressStartColor(level)
             vipProgress.setProgressColor(color)
             vipProgress.setProgress(progress)
             tvLevelUpInfo.text = levelUpInfo
         }
+    }
+
+    private fun getGradientSpan(content: String, startColor: Int, endColor: Int): SpannableStringBuilder {
+        val spannableStringBuilder = SpannableStringBuilder(content)
+        val span = WLLinearGradientFontSpan(startColor, endColor)
+        spannableStringBuilder.setSpan(span, 0, spannableStringBuilder.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return spannableStringBuilder
     }
 
     //init 二級導航欄位
@@ -362,7 +350,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
                     ) {
                         val pos = parent.getChildAdapterPosition(view)
                         val last = (parent.adapter?.itemCount ?: 0) - 1
-                        outRect.right = if (pos == last) 0 else 4.dp2px   // marginEnd
+                        outRect.right = if (pos == last) 0 else 4.dp2px - 1   // marginEnd
                     }
                 })
                 adapter = sportsListAdapter
@@ -374,7 +362,8 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
         //生成MatchListPagerFragmentV2， 添加到fragment_game_list_container节点
         MatchListPagerFragmentV2.newInstance(
             playTypeId = mViewModel.currentPlayTypeId,
-            sportId = mViewModel.currentSportId
+            sportId = mViewModel.currentSportId,
+            sortType = currentSortType.type
         ).also {
 
             childFragmentManager.beginTransaction()
@@ -631,6 +620,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
                     currentSortType = MatchListSortType.BY_HOT
                     updateSortingMenuSelection()
                     setSortBtnText()
+                    setSortBtnSelected()
                     mViewModel.setSortType(currentSortType)
                 }
                 toggleTournamentSorting(false)
@@ -643,6 +633,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
                     currentSortType = MatchListSortType.BY_TIME
                     updateSortingMenuSelection()
                     setSortBtnText()
+                    setSortBtnSelected()
                     mViewModel.setSortType(currentSortType)
                 }
                 toggleTournamentSorting(false)
@@ -688,6 +679,10 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
                 mBinding.layoutContainer.customTabGroup.setSortBtnText(arch.cayenne.lib.common.R.string.custom_tab_hot.getString())
             }
         }
+    }
+
+    private fun setSortBtnSelected() {
+        mBinding.layoutContainer.customTabGroup.setSortBtnSelected()
     }
 
     private fun setExpandBtnText(text: String) {

@@ -70,7 +70,9 @@
             android:layout_marginBottom="3dp"
             android:text="@string/btn_clear"
             android:textSize="14sp"
-            app:skinnableFontWeight="500" />
+            app:skinnableFontWeight="500"
+            android:paddingBottom="1.5dp"
+            />
 
         <arch.cayenne.lib.skin.widget.SkinnableImageButton
             android:id="@+id/btn_collapse"

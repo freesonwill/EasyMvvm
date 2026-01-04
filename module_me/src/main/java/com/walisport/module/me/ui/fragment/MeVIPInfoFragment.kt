@@ -1,16 +1,17 @@
 package com.walisport.module.me.ui.fragment
 
 import android.annotation.SuppressLint
-import android.graphics.LinearGradient
-import android.graphics.Shader
 import android.os.Bundle
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.widget.TextView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.fragment.AllInfoDialogFragment
+import arch.cayenne.lib.common.ui.view.WLLinearGradientFontSpan
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.TextViewExt.hasShownEllipsize
@@ -120,25 +121,24 @@ class MeVIPInfoFragment : BaseFragment<MeVIPInfoViewModel, FragmentMeVipInfoBind
             ctLevelInfo.background = VIPResourceHelper.getForegroundResource(level)
             ivLevel.setImageResource(VIPResourceHelper.getIconResource(level))
             ivLevelName.setImageResource(VIPResourceHelper.getLevelNameResource(level))
-            val bottom = 20.dp2px.toFloat()
-            val linearGradient = LinearGradient(
-                0f, 0f,
-                0f, bottom,
-                intArrayOf(
-                    VIPResourceHelper.getShaderStartColor().getColor(requireContext()),
-                    VIPResourceHelper.getShaderEndColor(level).getColor(requireContext())
-                ),
-                null,
-                Shader.TileMode.CLAMP
-            )
-            tvLevel.paint.shader = linearGradient
-            tvLevel.text = getString(arch.cayenne.lib.common.R.string.vip_level_format, vipLevel)
+            val levelStr = getString(arch.cayenne.lib.common.R.string.vip_level_format, vipLevel)
+            val start = VIPResourceHelper.getShaderStartColor().getColor(requireContext())
+            val end = VIPResourceHelper.getShaderEndColor(level).getColor(requireContext())
+            val span = getGradientSpan(levelStr,start,end)
+            tvLevel.setText(span, TextView.BufferType.SPANNABLE)
             tvPercent.text = percent
             val color = VIPResourceHelper.getProgressStartColor(level)
             vipProgress.setProgressColor(color)
             vipProgress.setProgress(progress)
             tvLevelUpInfo.text = levelUpInfo
         }
+    }
+
+    private fun getGradientSpan(content: String, startColor: Int, endColor: Int): SpannableStringBuilder {
+        val spannableStringBuilder = SpannableStringBuilder(content)
+        val span = WLLinearGradientFontSpan(startColor, endColor)
+        spannableStringBuilder.setSpan(span, 0, spannableStringBuilder.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return spannableStringBuilder
     }
 
     companion object {

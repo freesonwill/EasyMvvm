@@ -3,15 +3,16 @@ package arch.cayenne.module.home.ui.fragment
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
-import android.graphics.LinearGradient
-import android.graphics.Shader
 import android.net.Uri
 import android.os.Bundle
+import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
@@ -25,13 +26,12 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
 import arch.cayenne.lib.common.ui.view.CustomTabLayoutMediator
+import arch.cayenne.lib.common.ui.view.WLLinearGradientFontSpan
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
-import arch.cayenne.lib.common.utils.ext.VIPDataExt
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
@@ -44,16 +44,16 @@ import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.TournamentCombo
 import arch.cayenne.module.home.data.constants.HomeState
+import arch.cayenne.module.home.data.constants.MatchListSortType
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.TournamentListType
-import arch.cayenne.module.home.data.constants.MatchListSortType
 import arch.cayenne.module.home.databinding.FragmentSubHomeBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
 import arch.cayenne.module.home.databinding.LayoutTournamentSortingMenuBinding
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
-import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
+import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModelV2
 import arch.cayenne.module.home.utils.DateUtils
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.Job
@@ -64,10 +64,10 @@ import kotlin.reflect.KClass
 /**
  * 今日Fragment
  */
-class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>(),
+class SubHomeFragment : BaseFragment<SubHomeViewModelV2, FragmentSubHomeBinding>(),
     ISubFragmentLifecycle {
     override val vbClass: KClass<FragmentSubHomeBinding> = FragmentSubHomeBinding::class
-    override val vmClass: KClass<SubHomeViewModel> = SubHomeViewModel::class
+    override val vmClass: KClass<SubHomeViewModelV2> = SubHomeViewModelV2::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
 
     private var tournamentTabLayoutMediator: CustomTabLayoutMediator? = null
@@ -114,11 +114,8 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
     override fun initView(savedInstanceState: Bundle?) {
         initSportLayout()
         initSportBanner()
-        if (mViewModel.currentPlayTypeId == PlayType.CHAMPION.id) {
-            initChampionTournamentLayout()
-        } else {
-            initTournamentLayout()
-        }
+        initTournamentLayout()
+
         // 初始化聯賽按鈕狀態
         updateTournamentButtonStyle(mViewModel.hasTournamentSelections())
     }
@@ -169,24 +166,6 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
             setTournamentAndViewPagerLayout(list)
         }
 
-        mViewModel.collapseTournamentDropdown.observeEvent(
-            viewLifecycleOwner,
-            this
-        ) { shouldCollapse ->
-            if (shouldCollapse && isExpanded) {
-                toggleTournamentSorting(false)
-                mViewModel.consumeCollapseTournamentDropdown() // 重置事件，避免重複觸發
-            }
-        }
-
-        mViewModel.navigationToChampion.observeEvent(viewLifecycleOwner, this) { data ->
-            navigate(Uri.parse("walisport://module_home/championFragment?matchId=${data.championMatchId}&name=${data.name}&icon=${data.icon}"))
-        }
-
-        mViewModel.tournamentSlideOutEnd.observeEvent(viewLifecycleOwner, this) {
-            mBinding.layoutContainer.llTournamentsDropdown.visibility = View.GONE
-        }
-
         // 觀察聯賽按鈕選中狀態變化
         mViewModel.tournamentButtonHasSelection.observeEvent(
             viewLifecycleOwner,
@@ -230,7 +209,7 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
                 }
                 val cny = CurrencySymbols.getSymbol(it.ccy) +
                         CurrencySymbols.getFormatAmount(it.ccy, reqScore)
-                val info = getString(arch.cayenne.lib.common.R.string.vip_level_require, cny)
+                val info = getString(arch.cayenne.lib.common.R.string.vip_level_need, cny)
                 updateVIPInfo(
                     vipLevel = it.vipLevel,
                     vipStage = it.vipStage,
@@ -263,7 +242,6 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
 
     // 設置更多按鈕的顯示狀態
     override fun onFragmentUnSelected() {
-        mViewModel.requestCollapseTournamentDropdown()
         // 收起排序選單
         if (isExpanded) {
             toggleTournamentSorting(false)
@@ -353,25 +331,33 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
             ivLevel.setImageResource(VIPResourceHelper.getIconResource(level))
             ivLevelName.setImageResource(VIPResourceHelper.getLevelNameResource(level))
             // 設置文字漸變效果 - 使用 VIPResourceHelper
-            val bottom = 20.dp2px.toFloat()
-            val linearGradient = LinearGradient(
-                0f, 0f,
-                0f, bottom,
-                intArrayOf(
-                    VIPResourceHelper.getShaderStartColor().getColor(requireContext()),
-                    VIPResourceHelper.getShaderEndColor(level).getColor(requireContext())
-                ),
-                null,
-                Shader.TileMode.CLAMP
-            )
-            tvLevel.paint.shader = linearGradient
-            tvLevel.text = getString(arch.cayenne.lib.common.R.string.vip_level_format, vipLevel)
+            val levelStr = getString(arch.cayenne.lib.common.R.string.vip_level_format, vipLevel)
+            val start = VIPResourceHelper.getShaderStartColor().getColor(requireContext())
+            val end = VIPResourceHelper.getShaderEndColor(level).getColor(requireContext())
+            val span = getGradientSpan(levelStr, start, end)
+            tvLevel.setText(span, TextView.BufferType.SPANNABLE)
             tvPercent.text = percent
             val color = VIPResourceHelper.getProgressStartColor(level)
             vipProgress.setProgressColor(color)
             vipProgress.setProgress(progress)
             tvLevelUpInfo.text = levelUpInfo
         }
+    }
+
+    private fun getGradientSpan(
+        content: String,
+        startColor: Int,
+        endColor: Int
+    ): SpannableStringBuilder {
+        val spannableStringBuilder = SpannableStringBuilder(content)
+        val span = WLLinearGradientFontSpan(startColor, endColor)
+        spannableStringBuilder.setSpan(
+            span,
+            0,
+            spannableStringBuilder.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        return spannableStringBuilder
     }
 
     // 全部Tab的比賽列表載入完成後的處理
@@ -416,8 +402,6 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
     //init 三級導航欄位與日期，只有今日和早盤有
     @SuppressLint("DefaultLocale")
     private fun initTournamentLayout() {
-        setChampionModeVisibility(false)
-
         // 取得未來 31 天 (MMDD, 星期, timeStamp)
         val dateTabs = getFutureSevenDays()
         with(mBinding.layoutContainer) {
@@ -863,33 +847,7 @@ class SubHomeFragment : BaseFragment<SubHomeViewModel, FragmentSubHomeBinding>()
         }
     }
 
-    /**
-     * 設置冠軍頁面專屬元件的可見性
-     * @param isChampionMode true: 冠軍模式（隱藏今日/早盤元件），false: 今日/早盤模式（顯示元件）
-     */
-    private fun setChampionModeVisibility(isChampionMode: Boolean) {
-        val visibility = if (isChampionMode) View.GONE else View.VISIBLE
-        with(mBinding) {
-            llBanner.visibility = visibility
-            layoutContainer.root.visibility = visibility
-            layoutContainer.llBtnTournament.visibility = visibility
-            layoutContainer.llTournamentSort.visibility = visibility
-            layoutContainer.vLeagueMoreMask.visibility = visibility
-        }
-    }
 
-    private fun initChampionTournamentLayout() {
-        setChampionModeVisibility(true)
-
-        val tournamentListFragment = TournamentListFragment.newInstance(
-            playTypeId = PlayType.CHAMPION.id,
-            sportId = mViewModel.currentSportId,
-            type = TournamentListType.CHAMPION
-        )
-        childFragmentManager.beginTransaction()
-            .replace(R.id.fl_champion_container, tournamentListFragment, PlayType.CHAMPION.name)
-            .commit()
-    }
 
     override fun onBackPressed(): Boolean {
         // 如果排序選單展開，先收起排序選單

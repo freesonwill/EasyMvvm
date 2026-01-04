@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_combo_bet_super">超级组合</string>
-    <string name="title_combo_bet_odds">%d-fold %d</string>
     <string name="title_combo_bet_detail">Semua taruhan %s</string>
     <string name="title_combo_bet_detail_tips">%s terdiri dari semua taruhan %s</string>
     <string name="title_result_amount">Pokok</string>

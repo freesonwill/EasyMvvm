@@ -98,6 +98,7 @@ class LiveBetOnRepository(
             sportId = match.basicInfo.sportId,
             matchId = match.matchId,
             marketId = selectionBean.marketId,
+            matchStatus = match.basicInfo.status,
             marketName = selectionBean.marketName,
             score = match.liveInfo.score,
             selectionId = selectionBean.selectionId,

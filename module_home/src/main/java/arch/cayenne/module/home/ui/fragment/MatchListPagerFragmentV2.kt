@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
@@ -33,16 +32,17 @@ import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
+import arch.cayenne.module.home.data.constants.MatchListSortType
 import arch.cayenne.module.home.data.constants.PlayType
+import arch.cayenne.module.home.data.constants.toMatchListSortType
 import arch.cayenne.module.home.data.model.MatchDateItem
 import arch.cayenne.module.home.databinding.FragmentMatchListPagerV2Binding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
-import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
 import arch.cayenne.module.home.ui.viewmodel.MatchListViewModelV2
-import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
+import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModelV2
 import arch.cayenne.module.home.utils.DateUtils
 import arch.cayenne.module.home.utils.setFavoriteIcon
 import com.walisport.module.message.ui.view.DeleteAnimator
@@ -57,7 +57,7 @@ class MatchListPagerFragmentV2 :
         FragmentMatchListPagerV2Binding::class
     override val vmClass: KClass<MatchListViewModelV2> = MatchListViewModelV2::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel , NewHomeFragment>()
-    private val subHomeViewModel: SubHomeViewModel by viewModels({ requireParentFragment() })
+    private val subHomeViewModelV2: SubHomeViewModelV2 by viewModels({ requireParentFragment() })
 
     private lateinit var matchAdapter: MatchItemAdapter
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
@@ -137,7 +137,7 @@ class MatchListPagerFragmentV2 :
                         }
                     }
                 }
-            } , subHomeViewModel.currentPlayTypeId)
+            } , subHomeViewModelV2.currentPlayTypeId)
 
             //賽事卡片之間的間閣
             val decoration = MatchCardItemDecoration(
@@ -323,7 +323,7 @@ class MatchListPagerFragmentV2 :
         }
 
 
-        subHomeViewModel.currentSelectedTournaments.observe(viewLifecycleOwner) {
+        subHomeViewModelV2.currentSelectedTournaments.observe(viewLifecycleOwner) {
             mBinding.rvHomeGameList.startFadeAnim { onComplete ->
                 mViewModel.setTournamentIdList(it)
                 mViewModel.startObserveMatch()
@@ -333,7 +333,7 @@ class MatchListPagerFragmentV2 :
             }
         }
 
-        subHomeViewModel.sortType.observe(viewLifecycleOwner){
+        subHomeViewModelV2.sortType.observe(viewLifecycleOwner){
             mBinding.rvHomeGameList.startFadeAnim { onComplete ->
                 mViewModel.forceTop()
                 mViewModel.setSortType(it)
@@ -352,6 +352,7 @@ class MatchListPagerFragmentV2 :
             mViewModel.setTournamentIdList(this.getIntArray(ARG_LEAGUE_ID)?.toList() ?: listOf(0))
             mViewModel.setSportId(this.getInt(ARG_SPORT_ID))
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
+            mViewModel.setSortType(this.getInt(ARG_SORT_TYPE , 0).toMatchListSortType())
         }
         "MatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} sportId: ${mViewModel.getSportId()} leagueId: ${mViewModel.getTournamentId()}".logi()
         startObserveMatch()
@@ -422,9 +423,11 @@ class MatchListPagerFragmentV2 :
         private const val ARG_SPORT_ID = "sport_id"
         private const val ARG_PLAY_TYPE_ID = "play_type_id"
         private const val ARG_LEAGUE_ID = "arg_league_id"
+        private const val ARG_SORT_TYPE = "arg_sort_type"
         fun newInstance(
             sportId: Int ,
             playTypeId: Int ,
+            sortType: Int,
             leagueIdList: List<Int> = listOf(0) ,
         ): MatchListPagerFragmentV2 {
             return MatchListPagerFragmentV2().apply {
@@ -432,6 +435,7 @@ class MatchListPagerFragmentV2 :
                     putInt(ARG_SPORT_ID , sportId)
                     putInt(ARG_PLAY_TYPE_ID , playTypeId)
                     putIntArray(ARG_LEAGUE_ID , leagueIdList.toIntArray())
+                    putInt(ARG_SORT_TYPE , sortType)
                 }
             }
         }

@@ -104,7 +104,7 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
         factoryOf(::ConfirmingSlipRepository)
         factoryOf(::NewOrderRepository)
         factoryOf(::OrderReserveRepository)
-        factory { BetSlipHttpRepository(get(),get(named("mock"))) }
+        factory { BetSlipHttpRepository(get(),get(named("3n1_http"))) }
     }
 
     private val moduleList:List<Module> = listOf(managerModule, viewModules, repoModules)
