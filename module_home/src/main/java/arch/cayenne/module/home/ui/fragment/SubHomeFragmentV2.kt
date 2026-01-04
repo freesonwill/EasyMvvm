@@ -1,7 +1,6 @@
 package arch.cayenne.module.home.ui.fragment
 
 import android.annotation.SuppressLint
-import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -158,7 +157,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModelV2, FragmentSubHomeV2Bind
             mBinding.layoutContainer.customTabGroup.clearTabList()
             mBinding.layoutContainer.customTabGroup.submitTabList(l)
 
-            setupMatchFragment()
+            updateMatchFragmentSportId()
         }
 
 
@@ -373,6 +372,12 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModelV2, FragmentSubHomeV2Bind
                     MatchListPagerFragmentV2.TAG
                 ).commitNow()
         }
+    }
+
+    private fun updateMatchFragmentSportId() {
+        val fragment =
+            childFragmentManager.findFragmentByTag(MatchListPagerFragmentV2.TAG) ?: return
+        (fragment as? MatchListPagerFragmentV2)?.updateSportId(mViewModel.currentSportId)
     }
 
     // 全部Tab的比賽列表載入完成後的處理

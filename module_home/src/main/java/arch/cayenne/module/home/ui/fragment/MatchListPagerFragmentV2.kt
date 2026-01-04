@@ -416,6 +416,10 @@ class MatchListPagerFragmentV2 :
         return mutableList
     }
 
+    fun updateSportId(currentSportId: Int) {
+        mViewModel.setSportId(currentSportId)
+        startObserveMatch()
+    }
 
     companion object {
 
