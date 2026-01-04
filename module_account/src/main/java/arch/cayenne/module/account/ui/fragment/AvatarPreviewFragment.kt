@@ -1,5 +1,6 @@
 package arch.cayenne.module.account.ui.fragment
 
+import android.graphics.PointF
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,7 +17,7 @@ import arch.cayenne.module.account.databinding.FragmentAvatarPreviewBinding
 import arch.cayenne.module.account.databinding.TitleBarSystemAvatarBinding
 import arch.cayenne.module.account.ui.viewmodel.AvatarPreviewViewModel
 import arch.cayenne.module.account.ui.viewmodel.PersonalInfoViewModel
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.SCALE_TYPE_CUSTOM
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,17 +39,16 @@ class AvatarPreviewFragment : BaseFragment<AvatarPreviewViewModel, FragmentAvata
         mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root) {
             findNavController().navigateUp()
         }
-        mBinding.ivUserAvatar.post {
-            mBinding.ivUserAvatar.maxScale = 10f
-            mBinding.ivUserAvatar.minScale = 1f
-            mBinding.ivUserAvatar.setMinimumScaleType(SCALE_TYPE_CENTER_CROP)
-
             FileUtils.getBitmapFromUriAsync(
                 requireContext(),
                 Uri.parse(uri)
             ) {
-                mBinding.ivUserAvatar.setBitmaps(it)
-            }
+                mBinding.ivUserAvatar.apply {
+                    maxScale = 10f
+                    minScale = 0.8f               // ← 0.1f 通常太小，容易出 NaN 或顯示異常
+                    setMinimumScaleType(SCALE_TYPE_CUSTOM)
+                    mBinding.ivUserAvatar.setBitmaps(it)
+                }
 
 //            // 设置模糊背景
 //            Glide.with(this)
@@ -85,11 +85,7 @@ class AvatarPreviewFragment : BaseFragment<AvatarPreviewViewModel, FragmentAvata
                 Toast.makeText(requireContext(), "上传失败", Toast.LENGTH_SHORT).show()
             }
         }
-        mViewModel.uploadResult.observe(viewLifecycleOwner) { filePath ->
-            mBinding.tvSave.isSelected = true
-            mBinding.tvSave.isClickable = true
-            mBinding.tvSave.text = R.string.account_avatar_confirm.getString()
-        }
+
     }
 
     private fun saveBitmap() {
