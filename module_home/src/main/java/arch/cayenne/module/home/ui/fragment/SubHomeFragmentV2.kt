@@ -63,8 +63,8 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModelV2, FragmentSubHomeV2Bind
     private var isExpanded = false
     private var sortingMenuBinding: LayoutTournamentSortingMenuBinding? = null
 
-    // 当前排序类型，默认为按时间排序
-    private var currentSortType = MatchListSortType.BY_TIME
+    // 當前排序類型，預設為按熱門聯賽排序
+    private var currentSortType = MatchListSortType.BY_HOT
 
     private val defaultAnimDuration = 300L
 
@@ -238,6 +238,11 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModelV2, FragmentSubHomeV2Bind
         }
     }
 
+    override fun initData() {
+        super.initData()
+        mViewModel.setSortType(currentSortType)
+    }
+
     override fun onFragmentSelected() {
         mViewModel.getCurrentSportStatistical()
         mViewModel.getCurrentTournament()
@@ -357,7 +362,8 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModelV2, FragmentSubHomeV2Bind
         //生成MatchListPagerFragmentV2， 添加到fragment_game_list_container节点
         MatchListPagerFragmentV2.newInstance(
             playTypeId = mViewModel.currentPlayTypeId,
-            sportId = mViewModel.currentSportId
+            sportId = mViewModel.currentSportId,
+            sortType = currentSortType.type
         ).also {
 
             childFragmentManager.beginTransaction()

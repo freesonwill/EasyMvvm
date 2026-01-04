@@ -14,5 +14,13 @@ enum class MatchListSortType(val type: Int) {
     }
 
 }
+//从int 转换为MatchListSortType
+fun Int.toMatchListSortType(): MatchListSortType {
+    return when (this) {
+        MatchListSortType.BY_HOT.type -> MatchListSortType.BY_HOT
+        MatchListSortType.BY_TIME.type -> MatchListSortType.BY_TIME
+        else -> MatchListSortType.BY_TIME
+    }
+}
 
 

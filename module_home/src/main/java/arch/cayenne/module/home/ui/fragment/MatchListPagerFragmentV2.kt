@@ -32,7 +32,9 @@ import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
+import arch.cayenne.module.home.data.constants.MatchListSortType
 import arch.cayenne.module.home.data.constants.PlayType
+import arch.cayenne.module.home.data.constants.toMatchListSortType
 import arch.cayenne.module.home.data.model.MatchDateItem
 import arch.cayenne.module.home.databinding.FragmentMatchListPagerV2Binding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
@@ -350,6 +352,7 @@ class MatchListPagerFragmentV2 :
             mViewModel.setTournamentIdList(this.getIntArray(ARG_LEAGUE_ID)?.toList() ?: listOf(0))
             mViewModel.setSportId(this.getInt(ARG_SPORT_ID))
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
+            mViewModel.setSortType(this.getInt(ARG_SORT_TYPE , 0).toMatchListSortType())
         }
         "MatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} sportId: ${mViewModel.getSportId()} leagueId: ${mViewModel.getTournamentId()}".logi()
         startObserveMatch()
@@ -420,9 +423,11 @@ class MatchListPagerFragmentV2 :
         private const val ARG_SPORT_ID = "sport_id"
         private const val ARG_PLAY_TYPE_ID = "play_type_id"
         private const val ARG_LEAGUE_ID = "arg_league_id"
+        private const val ARG_SORT_TYPE = "arg_sort_type"
         fun newInstance(
             sportId: Int ,
             playTypeId: Int ,
+            sortType: Int,
             leagueIdList: List<Int> = listOf(0) ,
         ): MatchListPagerFragmentV2 {
             return MatchListPagerFragmentV2().apply {
@@ -430,6 +435,7 @@ class MatchListPagerFragmentV2 :
                     putInt(ARG_SPORT_ID , sportId)
                     putInt(ARG_PLAY_TYPE_ID , playTypeId)
                     putIntArray(ARG_LEAGUE_ID , leagueIdList.toIntArray())
+                    putInt(ARG_SORT_TYPE , sortType)
                 }
             }
         }
