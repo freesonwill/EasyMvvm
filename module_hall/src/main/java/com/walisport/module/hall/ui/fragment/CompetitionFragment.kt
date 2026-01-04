@@ -9,11 +9,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.BizUrl
+import arch.cayenne.lib.common.ui.fragment.AllInfoDialogFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.DateUtils
+import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.TextViewExt.hasShownEllipsize
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.ccyToSymbol
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -79,6 +83,21 @@ class CompetitionFragment : BaseFragment<CompetitionViewModel , FragmentCompetit
                 //跳转到帮助页面
                 navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment.deeplink("url" to BizUrl.HELP.url))
             }
+
+            tvBonus.clickNoRepeat {
+                if (tvBonus.hasShownEllipsize()) {
+                    val location = IntArray(2)
+                    tvBonus.getLocationInWindow(location)
+                    val h = ViewUtils.getStatusBarHeight(requireContext())
+                    val positionX = location.first() + tvBonus.width / 2
+                    val positionY = location.last() - h - 1.dp2px
+                    AllInfoDialogFragment.newInstance(
+                        positionX,
+                        positionY,
+                        tvBonus.text.toString()
+                    ).show(childFragmentManager, "AllInfoDialogFragment")
+                }
+            }
         }
 
     }
@@ -126,25 +145,28 @@ class CompetitionFragment : BaseFragment<CompetitionViewModel , FragmentCompetit
             adapter.submitList(gameList.addDashItem())
         }
 
-        mViewModel.dailyMatchLiveData.observe(viewLifecycleOwner) {
-            mBinding.tvTimer.text = DateUtils.formatMillisToHMS(it.remainingTime)
-            //启动定时器，每秒对剩余时间进行减一，并更新UI
-            var remainingTime = it.remainingTime
-            timer?.cancel()
-            timer = object : CountDownTimer(remainingTime * 1000 , 1000) {
-                override fun onTick(millisUntilFinished: Long) {
-                    remainingTime--
-                    mBinding.tvTimer.text = DateUtils.formatMillisToHMS(remainingTime)
-                }
+        mViewModel.dailyBetMatchDataBeanFlow.collect {
+            it?.let {
+                mBinding.tvTimer.text = DateUtils.formatMillisToHMS(it.remainingTime)
+                //启动定时器，每秒对剩余时间进行减一，并更新UI
+                var remainingTime = it.remainingTime
+                timer?.cancel()
+                timer = object : CountDownTimer(remainingTime * 1000, 1000) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        remainingTime--
+                        mBinding.tvTimer.text = DateUtils.formatMillisToHMS(remainingTime)
+                    }
 
-                override fun onFinish() {
-                    mBinding.tvTimer.text = DateUtils.formatMillisToHMS(0)
+                    override fun onFinish() {
+                        mBinding.tvTimer.text = DateUtils.formatMillisToHMS(0)
+                    }
                 }
+                timer?.start()
+
+                mBinding.tvCurrencySymbol.text = it.ccy.ccyToSymbol()
+                mBinding.tvBonus.text = String.format("%,d", it.betScore)
             }
-            timer?.start()
 
-            mBinding.tvCurrencySymbol.text = it.ccy.ccyToSymbol()
-            mBinding.tvBonus.text = String.format("%,d" , it.betScore)
         }
 
 

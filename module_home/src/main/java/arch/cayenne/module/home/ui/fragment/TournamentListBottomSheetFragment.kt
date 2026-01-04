@@ -38,7 +38,7 @@ import arch.cayenne.module.home.ui.adapter.TournamentSectionAdapter
 import arch.cayenne.module.home.ui.view.CustomFilterSideBarView
 import arch.cayenne.module.home.ui.view.decoration.StickyHeaderItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
-import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
+import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModelV2
 import arch.cayenne.module.home.ui.viewmodel.TournamentListViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlin.reflect.KClass
@@ -52,11 +52,11 @@ class TournamentListBottomSheetFragment :
         FragmentTournamentBottomSheetBinding::class
     override val vmClass: KClass<TournamentListViewModel> = TournamentListViewModel::class
 
-    private val subHomeViewModel: SubHomeViewModel by lazy {
+    private val subHomeViewModelV2: SubHomeViewModelV2 by lazy {
         if (arguments?.getInt(ARG_PLAY_TYPE_ID) == PlayType.EARLY.id) {
             viewModels<EarlyViewModel>({ requireParentFragment() }).value
         } else {
-            viewModels<SubHomeViewModel>({ requireParentFragment() }).value
+            viewModels<SubHomeViewModelV2>({ requireParentFragment() }).value
         }
     }
     private lateinit var adapter: TournamentSectionAdapter
@@ -104,14 +104,8 @@ class TournamentListBottomSheetFragment :
 
             adapter = TournamentSectionAdapter(
                 tournamentListType = tournamentType,
-                onTournamentClick = { tournament ->
-                    //新版改為多選方式
-                    if (tournamentType == TournamentListType.MORE) {
-                        // MORE模式下只記錄選中，不立即執行操作
-                        //                        showToast("Select: ${tournament.simpleName}")
-                    } else {
-                        subHomeViewModel.onTournamentListSelected(tournament)
-                    }
+                onTournamentClick = {
+                    //do nothing
                 },
                 onSelectionChanged = {
                     // 選中狀態變更時更新按鈕狀態
@@ -124,15 +118,15 @@ class TournamentListBottomSheetFragment :
             // 需求4 & 新需求：初始化選中狀態邏輯
             if (tournamentType == TournamentListType.MORE) {
                 // 檢查外部tab是否有切換
-                val hasSwitchedTab = subHomeViewModel.checkAndResetTournamentTabSwitched()
+                val hasSwitchedTab = subHomeViewModelV2.checkAndResetTournamentTabSwitched()
 
                 if (hasSwitchedTab) {
                     // 情況1：如果外部tab有切換，完全清空選中狀態
-                    subHomeViewModel.clearSavedTournamentSelections()
+                    subHomeViewModelV2.clearSavedTournamentSelections()
                     adapter.clearAllSelections()
                 } else {
                     // 情況2：沒有切換外部tab，從 ViewModel 中讀取已保存的選中狀態
-                    val savedSelections = subHomeViewModel.getCurrentSelectedTournaments()
+                    val savedSelections = subHomeViewModelV2.getCurrentSelectedTournaments()
 
                     if (savedSelections.isNotEmpty()) {
                         // 有保存的狀態，恢復之前的選中
@@ -287,28 +281,28 @@ class TournamentListBottomSheetFragment :
                         val selectedTournaments = adapter.getSelectedTournaments()
 
                         // 保存選中狀態到 ViewModel（跨彈窗生命週期）
-                        subHomeViewModel.saveTournamentSelections(selectedTournamentIds)
+                        subHomeViewModelV2.saveTournamentSelections(selectedTournamentIds)
 
                         // TODO: 將selectedTournaments傳給viewmodel做相應處理並執行網絡請求
                         // TODO: 保留接口給後端實作記錄selected（與 saveTournamentSelections 同時進行）
 
                         // 若聯賽有選中，則清除 tlLeagueList 的選中狀態
                         if (selectedTournamentIds.isNotEmpty()) {
-                            subHomeViewModel.requestClearLeagueListSelection()
+                            subHomeViewModelV2.requestClearLeagueListSelection()
                         }
                         
                         // 重置外部tab切換標記（因為用戶已確認篩選）
-                        subHomeViewModel.resetTournamentTabSwitched()
+                        subHomeViewModelV2.resetTournamentTabSwitched()
                         dismiss()
                     } else {
                         // 按鈕為"確定"狀態：關閉彈窗，保持結果不變
                         // 即使沒有改變，也要保存當前狀態（可能是第一次打開）
                         val selectedTournamentIds = adapter.getSelectedTournamentIds()
-                        subHomeViewModel.saveTournamentSelections(selectedTournamentIds)
+                        subHomeViewModelV2.saveTournamentSelections(selectedTournamentIds)
 
                         // 若聯賽有選中，則清除 tlLeagueList 的選中狀態
                         if (selectedTournamentIds.isNotEmpty()) {
-                            subHomeViewModel.requestClearLeagueListSelection()
+                            subHomeViewModelV2.requestClearLeagueListSelection()
                         }
                         
                         dismiss()
@@ -419,7 +413,7 @@ class TournamentListBottomSheetFragment :
             }
             mBinding.rvTournamentList.post{
                 launch{
-                    val savedSelections = subHomeViewModel.getCurrentSelectedTournaments()
+                    val savedSelections = subHomeViewModelV2.getCurrentSelectedTournaments()
                     if(savedSelections.isNotEmpty()){
                         val selectedIndex = it
                             .asSequence()

@@ -22,13 +22,12 @@ import kotlin.coroutines.resume
  * 榜单和比赛的Repository
  */
 class RankingRepository(
-    override val scope: CoroutineScope ,
-    private val database: GameDatabase ,
-    private val httpClient: HttpClient ,
-    private val mockHttpClient: HttpClient ,
-    private val socketManager: WebSocketManager ,
-    private val preloadResultChange: MutableStateFlow<PreloadEnum> ,
-    private val manager: UserDataManager ,
+    override val scope: CoroutineScope,
+    private val database: GameDatabase,
+    private val httpClient: HttpClient,
+    private val socketManager: WebSocketManager,
+    private val preloadResultChange: MutableStateFlow<PreloadEnum>,
+    private val manager: UserDataManager,
 ) : BaseRepository() {
 
     private val currencyConfigDao = database.currencyConfigDao()
@@ -36,10 +35,10 @@ class RankingRepository(
     suspend fun recordBetting(
         page: Int ,
     ): ApiResponseState {
-        val api = mockHttpClient.create(IRankingApi::class.java)
+        val api = httpClient.create(IRankingApi::class.java)
         return suspendCancellableCoroutine<ApiResponseState> { cancellableContinuation ->
             scope.launch(Dispatchers.IO) {
-                mockHttpClient.safeRequest(
+                httpClient.safeRequest(
                     request = {
                         api.recordBetting(
                             page = page ,
@@ -81,10 +80,10 @@ class RankingRepository(
     suspend fun recordBig(
         page: Int ,
     ): ApiResponseState {
-        val api = mockHttpClient.create(IRankingApi::class.java)
+        val api = httpClient.create(IRankingApi::class.java)
         return suspendCancellableCoroutine<ApiResponseState> { cancellableContinuation ->
             scope.launch(Dispatchers.IO) {
-                mockHttpClient.safeRequest(
+                httpClient.safeRequest(
                     request = {
                         api.recordBig(
                             page = page ,
@@ -127,10 +126,10 @@ class RankingRepository(
      * 获取每日比赛
      */
     suspend fun getDailyMatch(page: Int , pageSize: Int = DEFAULT_PAGE_SIZE): ApiResponseState {
-        val api = mockHttpClient.create(IRankingApi::class.java)
+        val api = httpClient.create(IRankingApi::class.java)
         return suspendCancellableCoroutine<ApiResponseState> { cancellableContinuation ->
             scope.launch(Dispatchers.IO) {
-                mockHttpClient.safeRequest(
+                httpClient.safeRequest(
                     request = {
                         api.getDailyMatch(
                             page = page ,
@@ -173,10 +172,10 @@ class RankingRepository(
      * 获取每日投注比赛信息
      */
     suspend fun getDayMatchDetail(): ApiResponseState {
-        val api = mockHttpClient.create(IRankingApi::class.java)
+        val api = httpClient.create(IRankingApi::class.java)
         return suspendCancellableCoroutine<ApiResponseState> { cancellableContinuation ->
             scope.launch(Dispatchers.IO) {
-                mockHttpClient.safeRequest(
+                httpClient.safeRequest(
                     request = {
                         api.dayMatchDetail()
                     } ,

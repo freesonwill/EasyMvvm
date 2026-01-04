@@ -23,8 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_46"
             android:layout_marginTop="13dp"
-            android:layout_marginEnd="@dimen/dp_13"
-            android:layout_marginBottom="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_17"
+            android:layout_marginBottom="@dimen/dp_10"
             android:layout_marginStart="@dimen/dp_17"
             android:background="@drawable/edit_name_rounded_background"
             android:gravity="center_vertical">
@@ -39,7 +39,7 @@
                 android:gravity="center_vertical"
                 android:hint="@string/account_edit_name_input_hint"
                 android:imeOptions="actionDone"
-                android:maxLength="7"
+                android:maxLength="12"
                 android:singleLine="true"
                 android:textColor="@color/white"
                 android:textColorHint="@color/account_edit_name_hint"
@@ -69,15 +69,16 @@
             android:layout_height="@dimen/dp_38"
             android:layout_marginStart="@dimen/dp_17"
             android:layout_marginTop="-2dp"
-            android:layout_marginEnd="@dimen/dp_13"
+            android:layout_marginEnd="@dimen/dp_17"
             android:background="@drawable/edit_name_rounded_hint_background"
             android:gravity="center_vertical">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_38"
                 android:paddingTop="@dimen/dp_1"
-                android:layout_margin="@dimen/dp_13"
+                android:layout_margin="@dimen/dp_11"
                 android:gravity="center"
                 android:paddingEnd="5dp"
                 android:text="@string/account_edit_name_text_hint"
@@ -89,7 +90,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_28"
             android:layout_marginStart="@dimen/dp_17"
-            android:layout_marginTop="@dimen/dp_18">
+            android:layout_marginTop="@dimen/dp_16">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:layout_width="wrap_content"
@@ -102,16 +103,18 @@
                 tools:ignore="MissingConstraints" />
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_refresh"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_28"
                 android:layout_gravity="end"
-                android:layout_marginEnd="@dimen/dp_13"
+                android:layout_marginTop="@dimen/dp_29"
+                android:layout_marginEnd="@dimen/dp_17"
                 android:background="@drawable/account_text_rounded_background"
                 android:drawableLeft="@drawable/account_vector_icon"
-                android:drawablePadding="@dimen/dp_5"
+                android:drawablePadding="@dimen/dp_4"
                 android:gravity="center_vertical"
-                android:paddingStart="@dimen/dp_9"
-                android:paddingEnd="@dimen/dp_9"
+                android:paddingStart="@dimen/dp_10"
+                android:paddingEnd="@dimen/dp_7"
                 android:text="@string/account_edit_name_refresh"
                 android:textColor="@color/color_999999"
                 android:textSize="12sp"

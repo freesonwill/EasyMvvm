@@ -38,7 +38,7 @@ import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
-import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
+import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModelV2
 import arch.cayenne.module.home.utils.DateUtils
 import arch.cayenne.module.home.utils.setFavoriteIcon
 import com.walisport.module.message.ui.view.DeleteAnimator
@@ -53,7 +53,7 @@ class MatchListPagerFragment :
         FragmentMatchListPagerBinding::class
     override val vmClass: KClass<MatchListViewModel> = MatchListViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
-    private val subHomeViewModel: SubHomeViewModel by viewModels({ requireParentFragment() })
+    private val subHomeViewModelV2: SubHomeViewModelV2 by viewModels({ requireParentFragment() })
 
     private lateinit var matchAdapter: MatchItemAdapter
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
@@ -131,7 +131,7 @@ class MatchListPagerFragment :
                         }
                     }
                 }
-            }, subHomeViewModel.currentPlayTypeId)
+            }, subHomeViewModelV2.currentPlayTypeId)
 
             //賽事卡片之間的間閣
             val decoration = MatchCardItemDecoration(
@@ -317,7 +317,7 @@ class MatchListPagerFragment :
 
         //联赛列表可能发生变化
         if (arguments?.getBoolean(ARG_MUTABLE) == true) {
-            subHomeViewModel.savedTournamentSelections.observe(viewLifecycleOwner) {
+            subHomeViewModelV2.savedTournamentSelections.observe(viewLifecycleOwner) {
                 val sorted = it.sorted()
                 if (mViewModel.getTournamentIdList() != sorted) {
                     mViewModel.setTournamentIdList(sorted)

@@ -1,19 +1,11 @@
 package arch.cayenne.lib.common.data.constants
 
-import androidx.annotation.DrawableRes
-
 sealed class BaseCurrencyData {
     data class CurrencyTitleData(
         val title: String
     ) : BaseCurrencyData()
-    @Deprecated("這個是Mock資料，應該最後應該改為CurrencyContentData2")
-    data class CurrencyContentData(
-        @DrawableRes val icon: Int,
-        val currency: String,
-        val amount: String
-    ) : BaseCurrencyData()
 
-    data class CurrencyContentData2(
+    data class CurrencyContentData(
         val id: Int,
         val ccy: String,
         val icon: String,
@@ -22,7 +14,8 @@ sealed class BaseCurrencyData {
         val amountStr: String,
         val exchangeAmount: String,
         val unit: String,
-        val scale: Int = 2, //預設為10^2 = 100,
-        val isSelected: Boolean = false,
+        val scale: Int = 2,
+        var isSelected: Boolean = false,
+        var fiatSelected: Boolean = false //是否以该法币金额显示加密货币
     ) : BaseCurrencyData()
 }

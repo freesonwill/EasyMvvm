@@ -24,4 +24,6 @@
     <color name="search_calendar_selected_theme_color">@color/color_00E0E5</color>
     <color name="search_calendar_week_text_color">#929298</color>
     <color name="search_calendar_reset_btn_text_color">#E6E6E6</color>
+    <color name="game_list_search_hint">#929298</color>
+    <color name="game_list_search_text">#ffffff</color>
 </resources>

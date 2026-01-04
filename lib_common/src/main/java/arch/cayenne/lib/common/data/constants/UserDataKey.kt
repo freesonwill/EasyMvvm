@@ -12,7 +12,8 @@ enum class UserDataKey(val key: String) {
     KEY_BETSLIP_DETAIL("BetSlipDetail"),
     KEY_RECORD("Record"), //搜索历史
 
-    KEY_DEFAULT_CURRENCY("DefaultCurrency"),
+    KEY_DEFAULT_FIAT("DefaultFiat"),         //法币列表选中币种
+    KEY_DEFAULT_CURRENCY("DefaultCurrency"), //余额列表选中币种
     KEY_SHOW_ALL_CURRENCY("ShowAllCurrency"),
 
     KEY_SYSTEM_BET("System_Goal_Bet"),
@@ -46,5 +47,6 @@ enum class UserDataKey(val key: String) {
     KEY_DAY("KEY_DAY"),
 
     //软件盘配置相关
-    KEY_SOFT_CONFIG("soft_config")
+    KEY_SOFT_CONFIG("soft_config"),
+    MAIN_CHAT_LANGUAGE("main_chat_language"),
 }

@@ -7,14 +7,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.module.launcher.databinding.FragmentLauncherBinding
 import arch.cayenne.module.launcher.ui.viewmodel.LauncherViewModel
+import com.walisport.module.business.common.viewmodel.BalanceViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.getValue
 import kotlin.reflect.KClass
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LauncherFragment: BaseFragment<LauncherViewModel, FragmentLauncherBinding>() {
     override val vbClass: KClass<FragmentLauncherBinding> = FragmentLauncherBinding::class

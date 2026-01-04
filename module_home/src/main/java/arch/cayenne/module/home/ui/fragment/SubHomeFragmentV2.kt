@@ -1,9 +1,6 @@
 package arch.cayenne.module.home.ui.fragment
 
 import android.annotation.SuppressLint
-import android.graphics.LinearGradient
-import android.graphics.Shader
-import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -48,15 +45,15 @@ import arch.cayenne.module.home.databinding.FragmentSubHomeV2Binding
 import arch.cayenne.module.home.databinding.LayoutTournamentSortingMenuBinding
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
-import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
+import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModelV2
 import kotlinx.coroutines.Job
 import kotlin.reflect.KClass
 
-class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Binding>(),
+class SubHomeFragmentV2 : BaseFragment<SubHomeViewModelV2, FragmentSubHomeV2Binding>(),
     ISubFragmentLifecycle {
 
     override val vbClass: KClass<FragmentSubHomeV2Binding> = FragmentSubHomeV2Binding::class
-    override val vmClass: KClass<SubHomeViewModel> = SubHomeViewModel::class
+    override val vmClass: KClass<SubHomeViewModelV2> = SubHomeViewModelV2::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
 
     private var allTabCompleteObserveJob: Job? = null
@@ -79,11 +76,14 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
     private var sortMenuClicked: Boolean = false
 
 
-    // VIP 等級資源設置於 lib_common，統一使用 VIPResourceHelper 管理
-
+    // VIP等级资源已在 lib_common 设置，统一由 VIPResourceHelper 管理
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         arguments?.apply {
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
+            // 获取并设置初始排序类型
+            currentSortType =
+                MatchListSortType.fromType(this.getInt(ARG_SORT_TYPE))
+                    ?: MatchListSortType.BY_HOT
         }
         super.onViewCreated(view, savedInstanceState)
     }
@@ -143,7 +143,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
 
         mViewModel.tournamentsPlain.observeEvent(viewLifecycleOwner, this) { list ->
             val l = ArrayList<SimpleTabDataModel>()
-            list.take(10)
+            list.take(11)
                 .forEach { item ->
                     l.add(
                         SimpleTabDataModel(
@@ -157,26 +157,9 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
             mBinding.layoutContainer.customTabGroup.clearTabList()
             mBinding.layoutContainer.customTabGroup.submitTabList(l)
 
-            setupMatchFragment()
+            updateMatchFragmentSportId()
         }
 
-        mViewModel.collapseTournamentDropdown.observeEvent(
-            viewLifecycleOwner,
-            this
-        ) { shouldCollapse ->
-            if (shouldCollapse && isExpanded) {
-                toggleTournamentSorting(false)
-                mViewModel.consumeCollapseTournamentDropdown() // 重置事件，避免重複觸發
-            }
-        }
-
-        mViewModel.navigationToChampion.observeEvent(viewLifecycleOwner, this) { data ->
-            navigate(Uri.parse("walisport://module_home/championFragment?matchId=${data.championMatchId}&name=${data.name}&icon=${data.icon}"))
-        }
-
-        mViewModel.tournamentSlideOutEnd.observeEvent(viewLifecycleOwner, this) {
-            mBinding.layoutContainer.llTournamentsDropdown.visibility = View.GONE
-        }
 
         mViewModel.savedTournamentSelections.observe(viewLifecycleOwner) { selections ->
             if (selections.size > 1) {
@@ -272,7 +255,6 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
 
     // 設置更多按鈕的顯示狀態
     override fun onFragmentUnSelected() {
-        mViewModel.requestCollapseTournamentDropdown()
         // 收起排序選單
         if (isExpanded) {
             toggleTournamentSorting(false)
@@ -390,6 +372,12 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
                     MatchListPagerFragmentV2.TAG
                 ).commitNow()
         }
+    }
+
+    private fun updateMatchFragmentSportId() {
+        val fragment =
+            childFragmentManager.findFragmentByTag(MatchListPagerFragmentV2.TAG) ?: return
+        (fragment as? MatchListPagerFragmentV2)?.updateSportId(mViewModel.currentSportId)
     }
 
     // 全部Tab的比賽列表載入完成後的處理
@@ -770,10 +758,12 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModel, FragmentSubHomeV2Bindin
     companion object {
         const val LOW_MEMORY_THRESHOLD = 2_000_000_000L
         private const val ARG_PLAY_TYPE_ID = "play_type_id"
-        fun newInstance(playTypeId: Int): SubHomeFragmentV2 {
+        private const val ARG_SORT_TYPE = "sort_type" //排序类型
+        fun newInstance(playTypeId: Int, sortType: MatchListSortType): SubHomeFragmentV2 {
             return SubHomeFragmentV2().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_PLAY_TYPE_ID, playTypeId)
+                    putInt(ARG_SORT_TYPE, sortType.type)
                 }
             }
         }

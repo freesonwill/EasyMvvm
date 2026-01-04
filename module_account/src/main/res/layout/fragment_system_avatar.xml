@@ -12,37 +12,71 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints" />
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:layout_width="match_parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleBar"
-        android:paddingTop="@dimen/dp_50"
-        android:background="@color/app_bg"
-        android:layout_weight="1"
-        android:layout_height="0dp">
+        android:layout_height="0dp"
+        android:background="@color/color_1E1E1E"
+        android:orientation="vertical"
+        android:layout_weight="1">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/ClUserAvatar"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginEnd="8dp"
-
-
+        <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            app:layout_constraintTop_toBottomOf="@+id/titleBar"
+            android:layout_weight="1"
+            android:background="@color/color_1E1E1E"
+            android:layout_gravity="center"
+            android:layout_height="0dp">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivUserAvatar"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/ClUserAvatar"
+                android:background="@color/color_1E1E1E"
                 android:layout_width="match_parent"
-                android:background="@drawable/avatar_rounded_background_svg"
-                android:layout_height="match_parent"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/background_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:background="@color/black_50"
+                    />
+
+                <arch.cayenne.module.account.view.SystemAvatarCircleImg
+                    android:id="@+id/ivUserAvatar"
+                    android:layout_width="350dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:background="@drawable/avatar_rounded_background_svg"
+                    android:layout_height="350dp"
+                    tools:ignore="MissingConstraints" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+
+        </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:orientation="vertical"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
+            android:background="@color/color_1E1E1E"
             android:layout_marginBottom="@dimen/dp_40"
             android:gravity="center"
             android:layout_height="wrap_content">
@@ -52,6 +86,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipChildren="false"
+                android:background="@color/color_1E1E1E"
                 android:clipToPadding="false"
                 android:nestedScrollingEnabled="false"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
@@ -69,16 +104,16 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:gravity="center"
+                android:background="@drawable/account_bar_button"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:background="@drawable/shape_account_bar_right"
                 />
 
 
         </androidx.appcompat.widget.LinearLayoutCompat>
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>

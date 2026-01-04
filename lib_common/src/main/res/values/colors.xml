@@ -34,6 +34,7 @@
 
     <color name="green_for_white_bg">#24ee8a</color>
     <color name="black">#FF000000</color>
+    <color name="black_50">#1A000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#0000FF</color>
     <color name="app_bg">#111111</color>

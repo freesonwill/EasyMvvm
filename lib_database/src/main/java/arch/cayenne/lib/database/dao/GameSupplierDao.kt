@@ -38,5 +38,10 @@ abstract class GameSupplierDao: BaseDao<GameSupplierDataModel>() {
     @Query("UPDATE GameSupplierDataModel SET isSelected = 0 WHERE gameTypeId = :type")
     abstract fun clearSelectedByType(type: Int)
 
+    /**
+     * 根據 ID 查詢供應商
+     */
+    @Query("SELECT * FROM GameSupplierDataModel WHERE id = :id LIMIT 1")
+    abstract suspend fun querySupplierById(id: Int): GameSupplierDataModel?
 
 }

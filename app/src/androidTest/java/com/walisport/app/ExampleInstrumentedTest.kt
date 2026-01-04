@@ -46,7 +46,7 @@ class ExampleInstrumentedTest {
                         Style.IconBadge(
                             R.mipmap.ic_fifa.getDrawable(),
                             "世界杯",
-                            (-18f).dp2px
+                            (-18f).dp2px.toInt()
                         )
                     )
                 } else {

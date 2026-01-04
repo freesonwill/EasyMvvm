@@ -3,49 +3,43 @@ package arch.cayenne.module.account.ui.fragment
 import android.Manifest
 import android.companion.CompanionDeviceManager.RESULT_OK
 import android.content.Intent
-import androidx.fragment.app.viewModels
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.navigation.fragment.findNavController
-import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.module.account.R
-import arch.cayenne.module.account.ui.viewmodel.AvatarViewModel
-import arch.cayenne.module.account.databinding.FragmentAvatarBinding
-import kotlin.reflect.KClass
-import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.module.account.databinding.TitleBarPreviewAvatarBinding
-import android.content.pm.PackageManager
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.widget.Button
-import android.widget.ImageView
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
-import arch.cayenne.lib.common.utils.FileUtils
+import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ThumbHashUtils
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.module.account.databinding.FragmentAvatarBinding
+import arch.cayenne.module.account.databinding.TitleBarPreviewAvatarBinding
+import arch.cayenne.module.account.ui.viewmodel.AvatarViewModel
+import arch.cayenne.module.account.ui.viewmodel.PersonalInfoViewModel
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import java.io.File
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
-import com.davemorrissey.labs.subscaleview.ImageSource
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP
+import kotlin.reflect.KClass
 
 class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
 
     override val vbClass: KClass<FragmentAvatarBinding> = FragmentAvatarBinding::class
     override val vmClass: KClass<AvatarViewModel> = AvatarViewModel::class
+    private val personalViewModel: PersonalInfoViewModel by sharedViewModel<PersonalInfoViewModel, PersonalInfoFragment>()
     private var currentPhotoPath: String? = null
     private lateinit var takePictureLauncher: ActivityResultLauncher<Intent>
-    private lateinit var galleryLauncher: ActivityResultLauncher<String>
+    private var galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        // 这里只会返回单个 Uri
+    }
     companion object {
         const val CHANGE_FILE_PATH = "CHANGE_FILE_PATH"
     }
@@ -55,17 +49,38 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
     // 权限数组
     private val PERMISSIONS_REQUEST_CAMERA = arrayOf(
         Manifest.permission.CAMERA,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
 
-    private val PERMISSIONS_REQUEST_STORAGE = arrayOf(
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
-    )
+    private val PERMISSIONS_REQUEST_STORAGE =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(
+                Manifest.permission.READ_MEDIA_IMAGES,
+            )
+        } else {
+            arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+        }
 
     private val titleBarBinding: TitleBarPreviewAvatarBinding by lazy {
         TitleBarPreviewAvatarBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
+    }
+
+    private val permissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val allGranted = permissions.all { it.value }
+        if (allGranted) {
+            // 权限全部通过
+            onPermissionsGranted(
+                if (permissions.keys.containsAll(PERMISSIONS_REQUEST_CAMERA.toList())
+                ) camera else storage
+            )
+        } else {
+            Toast.makeText(requireContext(), "权限被拒绝，无法使用相机或相册", Toast.LENGTH_SHORT)
+                .show()
+        }
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -76,6 +91,7 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
         var params: ViewGroup.LayoutParams = mBinding.ivUserAvatar.layoutParams
         params.height = params.width
         mBinding.ivUserAvatar.layoutParams = params
+        showPersonalAvatar()
     }
 
     override fun initListener() {
@@ -84,6 +100,9 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
             navigate(AvatarFragmentDirections.actionAvatarFragmentToSystemAvatarFragment())
         }
 
+        titleBarBinding.ivMore.clickNoRepeat {
+            showAvatarDialog()
+        }
         //相册
         mBinding.photo.clickNoRepeat {
             permissions(PERMISSIONS_REQUEST_STORAGE, storage)
@@ -94,24 +113,30 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
             permissions(PERMISSIONS_REQUEST_CAMERA, camera)
         }
     }
+    private fun showAvatarDialog() {
+        AvatarDialogFragment().apply {
+            setOnItemClickListener(object : AvatarDialogFragment.OnClickListener {
+                override fun onClickConfirm() {
 
-    fun showAvatar(){
-      val  bitmap = FileUtils.loadLocalBitmap(requireContext())
-            mBinding.ivUserAvatar.maxScale = 1f
-            mBinding.ivUserAvatar.minScale = 1f
-            mBinding.ivUserAvatar.setMinimumScaleType(SCALE_TYPE_CENTER_CROP)
-        bitmap?.let { mBinding.ivUserAvatar.setImage(ImageSource.cachedBitmap(it)) }
+                }
+
+                override fun onClickAvtarDelete() {
+
+                }
+            })
+        }.show(childFragmentManager)
+    }
+    fun showAvatar(url:String) {
+
+        Glide.with(this@AvatarFragment)
+            .load(url)
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .into(mBinding.ivUserAvatar)
+
     }
 
     override suspend fun createObserver() {
-        observeResult<Bundle>(CHANGE_FILE_PATH) {
-            val newArgs: AvatarFragmentArgs = AvatarFragmentArgs.fromBundle(it)
-            this.filePath = newArgs.filePath
-            filePath?.let {
-                showAvatar()
-            }
-        }
-        // 初始化拍照结果回调
+        // 初始化拍照结果回调AvatarPreviewFragment
         takePictureLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == RESULT_OK) {
@@ -135,17 +160,8 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
 
     // 请求权限
     fun permissions(permissions: Array<String>, requestCode: Int) {
-        val permissionsToRequest = permissions.filter {
-            ContextCompat.checkSelfPermission(
-                requireContext(),
-                it
-            ) != PackageManager.PERMISSION_GRANTED
-        }.toTypedArray()
-        if (permissionsToRequest.isNotEmpty()) {
-            requestPermissions(permissionsToRequest, requestCode)
-        } else {
-            onPermissionsGranted(requestCode)
-        }
+        //
+        permissionLauncher.launch(permissions)
     }
 
     fun goToAvatarFragment(imgUrl: String) {
@@ -157,20 +173,6 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
         })
     }
 
-    // 权限请求结果处理
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
-            onPermissionsGranted(requestCode)
-        } else {
-            Toast.makeText(requireContext(), "权限被拒绝，无法使用相机或相册", Toast.LENGTH_SHORT)
-                .show()
-        }
-    }
 
     // 权限通过后的操作
     private fun onPermissionsGranted(requestCode: Int) {
@@ -216,6 +218,27 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
             storageDir
         ).apply {
             currentPhotoPath = absolutePath
+        }
+    }
+
+
+    fun showPersonalAvatar(){
+
+        personalViewModel.onUserInfoListener.value.apply {
+            this?.avatar.let { avatar ->
+                val placeholderDrawable = try {
+                    ThumbHashUtils.getBitmapFromThumbHash(avatar?.thumbhash)?.let { bitmap ->
+                        BitmapDrawable(resources, bitmap)
+                    }
+                } catch (_: Exception) {
+                    null
+                }
+                Glide.with(this@AvatarFragment)
+                    .load(avatar?.url?.trim())
+                    .placeholder(placeholderDrawable)
+                    .into(mBinding.ivUserAvatar)
+
+            }
         }
     }
 

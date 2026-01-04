@@ -51,6 +51,11 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
         }
         val adapter = ChatPageAdapter(
             specialClick = { bean, clickSpane, clickType ->
+                "click bean.msgType=${bean.msgType},clickType=$clickType".logd(TAG)
+                if (bean.msgType == ChatMsgType.SYSTEM) {
+                    return@ChatPageAdapter
+                }
+
                 selectBean = bean
                 when (clickType) {
                     ChatMsgType.BET_GAME -> {
@@ -75,6 +80,11 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                 }
             },
             longClick = { bean ->
+                "longClick bean.msgType=${bean.msgType}".logd(TAG)
+
+                if (bean.msgType == ChatMsgType.SYSTEM) {
+                    return@ChatPageAdapter
+                }
                 homeViewModel.addAtMsgToChat(bean)
             }
         )
@@ -107,13 +117,16 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
         val nList = mutableListOf<ChatMsgPageBean>()
         nList.addAll(mViewModel.msgLists)
         adapter?.submitList(nList) {
+            if (nList.isEmpty()) {
+                return@submitList
+            }
             mBinding.liveChatRecycler.postDelayed({
                 try {
                     mBinding.liveChatRecycler.scrollToPosition(0)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-            }, 100)
+            }, 500)
         }
     }
 
@@ -129,7 +142,7 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                 it.content,
                 it.refUid,
                 ChatType.LOBBY,
-                MsgType.MSG_TYPE_TEXT,
+                MsgType.getSendMsgType(it.msgType.value),
                 it.extraData
             )
             refreshChatList()
@@ -158,9 +171,8 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
             ChatPersonalDialogFragment.CHAT_PERSONAL_REQUEST,
             this
         ) { key, bundle ->
-            "listenFragmentResult $key ".logd("aaa")
-            val result = bundle.getInt(ChatPersonalDialogFragment.CHAT_PERSONAL_RESULT,-1)
-            if(result != -1){
+            val result = bundle.getInt(ChatPersonalDialogFragment.CHAT_PERSONAL_RESULT, -1)
+            if (result != -1) {
                 //处理结果 0 title 1 @ta 2 复制评论 3 举报评论
                 if (result == 1) {
                     selectBean?.let {
@@ -168,7 +180,7 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                     }
                 }
             }
-            val result1 = bundle.getInt(ChatPrivateUserFragment.CHAT_USER_RESULT,-1)
+            val result1 = bundle.getInt(ChatPrivateUserFragment.CHAT_USER_RESULT, -1)
             if (result1 != -1) {
                 selectBean?.let {
                     homeViewModel.addAtMsgToChat(it)
@@ -176,6 +188,13 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
             }
 
         }
+    }
+
+    fun clearChatList() {
+        mViewModel.clearMsgList()
+        val adapter = mBinding.liveChatRecycler.adapter?.let { it as ChatPageAdapter }
+        adapter?.submitList(emptyList())
+        "clearChatList".logd(TAG)
     }
 
     companion object {

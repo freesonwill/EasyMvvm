@@ -4,7 +4,9 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
 import arch.cayenne.lib.common.utils.ext.getFormatDate
+import arch.cayenne.lib.database.entity.GameSupplierDataModel
 import com.haibin.calendarview.Calendar
 import com.walisport.module.search.data.constants.SearchResultRaceItemType
 import com.walisport.module.search.data.constants.SearchResultTypeEnum
@@ -16,6 +18,10 @@ import com.walisport.module.search.data.model.SearchResultPlayerBean
 import com.walisport.module.search.data.model.SearchResultTeamBean
 import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.data.repo.SearchRepository
+import com.walisport.module.business.common.data.constants.GameSortType
+import com.walisport.module.search.ui.model.Avatar
+import com.walisport.module.search.ui.model.HotColdType
+import com.walisport.module.search.ui.model.SearchGameContentData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,6 +32,11 @@ import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 import java.util.Date
+
+enum class DirectPageMode {
+    SPORTS,  // 體育直配（聯賽/球隊/球員）
+    VENDOR   // 遊戲供應商/分類直配
+}
 
 @KoinViewModel
 class SearchResultDirectMatchViewModel: BaseViewModel() {
@@ -207,5 +218,144 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
     /** 設定當前頁面標題 */
     fun setCurrentTitle(title: String?) {
         _currentTitle = title
+    }
+
+    // ================== 遊戲供應商/分類直配相關 ==================
+
+    /** 頁面模式 */
+    private val _pageMode = MutableStateFlow<DirectPageMode?>(null)
+    val pageMode: StateFlow<DirectPageMode?> = _pageMode.asStateFlow()
+
+    /** 供應商資訊 */
+    private val _supplierData = MutableStateFlow<GameSupplierDataModel?>(null)
+    val supplierData: StateFlow<GameSupplierDataModel?> = _supplierData.asStateFlow()
+
+    /** 供應商列表（與 GameContentFragment 一致，用於 Tab 轉換） */
+    private val _gameSupplierList = MutableStateFlow<List<GameSupplierDataModel>>(emptyList())
+    val gameSupplierList: StateFlow<List<GameSupplierDataModel>> = _gameSupplierList.asStateFlow()
+
+    /** 供應商 / 遊戲類型 Tab（與 GameContentFragment 一致） */
+    private val _supplierTabs = MutableStateFlow<List<SimpleTabDataModel>>(emptyList())
+    val supplierTabs: StateFlow<List<SimpleTabDataModel>> = _supplierTabs.asStateFlow()
+
+    /** 遊戲卡片列表（目前使用 mock 資料），結構與 hall 模組 GameContentData 對齊 */
+    private val _vendorGames = MutableStateFlow<List<SearchGameContentData>>(emptyList())
+    val vendorGames: StateFlow<List<SearchGameContentData>> = _vendorGames.asStateFlow()
+
+    /** 當前選擇的排序類型（熱門 / 最新 / 火熱 / 冷門） */
+    private val _selectedSortType = MutableStateFlow(GameSortType.HOT)
+    val selectedSortType: StateFlow<GameSortType> = _selectedSortType.asStateFlow()
+
+    /**
+     * 載入供應商資訊（從 Room 查詢）
+     */
+    fun loadSupplierInfo(supplierId: Int) {
+        viewModelScope.launch {
+            _pageMode.value = DirectPageMode.VENDOR
+            repository.querySupplierById(supplierId)?.let { supplier ->
+                _supplierData.value = supplier
+                loadSupplierTabs(gameTypeId = supplier.gameTypeId)
+                generateMockGames(sortType = GameSortType.HOT, supplierId = supplierId)
+            } ?: run {
+                _vendorGames.value = emptyList()
+                setState(DataState.DataEmpty)
+            }
+        }
+    }
+
+    /**
+     * 從本地 DB 撈出一組供應商，更新供應商列表（用於 Tab 轉換）。
+     * 與 GameContentFragment 使用相同的數據源。
+     */
+    suspend fun loadSupplierTabs(gameTypeId: Int = 4) {
+        val suppliers = repository.querySuppliersByGameType(gameTypeId)
+        _gameSupplierList.value = suppliers
+    }
+
+    /**
+     * 產生一組 mock 的 GameContentData，用於先完成 UI 整合。
+     * 參考 GameContentFragment 的數據結構，生成類似的 mock 數據。
+     */
+    fun generateMockGames(sortType: GameSortType, supplierId: Int?) {
+        _selectedSortType.value = sortType
+
+        // Mock 遊戲名稱列表（參考真實遊戲名稱）
+        val mockGameNames = listOf(
+            "Gates of Olympus 1000",
+            "Sweet Bonanza",
+            "Big Bass Bonanza",
+            "Starlight Princess",
+            "Sugar Rush",
+            "Wild West Gold",
+            "The Dog House",
+            "Fire Strike",
+            "Lucky Grace",
+            "Book of Dead",
+            "Razor Shark",
+            "Reactoonz"
+        )
+
+        val mockList = (1..12).map { index ->
+            val gameIndex = (index - 1) % mockGameNames.size
+            val baseId = (supplierId ?: 0).toLong() * 1000 + index
+
+            val name = mockGameNames[gameIndex] +
+                    if (index > mockGameNames.size) " ${index - mockGameNames.size}" else ""
+
+            val avatar = Avatar(
+                url = "https://via.placeholder.com/300x400?text=${mockGameNames[gameIndex].replace(" ", "+")}",
+                thumbhash = "",
+                css = ""
+            )
+
+            // 使用 Int 範圍產生隨機值，再轉成 1 位小數的 Double，避免 FloatingPointRange 的 random() 解析問題
+            val reward = when (sortType) {
+                // 97.0% ~ 99.9%
+                GameSortType.HOT_REWARD -> (970..999).random() / 10.0
+                // 90.0% ~ 95.0%
+                GameSortType.COLD_REWARD -> (900..950).random() / 10.0
+                // 94.0% ~ 98.0%
+                else -> (940..980).random() / 10.0
+            }
+
+            val hotOrCold = when (sortType) {
+                GameSortType.HOT_REWARD -> HotColdType.HOT
+                GameSortType.COLD_REWARD -> HotColdType.COLD
+                else -> HotColdType.NONE
+            }
+
+            SearchGameContentData(
+                id = baseId,
+                name = name,
+                avatar = avatar,
+                online = (100..5000).random(),
+                reward = reward,
+                hasMore = index % 3 == 0,
+                hotOrCold = hotOrCold
+            )
+        }
+
+        _vendorGames.value = mockList
+        setState(if (mockList.isEmpty()) DataState.DataEmpty else DataState.LoadSuccess)
+    }
+
+    /**
+     * Tab / 排序切換時更新排序類型並重新產生 mock 列表。
+     */
+    fun switchSortType(sortType: GameSortType, supplierId: Int?) {
+        generateMockGames(sortType, supplierId)
+    }
+
+    /**
+     * 遊戲分類（例如「電子」「老虎機」）直配入口：
+     * 根據 gameTypeId 載入對應的供應商 Tab，並產生一組 mock 遊戲列表。
+     */
+    fun loadGameCategory(gameTypeId: Int) {
+        viewModelScope.launch {
+            _pageMode.value = DirectPageMode.VENDOR
+            loadSupplierTabs(gameTypeId)
+            _supplierData.value = null // 分類模式沒有特定供應商
+            generateMockGames(GameSortType.HOT, supplierId = null)
+        }
     }
 }
