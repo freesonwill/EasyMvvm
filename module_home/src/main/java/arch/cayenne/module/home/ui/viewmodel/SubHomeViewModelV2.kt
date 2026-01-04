@@ -418,6 +418,10 @@ open class SubHomeViewModelV2 : BaseViewModel() {
      * 用于清除所有选中的联赛状态。
      */
     fun clearTournamentsSelected() {
+        //判断是否有变化，没有变化就不更新
+        if(_currentSelectedTournaments.value.isNullOrEmpty()){
+            return
+        }
         _currentSelectedTournaments.postValue(emptyList())
     }
 
@@ -430,7 +434,12 @@ open class SubHomeViewModelV2 : BaseViewModel() {
      * @param id 要选中的联赛 ID。
      */
     fun selectTournamentsId(id: Int) {
-        _currentSelectedTournaments.postValue(listOf(id))
+        val tournamentIdList = listOf(id)
+        //判断是否有变化，没有变化就不更新
+        if (_currentSelectedTournaments.value == tournamentIdList) {
+            return
+        }
+        _currentSelectedTournaments.postValue(tournamentIdList)
     }
 
     /**
@@ -442,6 +451,10 @@ open class SubHomeViewModelV2 : BaseViewModel() {
      * @param tournamentIdList 包含联赛 ID 的列表。
      */
     fun setCurrentTournamentIdList(tournamentIdList: List<Int>) {
+        //判断是否有变化，没有变化就不更新
+        if (_currentSelectedTournaments.value == tournamentIdList) {
+            return
+        }
         _currentSelectedTournaments.postValue(tournamentIdList)
     }
 
