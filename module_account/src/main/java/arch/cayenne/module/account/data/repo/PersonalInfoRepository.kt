@@ -9,6 +9,7 @@ import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.AvatarEmbedded
+import arch.cayenne.lib.database.entity.SystemAvatarBean
 import arch.cayenne.lib.database.entity.UserDataBean
 import arch.cayenne.lib.database.entity.WalletBean
 import arch.cayenne.lib.http.HttpClient
@@ -39,7 +40,7 @@ class PersonalInfoRepository(
     private val socketManager: WebSocketManager,
     private val userDataManager: UserDataManager,
     private val database: GameDatabase,
-    private val httpClient: HttpClient ,
+    private val httpClient: HttpClient,
 ) : BaseRepository() {
 
     private val _uploadAvatarResult = MutableLiveData<String>()
@@ -47,7 +48,7 @@ class PersonalInfoRepository(
 
     private val _uploadResult = MutableLiveData<String>()
     val uploadResult: LiveData<String> = _uploadResult
-     fun getAccountNicknameRecommendations(): UnPeekLiveData<List<String>> {
+    fun getAccountNicknameRecommendations(): UnPeekLiveData<List<String>> {
         val nicknameRecommenListLiveData = UnPeekLiveData<List<String>>()
         val api = httpClient.create(IAccount::class.java)
         scope.launch(Dispatchers.IO) {
@@ -64,14 +65,15 @@ class PersonalInfoRepository(
         return nicknameRecommenListLiveData
     }
 
-    fun changeNickname(nickNames: String) : UnPeekLiveData<Boolean>{
+    fun changeNickname(nickNames: String): UnPeekLiveData<Boolean> {
         val changeNickNameLiveData = UnPeekLiveData<Boolean>()
         scope.launch(Dispatchers.IO) {
             val api = httpClient.create(IAccount::class.java)
             httpClient.safeRequest(
                 request = {
                     val apiNickname = ApiNickname(nickname = nickNames)
-                    api.changeNickname(apiNickname) },
+                    api.changeNickname(apiNickname)
+                },
                 onSuccess = { resp ->
                     LogUtils.d("ChangeNickname", "Response: $resp")
                     if (resp.code == 0) {
@@ -81,7 +83,8 @@ class PersonalInfoRepository(
                 },
                 onFailure = { code, msg, throwable ->
                     LogUtils.d("ChangeNickname", "Response: $code, $msg")
-                    changeNickNameLiveData.postValue(false) }
+                    changeNickNameLiveData.postValue(false)
+                }
             )
         }
         return changeNickNameLiveData
@@ -93,13 +96,13 @@ class PersonalInfoRepository(
             val api = httpClient.create(IAccount::class.java)
             httpClient.safeRequest(
                 request = {
-                    api.updateAvatar(ApiUpAvatar(type=type, url = avatarUrl, avatarId =avatarId))
+                    api.updateAvatar(ApiUpAvatar(type = type, url = avatarUrl, avatarId = avatarId))
                 },
                 onSuccess = { resp ->
                     LogUtils.d("updateAvatar", "Response: $resp")
                     if (resp.code == 0) _uploadAvatarResult.postValue(avatarUrl)
                 },
-                onFailure = { code, msg, throwable ->
+                onFailure = { code, msg, _ ->
                     LogUtils.d("updateAvatar", "Response: $code, $msg")
                     _uploadAvatarResult.postValue("")
                 }
@@ -108,17 +111,18 @@ class PersonalInfoRepository(
     }
 
 
-    fun uploadAvatar(uid:String,token:String,filePath: String){
+    fun uploadAvatar(uid: String, token: String, filePath: String) {
         scope.launch(Dispatchers.IO) {
             val api = httpClient.create(IAccount::class.java)
             httpClient.safeRequest(
                 request = {
                     val file = File(filePath)
                     val requestFile = file.asRequestBody("image/*".toMediaType())
-                    val filePart = MultipartBody.Part.createFormData("files", file.name, requestFile)
+                    val filePart =
+                        MultipartBody.Part.createFormData("files", file.name, requestFile)
                     val uidBody = uid.toRequestBody("text/plain".toMediaType())
                     val tokenBody = token.toRequestBody("text/plain".toMediaType())
-                    api.upAvatar(filePart,uidBody,tokenBody)
+                    api.upAvatar(filePart, uidBody, tokenBody)
                 },
                 onSuccess = { resp ->
                     LogUtils.d("UploadAvatar", "Response: ${resp.data.filenames}")
@@ -129,12 +133,11 @@ class PersonalInfoRepository(
                 },
                 onFailure = { code, msg, throwable ->
                     LogUtils.d("UploadAvatar", "Response: $code, $msg")
-                    _uploadResult.postValue("") }
+                    _uploadResult.postValue("")
+                }
             )
         }
     }
-
-
 
 
     fun getAccountInfo() {
@@ -156,6 +159,7 @@ class PersonalInfoRepository(
             )
         }
     }
+
     private suspend fun saveAccountInfo(profileInfo: AccountInfo) {
         database.userDataDao().insert(
             UserDataBean(
@@ -179,9 +183,10 @@ class PersonalInfoRepository(
         //更新余额信息
         database.infoDao().updateBalance(profileInfo.score)
     }
+
     fun saveUserInfo(nickName: String) {
         scope.launch(Dispatchers.IO) {
-            var userInfo : UserDataBean? = database.userDataDao().getUser()
+            var userInfo: UserDataBean? = database.userDataDao().getUser()
             userInfo?.nickname = nickName
             userInfo?.let { database.userDataDao().insert(it) }
         }
@@ -189,28 +194,10 @@ class PersonalInfoRepository(
 
 
     fun observeUserInfo() = database.userDataDao().observeUser()
-    fun getPersonalInfoData(): List<PersonalInfoData> {
-        val personalInfoData = mutableListOf<PersonalInfoData>()
-        for (i in 0..7) {
-            personalInfoData.add(
-                PersonalInfoData(
-                    resId = when (i) {
-                        0 -> R.drawable.ic_head_info_1
-                        1 -> R.drawable.ic_head_info_2
-                        2 -> R.drawable.ic_head_info_3
-                        3 -> R.drawable.ic_head_info_4
-                        4 -> R.drawable.ic_head_info_5
-                        5 -> R.drawable.ic_head_info_6
-                        6 -> R.drawable.ic_head_info_7
-                        7 -> R.drawable.ic_head_info_8
-                        else -> R.drawable.ic_head_info_1
-                    }
-                    ,i
-                )
-            )
-        }
-        return personalInfoData
+    fun getPersonalInfoData(): List<SystemAvatarBean> {
+        return database.systemAvatarDao().querySystemAvatar().toMutableList()
     }
+
     fun saveData(nickName: String, resId: Int, position: Int) {
         // Save the personal info data to user data manager or database
         // This is a placeholder for the actual implementation
@@ -221,9 +208,11 @@ class PersonalInfoRepository(
         userDataManager.setKeyValue(UserDataKey.KEY_PERSONAL_INFO_RES_ID, resId)
         userDataManager.setKeyValue(UserDataKey.KEY_PERSONAL_INFO_POSITION, position)
     }
+
     fun getDefaultNickName(): String {
         return userDataManager.getValue(UserDataKey.KEY_PERSONAL_INFO_NICKNAME, "")
     }
+
     fun getDefaultPosition(): Int {
         return userDataManager.getValue(UserDataKey.KEY_PERSONAL_INFO_POSITION, -1)
     }

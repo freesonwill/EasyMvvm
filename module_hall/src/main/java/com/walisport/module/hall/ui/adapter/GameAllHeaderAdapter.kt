@@ -3,6 +3,7 @@ package com.walisport.module.hall.ui.adapter
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
@@ -12,17 +13,21 @@ import com.walisport.module.hall.databinding.ItemGameAllHeaderBinding
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import com.walisport.module.hall.ui.fragment.DailyMatchInfoFragment
 
 /**
  * 全部類型的遊戲頭部Adapter，包含左方的廣告位、右方的邀請朋友和每日比賽
  * */
-class GameAllHeaderAdapter(private val onItemClickListener: GameAllHeaderViewHolder.OnHeaderItemClickListener?): RecyclerView.Adapter<GameAllHeaderViewHolder>() {
+class GameAllHeaderAdapter(
+    private val fragmentManager: FragmentManager,
+    private val onItemClickListener: GameAllHeaderViewHolder.OnHeaderItemClickListener?
+) : RecyclerView.Adapter<GameAllHeaderViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): GameAllHeaderViewHolder {
         val binding = ItemGameAllHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return GameAllHeaderViewHolder(binding, onItemClickListener)
+        return GameAllHeaderViewHolder(fragmentManager, binding, onItemClickListener)
     }
 
     override fun onBindViewHolder(
@@ -36,7 +41,11 @@ class GameAllHeaderAdapter(private val onItemClickListener: GameAllHeaderViewHol
 
 }
 
-class GameAllHeaderViewHolder(val binding: ItemGameAllHeaderBinding , private val onItemClickListener: OnHeaderItemClickListener?): RecyclerView.ViewHolder(binding.root) {
+class GameAllHeaderViewHolder(
+    val fragmentManager: FragmentManager,
+    val binding: ItemGameAllHeaderBinding,
+    private val onItemClickListener: OnHeaderItemClickListener?
+) : RecyclerView.ViewHolder(binding.root) {
     @SuppressLint("ClickableViewAccessibility")
     fun init() {
         with(binding) {
@@ -97,9 +106,13 @@ class GameAllHeaderViewHolder(val binding: ItemGameAllHeaderBinding , private va
                 onItemClickListener?.onInviteFriendItemClick()
             }
 
-            ivCompetition.clickNoRepeat {
-                onItemClickListener?.onCompetitionItemClick()
-            }
+            fragmentManager.beginTransaction().replace(
+                R.id.daily_match_fragment,
+                DailyMatchInfoFragment()
+            ).commit()
+
+
+
         }
     }
 
@@ -115,8 +128,6 @@ class GameAllHeaderViewHolder(val binding: ItemGameAllHeaderBinding , private va
 
     interface OnHeaderItemClickListener {
         fun onInviteFriendItemClick()
-
-        fun onCompetitionItemClick()
     }
 
 }

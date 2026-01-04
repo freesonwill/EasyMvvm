@@ -10,6 +10,7 @@ import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.GameBean
 import arch.cayenne.lib.database.entity.GameSupplierDataModel
+import arch.cayenne.lib.database.entity.SystemAvatarBean
 import arch.cayenne.lib.http.HttpClient
 import arch.cayenne.lib.http.HttpException
 import arch.cayenne.lib.websocket.WebSocketManager
@@ -98,6 +99,7 @@ class HallRepository(
                         "response------queryGameCommonList>${resp.code},${resp.data}".loge(TAG)
                         setSupplierList(resp.data.gameSupplier , resp.data.category)
                          _gameCategoryListLiveData.postValue(resp.data.category)
+                        roomSystemAvatar(resp.data.sysAvatars,resp.data.resourceHost)
                     } else {
                         "response------queryGameCommonList>${resp.code},${resp.message}".loge(TAG)
                     }
@@ -202,6 +204,21 @@ class HallRepository(
             }
         }
         return list
+    }
+    private fun roomSystemAvatar(
+        avatarVo: List<SystemAvatarVo>,host:String
+    ) {
+        var list: MutableList<SystemAvatarBean> = mutableListOf()
+        avatarVo.forEach { data ->//分类列表
+            list.add(
+                SystemAvatarBean(
+                    id = data.id ,
+                    url = data.url ,
+                    host = host
+                )
+            )
+        }
+        database.systemAvatarDao().insert(list)
     }
 
 

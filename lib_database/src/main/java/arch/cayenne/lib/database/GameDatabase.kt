@@ -12,6 +12,7 @@ import arch.cayenne.lib.database.dao.ChatConfigDao
 import arch.cayenne.lib.database.dao.CoinDao
 import arch.cayenne.lib.database.dao.CollectListDao
 import arch.cayenne.lib.database.dao.CurrencyConfigDao
+import arch.cayenne.lib.database.dao.DailyBetMatchDataDao
 import arch.cayenne.lib.database.dao.GameDao
 import arch.cayenne.lib.database.dao.GameSupplierDao
 import arch.cayenne.lib.database.dao.HomeSelectedDao
@@ -23,6 +24,7 @@ import arch.cayenne.lib.database.dao.MarketTypeMenuBeanDao
 import arch.cayenne.lib.database.dao.MatchDao
 import arch.cayenne.lib.database.dao.MessageDao
 import arch.cayenne.lib.database.dao.SportDao
+import arch.cayenne.lib.database.dao.SystemAvatarDao
 import arch.cayenne.lib.database.dao.TournamentDao
 import arch.cayenne.lib.database.dao.UserDataDao
 import arch.cayenne.lib.database.entity.BetBean
@@ -34,6 +36,7 @@ import arch.cayenne.lib.database.entity.ChatConfigBean
 import arch.cayenne.lib.database.entity.CoinBean
 import arch.cayenne.lib.database.entity.CollectListBean
 import arch.cayenne.lib.database.entity.CurrencyBean
+import arch.cayenne.lib.database.entity.DailyBetMatchDataBean
 import arch.cayenne.lib.database.entity.EarlyTournamentMatchRef
 import arch.cayenne.lib.database.entity.GameBean
 import arch.cayenne.lib.database.entity.HomeSelectedBean
@@ -57,6 +60,7 @@ import arch.cayenne.lib.database.entity.SportTournamentCrossRef
 import arch.cayenne.lib.database.entity.TournamentBean
 import arch.cayenne.lib.database.entity.TournamentMatchRef
 import arch.cayenne.lib.database.entity.GameSupplierDataModel
+import arch.cayenne.lib.database.entity.SystemAvatarBean
 import arch.cayenne.lib.database.entity.UserDataBean
 @Database(
     entities = [
@@ -92,7 +96,9 @@ import arch.cayenne.lib.database.entity.UserDataBean
         UserDataBean::class,
         CurrencyBean::class,
         GameSupplierDataModel::class,
-        GameBean::class
+        GameBean::class,
+        DailyBetMatchDataBean::class,
+        SystemAvatarBean::class
     ],
     version = 1,
     exportSchema = false
@@ -146,4 +152,7 @@ abstract class GameDatabase: RoomDatabase() {
     abstract fun gameDao(): GameDao
     abstract fun userDataDao(): UserDataDao
     abstract fun currencyConfigDao(): CurrencyConfigDao
+    abstract fun dailyBetMatchDataDao(): DailyBetMatchDataDao
+    abstract fun systemAvatarDao(): SystemAvatarDao
+
 }

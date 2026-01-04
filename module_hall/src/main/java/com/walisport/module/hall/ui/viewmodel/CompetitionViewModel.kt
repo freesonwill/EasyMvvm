@@ -7,7 +7,8 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import com.walisport.module.hall.data.DailyBetMatchData
+import arch.cayenne.lib.database.dao.DailyBetMatchDataDao
+import arch.cayenne.lib.database.entity.DailyBetMatchDataBean
 import com.walisport.module.hall.data.DailyBetMatchVo
 import com.walisport.module.hall.data.DayPageVo
 import com.walisport.module.hall.data.GameAllRankingToday
@@ -16,20 +17,22 @@ import com.walisport.module.hall.data.RankingRepository
 import com.walisport.module.hall.data.toDailyBetMatchData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-class CompetitionViewModel : BaseViewModel() {
+class CompetitionViewModel(
+    private val dailyBetMatchDataDao: DailyBetMatchDataDao,
+) : BaseViewModel() {
 
     private val repository: RankingRepository by inject { parametersOf(viewModelScope) }
 
     private val _rankingListLiveData: MutableLiveData<List<GameAllRankingToday>> = MutableLiveData()
     val rankingListLiveData: LiveData<List<GameAllRankingToday>> = _rankingListLiveData
 
-    private val _dailyMatchLiveData: MutableLiveData<DailyBetMatchData> = MutableLiveData()
-    val dailyMatchLiveData: LiveData<DailyBetMatchData> = _dailyMatchLiveData
+    val dailyBetMatchDataBeanFlow = dailyBetMatchDataDao.observeDailyBetMatchDataBean()
 
     private var page: Int = INITIAL_PAGE
 
@@ -41,7 +44,7 @@ class CompetitionViewModel : BaseViewModel() {
             callApi(
                 {
                     repository.getDayMatchDetail()
-                } ,
+                },
                 {
                     when (it) {
                         is ApiResponseState.Failed -> {
@@ -50,15 +53,18 @@ class CompetitionViewModel : BaseViewModel() {
                         is ApiResponseState.Succeeded<*> -> {
                             val dailyBetMatchVo = it.dataAs<DailyBetMatchVo>()
 
-                            dailyBetMatchVo?.toDailyBetMatchData().let {
-                                _dailyMatchLiveData.value = it
+                            dailyBetMatchVo?.toDailyBetMatchData().let { dailyBean ->
+                                dailyBean?.let {
+                                    viewModelScope.launch(Dispatchers.IO) {
+                                        dailyBetMatchDataDao.insert(dailyBean)
+                                    }
+                                }
                             }
-
                         }
 
                         else -> {}
                     }
-                } , autoUpdateState = false
+                }, autoUpdateState = false
             )
         }
     }
@@ -73,7 +79,7 @@ class CompetitionViewModel : BaseViewModel() {
             callApi(
                 {
                     repository.getDailyMatch(page)
-                } ,
+                },
                 {
                     when (it) {
                         is ApiResponseState.Failed -> {
@@ -112,7 +118,7 @@ class CompetitionViewModel : BaseViewModel() {
 
                         else -> {}
                     }
-                } , autoUpdateState = false
+                }, autoUpdateState = false
             )
         }
 

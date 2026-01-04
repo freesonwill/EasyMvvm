@@ -32,6 +32,7 @@ class DatabaseModuleInitializer: DefaultInitializer<String> {
         factory { get<GameDatabase>().chatConfigDao() }
         factory { get<GameDatabase>().userDataDao() }
         factory { get<GameDatabase>().currencyConfigDao() }
+        factory { get<GameDatabase>().dailyBetMatchDataDao()}
     }
 
     private val moduleList: List<Module> = listOf(module {

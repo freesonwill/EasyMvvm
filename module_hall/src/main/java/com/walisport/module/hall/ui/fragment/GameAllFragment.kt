@@ -32,13 +32,10 @@ class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>()
     var index: Int = 0
 
     private val headerAdapter by lazy {
-        GameAllHeaderAdapter(object : GameAllHeaderViewHolder.OnHeaderItemClickListener {
+        GameAllHeaderAdapter(childFragmentManager,
+            object : GameAllHeaderViewHolder.OnHeaderItemClickListener {
             override fun onInviteFriendItemClick() {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_invite_friends_fragment.deeplink())
-            }
-
-            override fun onCompetitionItemClick() {
-                navigate(arch.cayenne.lib.res.R.string.nav_module_competition_fragment.deeplink())
             }
         })
     }
