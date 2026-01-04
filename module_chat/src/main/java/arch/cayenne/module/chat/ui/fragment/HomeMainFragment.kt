@@ -37,35 +37,10 @@ class HomeMainFragment : BaseFragment<MainChatViewModel, FragmentMainChatLayoutB
 
     override fun initView(savedInstanceState: Bundle?) {
         initViewPager2()
-        sendMatchIdToChatFragment(102)
-//        initTabLayout()
+        sendMatchIdToChatFragment(mViewModel.getMainChatLanguageRoom())
     }
 
     override fun initListener() {
-//        mBinding.tabLayout.addOnTabSelectedListener2(object : TabLayoutExt.OnTabSelectedListener2 {
-//            override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
-//
-//                if (isTabClick) {
-//                    mBinding.viewpager2.startFadeAnim {
-//                        mBinding.viewpager2.setCurrentItem(tab.position, false)
-//                        it.invoke()
-//                    }
-//                }
-//                val tabIcon = tab.view.findViewById<SkinnableImageView>(R.id.tab_icon)
-//                val tabTv = tab.view.findViewById<SkinnableTextView>(R.id.tab_tv)
-//                updateTabBack(tab.position, true, tabIcon, tabTv)
-//            }
-//
-//            override fun onTabUnselected(tab: TabLayout.Tab, isTabClick: Boolean) {
-//                val tabIcon = tab.view.findViewById<SkinnableImageView>(R.id.tab_icon)
-//                val tabTv = tab.view.findViewById<SkinnableTextView>(R.id.tab_tv)
-//                updateTabBack(tab.position, false, tabIcon, tabTv)
-//            }
-//
-//            override fun onTabReselected(tab: TabLayout.Tab, isTabClick: Boolean) {
-//            }
-//        })
-
         mBinding.tabLayout.addTabSelectListener(object : ChatTabView.ChatTabSelect {
             override fun selectTab(position: Int) {
                 mBinding.viewpager2.startFadeAnim {
@@ -81,8 +56,6 @@ class HomeMainFragment : BaseFragment<MainChatViewModel, FragmentMainChatLayoutB
             }
         })
         mBinding.viewpager2.setCurrentItem(0, false)
-
-
     }
 
     override suspend fun createObserver() {

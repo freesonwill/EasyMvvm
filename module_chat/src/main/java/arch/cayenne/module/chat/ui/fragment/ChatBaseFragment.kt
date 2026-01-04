@@ -83,13 +83,6 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
         initInputListener()
         initHotRecycler()
         initChatHelper()
-
-//        arguments?.let { //TODO  首页过来的 之后需要处理聊天室要matchId的问题
-//            val value = it.getBoolean("chat", false)
-//            if (value) {
-//                setMainChatStatus()
-//            }
-//        }
     }
 
     fun addEmojiPopupListen(emojiPopupListen: (isPopup: Boolean) -> Unit) {
@@ -167,6 +160,14 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
         updateChatUi(liveStart, matchStatus)
     }
 
+    private fun updateLanguageIcon() {
+        val position = ChatMsgUtils.mainChatRoom().indexOf(mViewModel.matchId ?: 103L)
+        if (position != -1) {
+            mBinding.ivLanguage.post {
+                mBinding.ivLanguage.setImageResource(ChatMsgUtils.languageIcons()[position])
+            }
+        }
+    }
 
     override fun onStart() {
         StatusBarConfig.statusBarType =
@@ -215,6 +216,13 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
 
                 }
             }
+            launch {
+                mViewModel.enterRoomFlow.collect{
+                    if(it?.code == 0){
+                        updateLanguageIcon()
+                    }
+                }
+            }
             launch {//选择注单返回监听
                 observeResult<Bundle>(ChatChooseBetFragment.SHARE_BET_LISTEN) {
                     ChatMsgUtils.checkAndReplaceBetShareInEditable(mBinding.chatEtInput)
@@ -236,7 +244,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                         onAnimEnd = {
                             updateInputIcon(it)
                         })
-                    keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD,6)
+                    keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD, 6)
                 }
             }
 
@@ -271,7 +279,10 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
 //            if(!chatAtHelper.checkAtInEtInput(it.uid)){
 //                return@observe
 //            }
-            chatAtHelper.addAtMentionSpan(it.userName, ChatRefUser(it.uid,it.userName,it.avatarId,it.replaceUserName))
+            chatAtHelper.addAtMentionSpan(
+                it.userName,
+                ChatRefUser(it.uid, it.userName, it.avatarId, it.replaceUserName)
+            )
             SoftKeyBoardAnim.etAnimWhenEtContentChange(
                 mBinding,
                 mViewModel.currentKeyBoardType,
@@ -281,7 +292,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                 onAnimEnd = {
                     updateInputIcon(it)
                 })
-            keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD,9)
+            keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD, 9)
         }
     }
 
@@ -539,7 +550,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
             viewLocation[1],
             mViewModel.languageSelectPosition
         ) {
-            mViewModel.updateLanguageSelect(it)
+            mViewModel.updateLanguageSelect(it, chatType)
         }.show(childFragmentManager)
     }
 

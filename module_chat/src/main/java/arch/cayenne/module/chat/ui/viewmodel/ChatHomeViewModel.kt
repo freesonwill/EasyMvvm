@@ -19,6 +19,7 @@ import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.lib.websocket.chat.data.ChatType
 import arch.cayenne.lib.websocket.chat.data.MsgType
+import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 import arch.cayenne.module.chat.data.model.EmojiModel
 import arch.cayenne.module.chat.data.model.MentionSpan
@@ -33,9 +34,10 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
+import java.util.Locale
 
 class ChatHomeViewModel() : BaseViewModel() {
-    private var matchId: Long? = null
+    var matchId: Long? = null
 
     //    private val _currentSoftKeyboard = MutableStateFlow(KeyBoardType.CHAT)
     private val _updateKeyboardUiStatus = MutableLiveData(KeyBoardType.CHAT)
@@ -70,6 +72,7 @@ class ChatHomeViewModel() : BaseViewModel() {
     val sendMsgToServerFlow = chatServer.sendMsgResultFlow
     val loginFlow = chatServer.getManagerLoginFlow()
     val checkBetAmountFlow = chatServer.checkBetAmountFlow
+    val enterRoomFlow = chatServer.enterRoomFlow
 
     //emojiFragment 发送emoji到et显示
     val emojiFlow: SharedFlow<EmojiModel?> = _emojiFlow
@@ -89,12 +92,12 @@ class ChatHomeViewModel() : BaseViewModel() {
     var languageSelectPosition: Int = 1
 
     var currentSelectBetShare: BetShareBean? = null
-
     var myUid: String = ""
+    var mainChatLanguagePosition = 1
 
     override fun initViewModel() {
         super.initViewModel()
-        myUid = userDataManager.getValue(UserDataKey.KEY_UID,-1L).toString()
+        myUid = userDataManager.getValue(UserDataKey.KEY_UID, -1L).toString()
     }
 
     fun setArguments(matchId: Long?, chatType: ChatType) {
@@ -104,6 +107,9 @@ class ChatHomeViewModel() : BaseViewModel() {
             chatServer.enterRoom(matchId!!, chatType)
         } else {
             this.matchId = matchId
+        }
+        if(chatType == ChatType.LOBBY){
+            languageSelectPosition = ChatMsgUtils.mainChatRoom().indexOf(matchId)
         }
     }
 
@@ -163,6 +169,7 @@ class ChatHomeViewModel() : BaseViewModel() {
     ) {
         matchId?.let {
             chatServer.sendMsgToServer(it, content, chatType, msgType, extraData, refUid)
+            saveMainChatRoom()
         }
     }
 
@@ -212,7 +219,7 @@ class ChatHomeViewModel() : BaseViewModel() {
                 refUids,
                 users
             ) ?: return null
-            msgBean = ChatMsgPageBean.toChatPageBean(localMsg,myUid)
+            msgBean = ChatMsgPageBean.toChatPageBean(localMsg, myUid)
             "localMsg msgBean:${Gson().toJson(localMsg)}".logd(TAG)
         } else {
             val localMsg =
@@ -225,7 +232,7 @@ class ChatHomeViewModel() : BaseViewModel() {
                     null
                 )
                     ?: return null
-            msgBean = ChatMsgPageBean.toChatPageBean(localMsg,myUid)
+            msgBean = ChatMsgPageBean.toChatPageBean(localMsg, myUid)
         }
 //        "createLocalMsg msgBean:${Gson().toJson(msgBean)}".logd(TAG)
         return msgBean
@@ -243,7 +250,7 @@ class ChatHomeViewModel() : BaseViewModel() {
         val chatMsg =
             chatServer.addLocalMsg(emojiKey, chatType, MsgType.MSG_TYPE_TEXT, null, null, null)
                 ?: return null
-        return ChatMsgPageBean.toChatPageBean(chatMsg,myUid)
+        return ChatMsgPageBean.toChatPageBean(chatMsg, myUid)
     }
 
 
@@ -294,12 +301,31 @@ class ChatHomeViewModel() : BaseViewModel() {
         _currentKeyBoardType.value = keyBoardType
     }
 
-    fun updateLanguageSelect(position: Int) {
-        languageSelectPosition = position
+    fun updateLanguageSelect(position: Int,chatType:ChatType) {
+        if(position < 0 || position >= ChatMsgUtils.mainChatRoom().size){
+            return
+        }
+        if(languageSelectPosition != position){
+            leaveRoom(chatType)
+            languageSelectPosition = position
+            this.matchId = ChatMsgUtils.mainChatRoom()[position]
+            enterRoom(chatType)
+        }
     }
+
 
     fun addAtMsgToChat(msg: ChatMsgPageBean) {
         _atLiveData.value = msg
     }
+
+
+    fun saveMainChatRoom(){
+        if(mainChatLanguagePosition != languageSelectPosition){
+            mainChatLanguagePosition = languageSelectPosition
+            userDataManager.setKeyValue(UserDataKey.MAIN_CHAT_LANGUAGE,mainChatLanguagePosition)
+            "saveMainChatRoom $mainChatLanguagePosition".logd(TAG)
+        }
+    }
+
 
 }
