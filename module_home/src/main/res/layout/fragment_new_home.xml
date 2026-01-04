@@ -62,7 +62,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-            <arch.cayenne.lib.common.ui.view.BalanceView
+            <com.walisport.module.business.common.ui.BalanceView
                 android:id="@+id/balance_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -1,4 +1,4 @@
-package arch.cayenne.lib.common.ui.view
+package com.walisport.module.business.common.ui
 
 import android.content.Context
 import android.content.res.Configuration
@@ -10,23 +10,20 @@ import androidx.lifecycle.LifecycleOwner
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.databinding.ViewBalanceBinding
-import arch.cayenne.lib.common.ui.fragment.CurrencyDialogFragment
-import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportIntExt.toBalanceString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.bumptech.glide.Glide
+import com.walisport.module.business.common.viewmodel.BalanceViewModel
 
 class BalanceView : FrameLayout {
 
     private val mBinding: ViewBalanceBinding = ViewBalanceBinding.inflate(LayoutInflater.from(context), this, true)
-
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
-
     var onAddClickListener: (() -> Unit)? = null
     var viewModel: BalanceViewModel? = null
 
@@ -78,10 +75,6 @@ class BalanceView : FrameLayout {
 
     private fun setMoney(data: BaseCurrencyData.CurrencyContentData) {
         viewModel?.setDefaultCurrency(data.ccy)
-    }
-
-    private fun setFiat(data: BaseCurrencyData.CurrencyContentData){
-        viewModel?.setFiatCurrency(data.ccy)
     }
 
     private fun setIcon(icon: String) {

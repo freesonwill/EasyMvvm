@@ -1,18 +1,29 @@
-package arch.cayenne.lib.common.data.repo
+package com.walisport.module.business.common.repo
 
+import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.CurrencyConfigDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.UserDataDao
+import arch.cayenne.lib.database.entity.AvatarEmbedded
 import arch.cayenne.lib.database.entity.CurrencyBean
 import arch.cayenne.lib.database.entity.UserDataBean
+import arch.cayenne.lib.database.entity.WalletBean
+import arch.cayenne.lib.http.HttpClient
+import arch.cayenne.lib.http._interface.IAccount
+import arch.cayenne.lib.http.data.AccountInfo
+import arch.cayenne.lib.http.data.ApiNickname
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -22,6 +33,7 @@ class BalanceRepository(
     private val userDataDao: UserDataDao,
     private val currencyConfigDao: CurrencyConfigDao,
     private val manager: UserDataManager,
+    private val httpClient: HttpClient
 ) : BaseRepository() {
 
     fun observeCurrency() = infoDao.observeCurrency().map { it ?: "" }
@@ -45,6 +57,56 @@ class BalanceRepository(
         manager.setKeyValue(UserDataKey.KEY_DEFAULT_FIAT, ccy)
     }
 
+    fun changeFiat(): UnPeekLiveData<Boolean> {
+        val updateLiveData = UnPeekLiveData<Boolean>()
+        scope.launch(Dispatchers.IO) {
+            val api = httpClient.create(IAccount::class.java)
+            httpClient.safeRequest(
+                request = {
+                    api.profileInfo()
+                },
+                onSuccess = { resp ->
+                    if (resp.code == 0) {
+                        "切换法币后返回------>${resp.data}".loge("测试")
+                        launch {
+                            saveCurrencyInfo(resp.data)
+                            updateLiveData.postValue(true)
+                        }
+                    }
+                },
+                onFailure = { code, msg, throwable ->
+                    "ProfileInfo failure, response------>$code,$msg,$throwable".loge(TAG)
+                    updateLiveData.postValue(false)
+                }
+            )
+        }
+        return updateLiveData
+    }
+
+    private suspend fun saveCurrencyInfo(profileInfo: AccountInfo) {
+        userDataDao.insert(
+            UserDataBean(
+                nickname = profileInfo.nickname,
+                avatar = AvatarEmbedded(
+                    url = profileInfo.avatar.url,
+                    thumbhash = profileInfo.avatar.thumbhash
+                ),
+                Uid = 100L,
+                registerTime = profileInfo.registerTime,
+                vipLevel = profileInfo.vipLevel,
+                score = profileInfo.score,
+                ccy = profileInfo.ccy,
+                list = profileInfo.list.map { WalletBean(it.ccy, it.score, it.exchangeScore) },
+                admittedBetScore = profileInfo.admittedBetScore,
+                requiredAdmittedBetScore = profileInfo.requiredAdmittedBetScore,
+                vipStage = profileInfo.vipStage,
+                nicknameChangeCount = profileInfo.nicknameChangeCount,
+            )
+        )
+        infoDao.updateBalance(profileInfo.score)
+    }
+
+
     private suspend fun mappingCurrency(user: UserDataBean?): Pair<List<BaseCurrencyData.CurrencyContentData>, List<BaseCurrencyData.CurrencyContentData>> {
         val currencyList = currencyConfigDao.getCurrencyConfigList()
         val fiat = arrayListOf<BaseCurrencyData.CurrencyContentData>()
@@ -52,8 +114,8 @@ class BalanceRepository(
         if (user == null) return Pair(fiat, crypto)
         val showAllCurrency = manager.getValue(UserDataKey.KEY_SHOW_ALL_CURRENCY, false)//先暫時為false
         val exchangeAmountUnit =
-            currencyList.find { it.ccy == manager.getValue<String>(UserDataKey.KEY_DEFAULT_CURRENCY) }?.unit
-                ?: ""
+            currencyList.find { it.ccy == manager.getValue<String>(UserDataKey.KEY_DEFAULT_FIAT) }?.unit
+                ?: "$"
         val currentSelectedCCY =
             currencyList.find { it.ccy == manager.getValue<String>(UserDataKey.KEY_DEFAULT_CURRENCY) }?.ccy
                 ?: "USD"

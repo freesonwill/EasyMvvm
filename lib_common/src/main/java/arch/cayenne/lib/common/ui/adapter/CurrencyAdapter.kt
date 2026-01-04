@@ -30,7 +30,6 @@ class CurrencyAdapter(val listener: ((BaseCurrencyData.CurrencyContentData) -> U
         position: Int
     ) {
         if (holder is CurrencyContentViewHolder) {
-
             holder.bind(
                 getItem(position) as? BaseCurrencyData.CurrencyContentData,
                 isLastItem = position == itemCount - 1

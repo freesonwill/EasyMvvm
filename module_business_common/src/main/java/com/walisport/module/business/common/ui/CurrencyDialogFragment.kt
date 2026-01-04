@@ -1,4 +1,4 @@
-package arch.cayenne.lib.common.ui.fragment
+package com.walisport.module.business.common.ui
 
 import android.animation.ObjectAnimator
 import android.app.Dialog
@@ -13,27 +13,28 @@ import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import androidx.core.view.doOnPreDraw
 import androidx.core.widget.addTextChangedListener
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BasePositionDialogFragment
+import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.databinding.FragmentCurrencyDialogBinding
 import arch.cayenne.lib.common.ui.adapter.CurrencyAdapter
 import arch.cayenne.lib.common.ui.adapter.CurrencySettingAdapter
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
-import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
-import arch.cayenne.lib.common.ui.viewmodel.CurrencyDialogViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.blankj.utilcode.util.SizeUtils
+import com.walisport.module.business.common.viewmodel.BalanceViewModel
 import kotlin.reflect.KClass
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CurrencyDialogFragment constructor() :
-    BasePositionDialogFragment<CurrencyDialogViewModel, FragmentCurrencyDialogBinding>() {
+    BasePositionDialogFragment<EmptyViewModel, FragmentCurrencyDialogBinding>() {
 
     companion object {
         private const val LOCATION_OFFSET = "locationOffset"
@@ -72,8 +73,8 @@ class CurrencyDialogFragment constructor() :
     override fun setDialogPosition(w: Window) {
         val isPortrait = requireArguments().getBoolean(IS_PORTRAIT)
         val offset = requireArguments().getInt(LOCATION_OFFSET, -1)
-        if (offset == -1) return
-
+        if (offset == -1)
+            return
         val layoutParams = w.attributes
         if (isPortrait) {
             layoutParams.gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
@@ -109,7 +110,6 @@ class CurrencyDialogFragment constructor() :
                         }
                         .start()
                 }
-
             }
         })
         removeDim()
@@ -117,7 +117,7 @@ class CurrencyDialogFragment constructor() :
 
     override val vbClass: KClass<FragmentCurrencyDialogBinding> =
         FragmentCurrencyDialogBinding::class
-    override val vmClass: KClass<CurrencyDialogViewModel> = CurrencyDialogViewModel::class
+    override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
 
     private val currencyAdapter: CurrencyAdapter by lazy {
         CurrencyAdapter {
@@ -228,7 +228,11 @@ class CurrencyDialogFragment constructor() :
         }
         settingAdapter.setOnItemClickListener(object : CurrencySettingAdapter.OnItemClickListener {
             override fun onItemClick(bean: BaseCurrencyData.CurrencyContentData) {
-                balanceViewModel.setFiatCurrency(bean.ccy)
+                balanceViewModel.changeFiat(bean.ccy).observe(viewLifecycleOwner) { success ->
+                    if (success) {
+                        balanceViewModel.getUserCurrency()
+                    }
+                }
                 settingAdapter.updateSelect(bean.ccy)
             }
         })

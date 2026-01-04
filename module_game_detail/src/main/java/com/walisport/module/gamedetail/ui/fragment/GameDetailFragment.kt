@@ -9,10 +9,10 @@ import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.ui.viewmodel.BalanceViewModel
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
+import com.walisport.module.business.common.viewmodel.BalanceViewModel
 import com.walisport.module.gamedetail.R
 import com.walisport.module.gamedetail.databinding.FragmentGameDetailBinding
 import com.walisport.module.gamedetail.ui.viewmodel.GameDetailPageViewModel

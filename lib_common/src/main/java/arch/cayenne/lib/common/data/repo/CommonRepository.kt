@@ -34,8 +34,7 @@ class CommonRepository(
     private val socketManager: WebSocketManager,
     private val userDataManager: UserDataManager,
     private val infoDao: InfoDao,
-    private val betDao: BetDao,
-    private val balanceRepo: BalanceRepository
+    private val betDao: BetDao
 ) : BaseRepository() {
 
     private val betResultFlow = MutableSharedFlow<List<BetResultLiteBean>>()
@@ -47,6 +46,10 @@ class CommonRepository(
 
     suspend fun checkIsLogin(): Boolean {
         return infoDao.isLogin()?: false
+    }
+
+    suspend fun getMyCurrency(): String {
+        return infoDao.getCurrency2() ?: "CNY"
     }
 
     suspend fun sendLogin(): ApiResponseState {
@@ -95,12 +98,10 @@ class CommonRepository(
         ) {
             Client.BalanceReq.newBuilder()
                 .apply {
-                    this.currency = balanceRepo.getCurrency()
+                    this.currency = getMyCurrency()
                 }
                 .build()
         }
-
-
         return if (resp.error == null && resp.data != null) {
             BalanceBean(resp.data!!.balance.balanceStringToLong(), resp.data!!.currency)
         } else {
