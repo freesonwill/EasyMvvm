@@ -52,7 +52,7 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
         val adapter = ChatPageAdapter(
             specialClick = { bean, clickSpane, clickType ->
                 "click bean.msgType=${bean.msgType},clickType=$clickType".logd(TAG)
-                if(bean.msgType == ChatMsgType.SYSTEM){
+                if (bean.msgType == ChatMsgType.SYSTEM) {
                     return@ChatPageAdapter
                 }
 
@@ -82,7 +82,7 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
             longClick = { bean ->
                 "longClick bean.msgType=${bean.msgType}".logd(TAG)
 
-                if(bean.msgType == ChatMsgType.SYSTEM){
+                if (bean.msgType == ChatMsgType.SYSTEM) {
                     return@ChatPageAdapter
                 }
                 homeViewModel.addAtMsgToChat(bean)
@@ -117,6 +117,9 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
         val nList = mutableListOf<ChatMsgPageBean>()
         nList.addAll(mViewModel.msgLists)
         adapter?.submitList(nList) {
+            if (nList.isEmpty()) {
+                return@submitList
+            }
             mBinding.liveChatRecycler.postDelayed({
                 try {
                     mBinding.liveChatRecycler.scrollToPosition(0)
@@ -185,6 +188,13 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
             }
 
         }
+    }
+
+    fun clearChatList() {
+        mViewModel.clearMsgList()
+        val adapter = mBinding.liveChatRecycler.adapter?.let { it as ChatPageAdapter }
+        adapter?.submitList(emptyList())
+        "clearChatList".logd(TAG)
     }
 
     companion object {

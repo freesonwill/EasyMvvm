@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
  */
 class ChatLiveFragment : ChatBaseFragment() {
     override val chatType: ChatType
-        get() = ChatType.LOBBY
+        get() = ChatType.GAME
     override val isMainSoft: Boolean
         get() = false
 

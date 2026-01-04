@@ -104,11 +104,7 @@ class ChatPageAdapter(
 
         fun setText(bean: ChatMsgPageBean, position: Int) {
             val first = "${bean.userName}:"
-            val second = if(bean.msgType in arrayOf(ChatMsgType.AT,ChatMsgType.BET_SPORT,ChatMsgType.BET_GAME)) {
-                bean.content
-            } else {
-                ChatMsgUtils.addNoDivideCharInBetShar(bean.content)
-            }
+            val second = ChatMsgUtils.recoveryContent(bean)
 
             val builder = SpannableStringBuilder()
             builder.append("$first  \u2060")

@@ -19,11 +19,11 @@ class ChatPageViewModel : BaseViewModel() {
     //消息列表
     val msgLists: MutableList<ChatMsgPageBean> = mutableListOf()
     val userDataManager: UserDataManager by inject()
-    var myUid:String = ""
+    var myUid: String = ""
 
     override fun initViewModel() {
         super.initViewModel()
-       myUid = userDataManager.getValue(UserDataKey.KEY_UID,-1L).toString()
+        myUid = userDataManager.getValue(UserDataKey.KEY_UID, -1L).toString()
     }
 
     fun addLocalMsg(msg: ChatMsgPageBean?) {
@@ -37,10 +37,10 @@ class ChatPageViewModel : BaseViewModel() {
      * */
     fun addNewMsgs(msg: MsgNotify): List<ChatMsgPageBean> {
         //TODO 系统消息暂不处理
-        if (msg.msg.msgType == MsgType.MSG_TYPE_SYSTEM) {
-            return msgLists
-        }
-        msgLists.add(0, ChatMsgPageBean.toChatPageBean(msg.msg,myUid))
+//        if (msg.msg.msgType == MsgType.MSG_TYPE_SYSTEM) {
+//            return msgLists
+//        }
+        msgLists.add(0, ChatMsgPageBean.toChatPageBean(msg.msg, myUid))
         return msgLists
     }
 
@@ -48,13 +48,16 @@ class ChatPageViewModel : BaseViewModel() {
      * 获取历史聊天数据
      * */
     fun getChatHistory(list: List<ChatMsg>?) {
-        if (list == null) {
-            return
-        }
-        val nList = list.filter { it.msgType != MsgType.MSG_TYPE_SYSTEM }
-            .map { ChatMsgPageBean.toChatPageBean(it,"") }.toList()
+        val nList = list?.let {
+            list.map { ChatMsgPageBean.toChatPageBean(it, "") }.toList()
+        } ?: emptyList()
         msgLists.clear()
         msgLists.addAll(nList)
+    }
+
+
+    fun clearMsgList() {
+        msgLists.clear()
     }
 
 

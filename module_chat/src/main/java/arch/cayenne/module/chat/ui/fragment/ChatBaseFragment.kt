@@ -226,6 +226,15 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                     }
                 }
             }
+            launch {
+                mViewModel.leaveRoomFLow.collect{
+                    //聊天切换聊天室离开聊天室后重新进入新聊天室
+//                    "leaveRoom ${mViewModel.updateRoom}".logd(TAG)
+//                    if(mViewModel.updateRoom){
+//                        mViewModel.updateRoom = false
+//                    }
+                }
+            }
             launch {//选择注单返回监听
                 observeResult<Bundle>(ChatChooseBetFragment.SHARE_BET_LISTEN) {
                     ChatMsgUtils.checkAndReplaceBetShareInEditable(mBinding.chatEtInput)
@@ -278,10 +287,9 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
             sendText()
         }
         mViewModel.atLiveData.observe(viewLifecycleOwner) {
-            //TODO 暂时去除  去除相同的at用户
-//            if(!chatAtHelper.checkAtInEtInput(it.uid)){
-//                return@observe
-//            }
+            if(!chatAtHelper.checkAtInEtInput(it.uid)){
+                return@observe
+            }
             chatAtHelper.addAtMentionSpan(
                 it.userName,
                 ChatRefUser(it.uid, it.userName, it.avatarId, it.replaceUserName)
@@ -552,7 +560,13 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
             viewLocation[1],
             mViewModel.languageSelectPosition
         ) {
+            if(mViewModel.languageSelectPosition != it){ //切换离开聊天时清空记录
+                childFragmentManager.findFragmentByTag(ChatPageFragment.TAG)?.let { fragment ->
+                    (fragment as ChatPageFragment).clearChatList()
+                }
+            }
             mViewModel.updateLanguageSelect(it, chatType)
+
         }.show(childFragmentManager)
     }
 
