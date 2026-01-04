@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="123dp"
-    android:layout_height="@dimen/dp_42"
+    android:layout_height="42dp"
     android:layout_marginStart="@dimen/dp_6"
-    android:layout_marginTop="@dimen/dp_6"
+    android:layout_marginTop="2.23dp"
+    android:layout_marginBottom="3.97dp"
     android:background="@drawable/selector_0ffffff_003a42"
     android:gravity="center"
     android:orientation="vertical">

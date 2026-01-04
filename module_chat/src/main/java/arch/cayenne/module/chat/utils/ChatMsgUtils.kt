@@ -247,7 +247,16 @@ object ChatMsgUtils {
 
             // 越南语
             Locale("vi", "VN").language -> 13
-
+            // 韩语
+            Locale("ko", "KR").language -> 14
+            // 西班牙语
+            Locale("es", "ES").language -> 15
+            // 阿拉伯语
+            Locale("ar", "SA").language -> 16
+            // 印你2
+            // 越南语
+            Locale("id", "ID").language,
+            Locale("in", "ID").language -> 17
             // 默认情况
             else -> 0
         }
@@ -297,10 +306,10 @@ object ChatMsgUtils {
             R.drawable.ln_thailand,
             R.drawable.ln_pycck,
             R.drawable.ln_tieng,
-//            R.drawable.ln_korea,
-//            R.drawable.ln_espanol,
-//            R.drawable.ln_ar,
-//            R.drawable.ln_indonesia
+            R.drawable.ln_korea,
+            R.drawable.ln_espanol,
+            R.drawable.ln_ar,
+            R.drawable.ln_indonesia
 
         )
     }

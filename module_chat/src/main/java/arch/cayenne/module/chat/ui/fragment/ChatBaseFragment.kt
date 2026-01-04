@@ -154,6 +154,8 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
      * */
     fun observeMatchId(matchId: Long) {
         mViewModel.setArguments(matchId, chatType)
+        updateLanguageIcon()
+
     }
 
     fun observeLiveMatch(liveStart: Boolean, matchStatus: Int) {
@@ -161,8 +163,9 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
     }
 
     private fun updateLanguageIcon() {
-        val position = ChatMsgUtils.mainChatRoom().indexOf(mViewModel.matchId ?: 103L)
+        val position = ChatMsgUtils.mainChatRoom().indexOf(mViewModel.matchId ?: 102L)
         if (position != -1) {
+            mViewModel.languageSelectPosition = position
             mBinding.ivLanguage.post {
                 mBinding.ivLanguage.setImageResource(ChatMsgUtils.languageIcons()[position])
             }
@@ -219,7 +222,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
             launch {
                 mViewModel.enterRoomFlow.collect{
                     if(it?.code == 0){
-                        updateLanguageIcon()
+                     updateLanguageIcon()
                     }
                 }
             }
@@ -544,7 +547,6 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
     private fun showLanguageDialog() {
         val viewLocation = IntArray(2)
         mBinding.ivLanguage.getLocationOnScreen(viewLocation)
-
         ChatLanguageDialogFragment.newInstance(
             viewLocation[0],
             viewLocation[1],
