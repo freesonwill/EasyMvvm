@@ -84,7 +84,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModelV2, FragmentSubHomeV2Bind
             // 获取并设置初始排序类型
             currentSortType =
                 MatchListSortType.fromType(this.getInt(ARG_SORT_TYPE))
-                    ?: MatchListSortType.BY_TIME
+                    ?: MatchListSortType.BY_HOT
         }
         super.onViewCreated(view, savedInstanceState)
     }

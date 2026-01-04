@@ -352,7 +352,7 @@ class MatchListPagerFragmentV2 :
             mViewModel.setTournamentIdList(this.getIntArray(ARG_LEAGUE_ID)?.toList() ?: listOf(0))
             mViewModel.setSportId(this.getInt(ARG_SPORT_ID))
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
-            mViewModel.setSortType(this.getInt(ARG_SORT_TYPE , 0).toMatchListSortType())
+            mViewModel.setSortType(this.getInt(ARG_SORT_TYPE , MatchListSortType.BY_HOT.type).toMatchListSortType())
         }
         "MatchListPagerFragment playType: ${mViewModel.getPlayTypeId()} sportId: ${mViewModel.getSportId()} leagueId: ${mViewModel.getTournamentId()}".logi()
         startObserveMatch()

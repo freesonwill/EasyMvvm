@@ -39,7 +39,7 @@ class SubHomePagerAdapter(
         return when (val playType = playTypes[position - promoCount]) {
             PlayType.FAVORITE -> CollectListFragment()
             PlayType.EARLY -> EarlyFragment.newInstance(playType.id)
-            PlayType.ROLLING -> SubHomeFragmentV2.newInstance(playType.id, MatchListSortType.BY_TIME)
+            PlayType.ROLLING -> SubHomeFragmentV2.newInstance(playType.id, MatchListSortType.BY_HOT)
             PlayType.TODAY -> SubHomeFragmentV2.newInstance(playType.id, MatchListSortType.BY_HOT)
             PlayType.CHAMPION -> ChampionSubFragment.newInstance(playType.id)
             else -> SubHomeFragment.newInstance(
