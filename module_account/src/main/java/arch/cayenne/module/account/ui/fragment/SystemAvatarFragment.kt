@@ -41,6 +41,8 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
         TitleBarSystemAvatarBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
 
+
+    private var avatarCheckable = false
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root) {
             findNavController().navigateUp()
@@ -87,6 +89,8 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
             (rvPersonalHeadGrid?.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
                 false
             personalInfoAdapter.setOnItemClickListener { data ->
+                avatarCheckable = true
+                mBinding.ivUserAvatar.setRotationAngle(0f)
                 // 加载网络图片并高斯模糊后设置为背景
                 Glide.with(this@SystemAvatarFragment)
                     .asBitmap()
@@ -163,6 +167,7 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
 
     override fun initListener() {
         titleBarBinding.ivRotate.clickNoRepeat {
+            if (!avatarCheckable) return@clickNoRepeat
             mBinding.ivUserAvatar.setRotationAngle((mBinding.ivUserAvatar.getRotationAngle() + 90f) % 360f)
         }
     }

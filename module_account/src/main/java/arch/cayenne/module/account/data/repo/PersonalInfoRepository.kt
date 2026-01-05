@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.common.data.constants.BASE_URL
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.GameDatabase
@@ -101,6 +102,9 @@ class PersonalInfoRepository(
                 onSuccess = { resp ->
                     LogUtils.d("updateAvatar", "Response: $resp")
                     if (resp.code == 0) _uploadAvatarResult.postValue(avatarUrl)
+                    scope.launch {
+                        database.userDataDao().updateAvatarUrl(BASE_URL + avatarUrl)
+                    }
                 },
                 onFailure = { code, msg, _ ->
                     LogUtils.d("updateAvatar", "Response: $code, $msg")
