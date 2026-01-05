@@ -150,7 +150,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_3"
+            android:layout_marginBottom="@dimen/dp_1"
             android:fontFamily="@font/sf_pro"
             android:includeFontPadding="false"
             android:paddingLeft="1dp"
