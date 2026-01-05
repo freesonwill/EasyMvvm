@@ -15,10 +15,9 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <TextView
-        tools:ignore="RtlHardcoded"
         android:layout_width="@dimen/dp_66"
         android:layout_height="17dp"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_3"
         android:background="@drawable/bg_game_all_daily"
         android:gravity="left|center_vertical"
         android:includeFontPadding="false"
@@ -29,7 +28,8 @@
         app:layout_constraintHorizontal_bias="0.842"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="@id/gl_bonus_mid"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="RtlHardcoded" />
 
     <TextView
         android:id="@+id/tv_timer"
@@ -74,8 +74,8 @@
             android:id="@+id/tv_currency_symbol"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_6"
-            android:layout_marginBottom="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_2"
+            android:layout_marginBottom="@dimen/dp_2"
             android:text="¥"
             android:textColor="@color/color_965F25"
             android:textSize="@dimen/sp_16"
@@ -86,11 +86,13 @@
             android:id="@+id/tv_bonus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginTop="-3dp"
-            android:fontFamily="@font/sf_pro_display_bold"
+            android:layout_marginStart="@dimen/dp_1"
+            android:layout_marginTop="-4dp"
+            android:fontFamily="@font/sf_pro_display_black"
             android:includeFontPadding="false"
+            android:letterSpacing="-0.02"
             android:textColor="@color/color_965F25"
+            android:textFontWeight="900"
             android:textSize="28sp"
             app:layout_constraintLeft_toRightOf="@+id/tv_currency_symbol"
             app:layout_constraintTop_toBottomOf="@+id/iv_bonus_title" />
@@ -123,21 +125,22 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="9dp"
             android:fontFamily="@font/sf_pro_display_bold"
+            android:gravity="start"
             android:includeFontPadding="false"
             android:text="¥49999"
             android:textColor="@color/color_464136"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/iv_money"
-            app:layout_constraintLeft_toRightOf="@+id/tv_currency_symbol"
+            app:layout_constraintEnd_toStartOf="@id/iv_rank"
+            app:layout_constraintStart_toEndOf="@+id/tv_currency_symbol"
             app:layout_constraintTop_toTopOf="@+id/iv_money"
             app:layout_constraintVertical_bias="0.0" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_rank"
             android:layout_width="15dp"
-
             android:layout_height="15dp"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_5"
             app:layout_constraintRight_toLeftOf="@+id/tv_rank"
             app:layout_constraintTop_toBottomOf="@+id/iv_line"
             app:srcCompat="@drawable/ic_game_all_cup" />
@@ -147,11 +150,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_8"
-            android:fontFamily="@font/sf_pro_display_bold"
+            android:layout_marginBottom="@dimen/dp_3"
+            android:fontFamily="@font/sf_pro"
             android:includeFontPadding="false"
             android:paddingLeft="1dp"
             android:text="115名"
             android:textColor="@color/color_464136"
+            android:textFontWeight="500"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/iv_rank"
             app:layout_constraintRight_toRightOf="parent"

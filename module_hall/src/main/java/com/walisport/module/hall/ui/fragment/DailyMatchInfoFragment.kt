@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.DateUtils
+import arch.cayenne.lib.common.utils.LanguageUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
+import arch.cayenne.lib.common.utils.ext.DimensionExt.sp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ccyToSymbol
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -56,17 +58,36 @@ class DailyMatchInfoFragment :
                 }
                 timer?.start()
 
-                mBinding.tvCurrencySymbol.text = it.ccy.ccyToSymbol()
-                mBinding.tvBonus.text = String.format("%,d", it.betScore)
+                mBinding.tvCurrencySymbol.text = "￥"
+                mBinding.tvBonus.text = String.format("%,d", 1457000)
 
                 mBinding.tvMoney.text = String.format("${it.ccy.ccyToSymbol()}%,d", it.myBetScore)
 
                 mBinding.tvRank.text =
                     if (it.myRank == null) {
-                        "--"
+                        //如果系统语言是中文
+                        if (LanguageUtils.isChinese(requireContext())) {
+                            "未上榜"
+                        } else {
+                            "N/A"
+                        }
                     } else {
-                        "${it.myRank.toString()}名"
+                        if (LanguageUtils.isChinese(requireContext())) {
+                            //为“名”字添加spannable，缩小字体
+                            val rankStr = it.myRank.toString()
+                            val spannable = android.text.SpannableString("${rankStr}名")
+                            spannable.setSpan(
+                                android.text.style.AbsoluteSizeSpan(11f.sp2px.toInt()),
+                                rankStr.length,
+                                rankStr.length + 1,
+                                android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                            )
+                            spannable
+                        } else {
+                            it.myRank.toString()
+                        }
                     }
+
             }
         }
     }
