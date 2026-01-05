@@ -121,9 +121,10 @@
 
         <TextView
             android:id="@+id/tv_money"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="9dp"
+            android:layout_marginStart="9dp"
+            android:layout_marginEnd="@dimen/dp_9"
             android:fontFamily="@font/sf_pro_display_bold"
             android:gravity="start"
             android:includeFontPadding="false"

@@ -58,8 +58,8 @@ class DailyMatchInfoFragment :
                 }
                 timer?.start()
 
-                mBinding.tvCurrencySymbol.text = "￥"
-                mBinding.tvBonus.text = String.format("%,d", 1457000)
+                mBinding.tvCurrencySymbol.text = it.ccy.ccyToSymbol()
+                mBinding.tvBonus.text = String.format("%,d", it.betScore)
 
                 mBinding.tvMoney.text = String.format("${it.ccy.ccyToSymbol()}%,d", it.myBetScore)
 
