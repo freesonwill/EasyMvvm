@@ -1,15 +1,22 @@
 package arch.cayenne.module.bet.ui.adapter
 
-import android.graphics.Color
 import android.text.TextUtils
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.findFragment
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.common.ui.fragment.AllInfoDialogFragment
+import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.locationInWindow
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.ItemComboDetail1Binding
 import arch.cayenne.module.bet.databinding.ItemComboDetail2Binding
@@ -75,16 +82,46 @@ class ComboDetailAdapter : BaseAdapter<ParameterUIItem, BaseViewHolder, ViewBind
 
         fun bind(bean: ParameterItems2, position: Int) {
             with(mBinding) {
-                tvTabCombo.text = bean.comboStr
-                tvTabBet.text = bean.moneyStr
-                tvTabWin.text = bean.winMoneyStr
-                tvTabOdds.text = bean.oddsStr
+                tvTabCombo.text = bean.comboStr.apply {
+                    tvTabCombo.clickNoRepeat {
+                        showDetailDialog(it, this)
+                    }
+                }
+                tvTabBet.text = bean.moneyStr.apply {
+                    tvTabBet.clickNoRepeat {
+                        showDetailDialog(it, this)
+                    }
+                }
+                tvTabWin.text = bean.winMoneyStr.apply {
+                    tvTabWin.clickNoRepeat {
+                        showDetailDialog(it, this)
+                    }
+                }
+                tvTabOdds.text = bean.oddsStr.apply {
+                    tvTabOdds.clickNoRepeat {
+                        showDetailDialog(it, this)
+                    }
+                }
                 if (position % 2 != 0) {
                     bg.background = null
                 } else {
                     bg.background = R.drawable.shape_combination.getDrawable()
                 }
             }
+        }
+
+        private fun showDetailDialog(view: View, text: String?) {
+            if(text.isNullOrBlank()) return
+            val location = view.locationInWindow
+            val h = ViewUtils.getStatusBarHeight(view.context)
+            val positionX = location.first() + view.width / 2
+            val positionY = location.last() - h - 1.dp2px
+            val fragment = view.findFragment<Fragment>()
+            AllInfoDialogFragment.newInstance(
+                positionX ,
+                positionY ,
+                text
+            ).show(fragment.parentFragmentManager , TAG)
         }
     }
 }
