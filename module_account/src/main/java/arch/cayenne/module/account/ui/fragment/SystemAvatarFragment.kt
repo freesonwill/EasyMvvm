@@ -49,6 +49,7 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
         }
 
         mBinding.tvSave.clickNoRepeat {
+            personalInfoAdapter.setIsUpAvatar(false)
             saveBitmap()
         }
         var params: ViewGroup.LayoutParams = mBinding.ivUserAvatar.layoutParams
@@ -151,6 +152,7 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
 //                        sendResult(CHANGE_FILE_PATH, result)
 //                        navigateUp()
                     } else {
+                        personalInfoAdapter.setIsUpAvatar(true)
                         mBinding.tvSave.isSelected = true
                         mBinding.tvSave.isClickable = true
                         mBinding.tvSave.text = R.string.personal_avatar_save.getString()
@@ -159,6 +161,7 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
                 }
             } else {
                 withContext(Dispatchers.Main) {
+                    personalInfoAdapter.setIsUpAvatar(true)
                     Toast.makeText(requireContext(), "无法获取图像", Toast.LENGTH_SHORT).show()
                 }
             }
