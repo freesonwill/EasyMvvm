@@ -28,6 +28,7 @@ class AccountEditeNameFragment :
     override val vmClass: KClass<AccountEditNameViewModel> = AccountEditNameViewModel::class
     private val personalViewModel: PersonalInfoViewModel by sharedViewModel<PersonalInfoViewModel, PersonalInfoFragment>()
     val maxInputLength = 12
+    private var previousText = ""
     private val titleBarBinding: TitleBarAccountBinding by lazy {
         TitleBarAccountBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
@@ -75,6 +76,24 @@ class AccountEditeNameFragment :
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
+
+                val current = s.toString()
+
+                // 簡單判斷：如果新文字比之前短或有代理對 → 認為有 emoji 被加入
+                val hasEmoji = current.length != previousText.length &&
+                        current.any { Character.isSurrogate(it) }
+
+                if (hasEmoji) {
+                    // 1. 立刻把文字恢復成之前的（最接近「返回」）
+                    mBinding.ceName.setText(previousText)
+
+                    // 2. 把光標放回最後面（或原位置）
+                    mBinding.ceName.setSelection(previousText.length)
+
+                    return
+                }
+                previousText = s.toString()
+
                 val inputLength = s?.length ?: 0
                 mBinding.tvNumber.text =
                     if (inputLength == 0) "" else "$inputLength/${maxInputLength}"
