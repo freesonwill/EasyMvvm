@@ -153,7 +153,7 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
                     } else {
                         mBinding.tvSave.isSelected = true
                         mBinding.tvSave.isClickable = true
-                        mBinding.tvSave.text = R.string.account_avatar_confirm.getString()
+                        mBinding.tvSave.text = R.string.personal_avatar_save.getString()
                         Toast.makeText(requireContext(), "保存失败", Toast.LENGTH_SHORT).show()
                     }
                 }
