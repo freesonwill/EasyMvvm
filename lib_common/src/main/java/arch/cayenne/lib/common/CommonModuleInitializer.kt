@@ -32,7 +32,7 @@ class CommonModuleInitializer : DefaultInitializer<String> {
         MMKV.initialize(context)
         loadKoinModules(moduleList)
         enableStrictMode()
-        clearUserDataManager()
+//        clearUserDataManager()
         return TAG
     }
 
