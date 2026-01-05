@@ -155,7 +155,8 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
     fun observeMatchId(matchId: Long) {
         mViewModel.setArguments(matchId, chatType)
         updateLanguageIcon()
-
+        val position = ChatMsgUtils.mainChatRoom().indexOf(mViewModel.matchId ?: 102L)
+        mViewModel.mainChatLanguagePosition = position
     }
 
     fun observeLiveMatch(liveStart: Boolean, matchStatus: Int) {
@@ -223,16 +224,18 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                 mViewModel.enterRoomFlow.collect{
                     if(it?.code == 0){
                      updateLanguageIcon()
+                    }else{ //进入房间失败后重新进入
+                        mViewModel.enterRoom(chatType)
                     }
                 }
             }
             launch {
                 mViewModel.leaveRoomFLow.collect{
                     //聊天切换聊天室离开聊天室后重新进入新聊天室
-//                    "leaveRoom ${mViewModel.updateRoom}".logd(TAG)
-//                    if(mViewModel.updateRoom){
-//                        mViewModel.updateRoom = false
-//                    }
+                    if(mViewModel.updateRoom){
+                        mViewModel.updateRoom = false
+                        mViewModel.enterRoom(chatType)
+                    }
                 }
             }
             launch {//选择注单返回监听
@@ -287,23 +290,26 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
             sendText()
         }
         mViewModel.atLiveData.observe(viewLifecycleOwner) {
-            if(!chatAtHelper.checkAtInEtInput(it.uid)){
+            if(!chatAtHelper.checkAtInEtInput(it.uid,mViewModel.myUid)){
                 return@observe
             }
             chatAtHelper.addAtMentionSpan(
                 it.userName,
                 ChatRefUser(it.uid, it.userName, it.avatarId, it.replaceUserName)
             )
-            SoftKeyBoardAnim.etAnimWhenEtContentChange(
-                mBinding,
-                mViewModel.currentKeyBoardType,
-                onAnimStart = {
-                    updateInputIcon(it)
-                },
-                onAnimEnd = {
-                    updateInputIcon(it)
-                })
-            keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD, 9)
+//            SoftKeyBoardAnim.etAnimWhenEtContentChange(
+//                mBinding,
+//                mViewModel.currentKeyBoardType,
+//                onAnimStart = {
+//                    updateInputIcon(it)
+//                },
+//                onAnimEnd = {
+//                    updateInputIcon(it)
+//                })
+           lifecycleScope.launch { //因为diaog关闭后会抢焦点，延时处理
+               delay(500)
+               keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD, 9)
+           }
         }
     }
 
@@ -477,7 +483,8 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
             chatEtInput.setOnFocusChangeListener { v, hasFocus ->
 //            如果当前点击事件 softkeyboardlisterner 和 当前状态currentKeyboardListener 一致可以过滤掉聚焦事件
                 if (softKeyBoardManager.softKeyboardStatus && !softKeyBoardManager.isSoftKeyboardShow) { //要打开软件盘并且软件盘在收缩中
-                    softKeyBoardManager.openSoftKeyBoard()
+//                    "onFocusChange openSoftKeyBoard".logd("aaa")
+                    softKeyBoardManager.checkOpenSoftKeyboard()
                 }
             }
             //监听点击事件
@@ -656,9 +663,9 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
     }
 
     override fun keyboardChangeClick(keyBoardType: KeyBoardType, flag: Int) {
-//        "keyboardChangeClick keyBoardType:$keyBoardType,currentKeyBoardType:${mViewModel.currentKeyBoardType},flag:$flag".logd(
-//            "aaa"
-//        )
+        "keyboardChangeClick keyBoardType:$keyBoardType,currentKeyBoardType:${mViewModel.currentKeyBoardType},flag:$flag".logd(
+            "aaa"
+        )
         if (keyBoardType == mViewModel.currentKeyBoardType) {
             return
         }

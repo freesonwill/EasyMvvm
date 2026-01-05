@@ -33,9 +33,17 @@ class WebFragment : BaseFragment<SeniorPartnerViewModel, FragmentSeniorPartnerBi
     private val args by navArgs<WebFragmentArgs>()
 
     override fun initView(savedInstanceState: Bundle?) {
+        val outerUrl = args.outerSite
         val url = args.url
         initTitleBar()
         initWebView()
+        //设置背景色, 区分内部H5和外部H5
+        if (outerUrl) {
+            mBinding.webView.setBackgroundColor(arch.cayenne.lib.common.R.color.white.getColor())
+        } else {
+            mBinding.webView.setBackgroundColor(arch.cayenne.lib.common.R.color.title_bg.getColor())
+        }
+
         mBinding.webView.loadUrl(url!!)
         //监听系统返回键
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
@@ -92,7 +100,6 @@ class WebFragment : BaseFragment<SeniorPartnerViewModel, FragmentSeniorPartnerBi
                     super.onProgressChanged(view, newProgress)
                 }
             }
-            setBackgroundColor(arch.cayenne.lib.common.R.color.title_bg.getColor())
             setAttachedFragment(this@WebFragment)
         }
     }

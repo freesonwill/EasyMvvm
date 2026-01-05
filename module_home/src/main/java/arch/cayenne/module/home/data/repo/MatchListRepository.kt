@@ -67,7 +67,7 @@ class MatchListRepository(
                 if (playType == PlayType.EARLY.id) {
                     matchDao.queryEarlyLastMatch(tournamentIdList, date)
                 } else {
-                    matchDao.queryLastMatch(playType, tournamentIdList, date)
+                    matchDao.queryLastMatch(playType, sortType.type, tournamentIdList, date)
                 }
             }
         }

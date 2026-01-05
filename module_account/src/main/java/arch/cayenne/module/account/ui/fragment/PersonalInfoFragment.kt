@@ -10,6 +10,7 @@ import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.BASE_URL
 import arch.cayenne.lib.common.utils.ThumbHashUtils
+import arch.cayenne.lib.common.utils.copyToClipboard
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
 import arch.cayenne.module.account.R
@@ -17,6 +18,8 @@ import arch.cayenne.module.account.databinding.FragmentPersonalInfoBinding
 import arch.cayenne.module.account.ui.viewmodel.PersonalInfoViewModel
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.helper.showToast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -46,6 +49,12 @@ class  PersonalInfoFragment : BaseFragment<PersonalInfoViewModel, FragmentPerson
 
         mBinding.ivAvatar.clickNoRepeat{
             navigate(PersonalInfoFragmentDirections.actionPersonalInfoFragmentToAvatarFragment(""))
+        }
+
+        mBinding.imgCopyUserId.clickNoRepeat{
+            copyToClipboard(mBinding.tvUserId.text as String?) {
+                showToast(R.string.tip_copy_id.getString())
+            }
         }
 
     }

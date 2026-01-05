@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class PersonalInfoViewModel : BaseViewModel() {
 
     private val repository: PersonalInfoRepository by inject()
-    private val _onUserInfoListener = MutableLiveData<UserDataBean>()
+    private var _onUserInfoListener = MutableLiveData<UserDataBean>()
     val onUserInfoListener: LiveData<UserDataBean> get() = _onUserInfoListener
 
 

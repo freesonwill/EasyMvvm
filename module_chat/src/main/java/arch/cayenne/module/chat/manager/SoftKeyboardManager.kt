@@ -27,6 +27,7 @@ import arch.cayenne.module.chat.manager.interf.SoftKeyBoardMangerListener
 import arch.cayenne.module.chat.utils.EditTextUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.abs
@@ -89,7 +90,7 @@ class SoftKeyboardManager(
     //main的初始高度
     var originMainHeight: Int = 0
 
-    var statusBarHeight:Int = 0
+    var statusBarHeight: Int = 0
 
     private val hotViewHeight = 41.5.dp2px
     private val mainBarBottomHeight = 62.dp2px
@@ -119,8 +120,12 @@ class SoftKeyboardManager(
             rootView,
             lifecycle,
             object : SoftAnimListener {
-                override fun setNavigationStatus(hasNavigation: Boolean, navigationHeight: Int,statusBarHeight:Int) {
-                this@SoftKeyboardManager.statusBarHeight = navigationHeight
+                override fun setNavigationStatus(
+                    hasNavigation: Boolean,
+                    navigationHeight: Int,
+                    statusBarHeight: Int
+                ) {
+                    this@SoftKeyboardManager.statusBarHeight = navigationHeight
                 }
 
                 override fun onSoftKeyBoardHide() {
@@ -181,7 +186,7 @@ class SoftKeyboardManager(
     }
 
     private fun softKeyboardChange(value: Boolean, flag: Int) {
-//        "softKeyboardChange $value  $flag".logd("aaa")
+        "softKeyboardChange $value  $flag".logd("aaa")
         softKeyboardStatus = value
         if (value) {  //显示软件盘状态 it == true  当前软件盘没有收缩状态
             openSoftKeyBoard()
@@ -232,6 +237,7 @@ class SoftKeyboardManager(
      * 并保存第二次的软件盘高度
      * */
     private fun whenSoftKeyBoardOpen(keyboardHeight: Int) {
+        checkSoftKeyBoardJob?.cancel()
         isSoftKeyboardShow = true
         if (softKeyBoardHeight == keyboardHeight) {
             return
@@ -266,25 +272,26 @@ class SoftKeyboardManager(
                     saveUpdateSoftKeyBoardHeight()
                 })
             }
+
             else -> {}
         }
     }
 
-    var mainDiffer:Int = 0
-    fun checkMainHeight():Int {
+    var mainDiffer: Int = 0
+    fun checkMainHeight(): Int {
 //  checkMainHeight  mainDiffer 0  getManHeight 1378  originMainHeight 1378
 //  checkMainHeight  mainDiffer 464  getManHeight 1842  originMainHeight 1378
 
         val getManHeight = keyBoardListener.getMainHeight()
         mainDiffer = getManHeight - originMainHeight
-        mainDiffer = if(mainDiffer > 50) mainDiffer else 0
+        mainDiffer = if (mainDiffer > 50) mainDiffer else 0
 //        "checkMainHeight  mainDiffer $mainDiffer  getManHeight ${getManHeight}  originMainHeight $originMainHeight ".logd("aaa")
         return mainDiffer
     }
 
     fun showKeyboardAnimation() {
         val animationType = getKeyBoardActionType(clickKeyBoardType, currentKeyBoardType)
-//        "showKeyboardAnimation $animationType } softKeyBoardHeight  ${softKeyBoardHeight} ".logd("aaa")
+        "showKeyboardAnimation $animationType } softKeyBoardHeight  ${softKeyBoardHeight} ".logd("aaa")
         when (animationType) {
             KeyboardActionType.CHAT_TO_CHAT -> keyBoardListener.changeKeyboardUi(KeyBoardType.CHAT)
             //展示软件盘
@@ -344,40 +351,54 @@ class SoftKeyboardManager(
         }
     }
 
-    private fun getAnimTransY(animationType:KeyboardActionType):Int{//46 是热门表情的高度 //62是首页底部bottom的高度
-       return when (animationType) {
+    private fun getAnimTransY(animationType: KeyboardActionType): Int {//46 是热门表情的高度 //62是首页底部bottom的高度
+        return when (animationType) {
             //展示软件盘
-            KeyboardActionType.CHAT_TO_SOFT -> -(checkIsMainSoft(softKeyBoardHeight - mainBarBottomHeight, softKeyBoardHeight - checkMainHeight())+hotViewHeight)
+            KeyboardActionType.CHAT_TO_SOFT -> -(checkIsMainSoft(
+                softKeyBoardHeight - mainBarBottomHeight,
+                softKeyBoardHeight - checkMainHeight()
+            ) + hotViewHeight)
             //软件盘切换到聊天
             KeyboardActionType.SOFT_TO_CHAT -> 0
 //            //软件盘切换到表情键盘
-            KeyboardActionType.SOFT_TO_EMOJI -> -(checkIsMainSoft(emojiKeyBoardHeight, emojiKeyBoardHeight - mainDiffer)+hotViewHeight)
+            KeyboardActionType.SOFT_TO_EMOJI -> -(checkIsMainSoft(
+                emojiKeyBoardHeight,
+                emojiKeyBoardHeight - mainDiffer
+            ) + hotViewHeight)
 
             //展示表情键盘
-            KeyboardActionType.CHAT_TO_EMOJI ->-(checkIsMainSoft(emojiKeyBoardHeight, emojiKeyBoardHeight - checkMainHeight())+hotViewHeight)
+            KeyboardActionType.CHAT_TO_EMOJI -> -(checkIsMainSoft(
+                emojiKeyBoardHeight,
+                emojiKeyBoardHeight - checkMainHeight()
+            ) + hotViewHeight)
 
             //表情键盘切换到软件盘
-            KeyboardActionType.EMOJI_TO_SOFT ->-(checkIsMainSoft(softKeyBoardHeight - mainBarBottomHeight,softKeyBoardHeight - mainDiffer)+hotViewHeight)
+            KeyboardActionType.EMOJI_TO_SOFT -> -(checkIsMainSoft(
+                softKeyBoardHeight - mainBarBottomHeight,
+                softKeyBoardHeight - mainDiffer
+            ) + hotViewHeight)
 
-           //表情键盘切换到聊天
+            //表情键盘切换到聊天
             KeyboardActionType.EMOJI_TO_CHAT -> 0
             else -> 0
         }
     }
 
-    private fun checkIsMainSoft(mainHeight:Int,liveHeight:Int):Int{
+    private fun checkIsMainSoft(mainHeight: Int, liveHeight: Int): Int {
         return if (isMainSoft) mainHeight else liveHeight
     }
-
 
 
     /**
      *打开软件盘
      * */
     fun openSoftKeyBoard() {
+        "openSoftKeyBoard ${etInput == null}".logd("aaa")
         etInput?.let {
-//            etRequestFocus()
-            EditTextUtils.showKeyboard(it.context, it)
+            etRequestFocus()
+            it.post {
+                EditTextUtils.showKeyboard(it.context, it)
+            }
         }
     }
 
@@ -395,7 +416,7 @@ class SoftKeyboardManager(
         scope.launch {
             etInput?.let {
                 it.requestFocus()
-//                it.setSelection(it.length())
+                it.setSelection(it.length())
             }
         }
     }
@@ -454,7 +475,7 @@ class SoftKeyboardManager(
     }
 
     //防止软件盘和表情键盘切换的时候跳动
-     fun inputIconShouldUpdate(
+    fun inputIconShouldUpdate(
         animationType: KeyboardActionType,
         call: () -> Unit,
         elCall: (() -> Unit)? = null
@@ -474,8 +495,20 @@ class SoftKeyboardManager(
 
     fun getNavigationHeight(view: View): Int {
         val windowInsetsCompat = ViewCompat.getRootWindowInsets(view)
-        val navigationBottom = windowInsetsCompat?.getInsets(WindowInsetsCompat.Type.navigationBars())?.bottom ?: 0
+        val navigationBottom =
+            windowInsetsCompat?.getInsets(WindowInsetsCompat.Type.navigationBars())?.bottom ?: 0
         return navigationBottom
+    }
+
+    private var checkSoftKeyBoardJob: Job? = null
+    fun checkOpenSoftKeyboard() {
+//        checkSoftKeyBoardJob = scope.launch {
+//            delay(400)
+//            if (!isSoftKeyboardShow) {
+//                openSoftKeyBoard()
+//            }
+//
+//        }
     }
 
 
