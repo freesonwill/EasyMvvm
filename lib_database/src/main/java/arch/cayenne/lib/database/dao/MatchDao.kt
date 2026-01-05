@@ -52,11 +52,12 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Query(
         "SELECT * " +
                 "FROM MatchBean bean " +
-                "INNER JOIN TournamentMatchRef ref ON ref.playType = :playType AND ref.tournamentIdList = :tournamentIdList AND ref.date = :date " +
+                "INNER JOIN TournamentMatchRef ref ON ref.playType = :playType AND ref.sortType = :sortType AND ref.tournamentIdList = :tournamentIdList AND ref.date = :date " +
                 "WHERE ref.matchId = bean.matchId ORDER BY ref.`order` DESC limit 1"
     )
     abstract suspend fun queryLastMatch(
         playType: Int,
+        sortType: Int,
         tournamentIdList: List<Int>,
         date: Long
     ): MatchBean?
