@@ -94,37 +94,26 @@ class AccountEditeNameFragment :
                 }
                 previousText = s.toString()
 
-                val inputLength = s?.length ?: 0
-                mBinding.tvNumber.text =
-                    if (inputLength == 0) "" else "$inputLength/${maxInputLength}"
-                //超限输入
-                //输入框停止接收新字符，字数统计显示为红色警示
-                //有输入且未超限，字数统计显示为红色，保存按钮可用
-                if (inputLength ==0) {
-                    mBinding.tvNumber.setTextColor(
-                        resources.getColor(
-                            arch.cayenne.lib.common.R.color.color_999999,
-                            null
-                        )
-                    )
+                val input = s?.toString() ?: ""
+                // 过滤表情和空格
+                val filtered = input.replace(Regex("[\\uD83C-\\uDBFF\\uDC00-\\uDFFF]+|\\s"), "")
+                if (input != filtered) {
+                    mBinding.ceName.setText(filtered)
+                    mBinding.ceName.setSelection(filtered.length)
+                    return
+                }
+                val inputLength = filtered.length
+                mBinding.tvNumber.text = if (inputLength == 0) "" else "$inputLength/${maxInputLength}"
+                if (inputLength == 0) {
+                    mBinding.tvNumber.setTextColor(resources.getColor(arch.cayenne.lib.common.R.color.color_999999, null))
                     titleBarBinding.tvSave.isClickable = false
                     titleBarBinding.tvSave.isSelected = false
                 } else if (inputLength == maxInputLength) {
-                    mBinding.tvNumber.setTextColor(
-                        resources.getColor(
-                            arch.cayenne.lib.common.R.color.color_FE3666,
-                            null
-                        )
-                    )
+                    mBinding.tvNumber.setTextColor(resources.getColor(arch.cayenne.lib.common.R.color.color_FE3666, null))
                     titleBarBinding.tvSave.isClickable = true
                     titleBarBinding.tvSave.isSelected = true
                 } else {
-                    mBinding.tvNumber.setTextColor(
-                        resources.getColor(
-                            arch.cayenne.lib.common.R.color.color_999999,
-                            null
-                        )
-                    )
+                    mBinding.tvNumber.setTextColor(resources.getColor(arch.cayenne.lib.common.R.color.color_999999, null))
                     titleBarBinding.tvSave.isClickable = true
                     titleBarBinding.tvSave.isSelected = true
                 }
