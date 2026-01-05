@@ -56,7 +56,7 @@ class ChatPageAdapter(
                         buffer: Spannable?,
                         event: MotionEvent?
                     ): Boolean {
-                        if(event == null || widget == null || buffer == null){
+                        if (event == null || widget == null || buffer == null) {
                             return super.onTouchEvent(widget, buffer, event)
                         }
                         val msgId = widget.tag as String
@@ -84,7 +84,7 @@ class ChatPageAdapter(
                         } else if (event.action == MotionEvent.ACTION_UP) {
                             longPressHandler.removeCallbacks(longPressRunnable)
                             val spans = buffer.getSpans(off - 1, off + 1, MentionSpan::class.java)
-                            if(nameSpans.isNotEmpty()){
+                            if (nameSpans.isNotEmpty()) {
                                 return true
                             }
                             if (spans.isNotEmpty()) {
@@ -120,6 +120,11 @@ class ChatPageAdapter(
             nBinding.tv.text = builder
             nBinding.tv.tag = bean.msgId
         }
+
+        fun startFlash(position: Int) {
+            currentList[position].flashFlag = false
+            SoftKeyBoardAnim.atFlashNotifyAnim(nBinding.tv, currentList[position].msgType)
+        }
     }
 
 
@@ -139,11 +144,6 @@ class ChatPageAdapter(
                 arch.cayenne.lib.common.R.color.color_0FFFFFFF
             }
         )
-        if (item.flashFlag) {
-            item.flashFlag = false
-            SoftKeyBoardAnim.atFlashNotifyAnim(holder.nBinding.tv, item.msgType)
-        }
-
     }
 
     override fun createViewBinding(
