@@ -155,6 +155,10 @@ class MatchListViewModelV2 : BaseMatchViewModel<MatchListRepository>() {
     //取得分頁的比賽列表
     override fun getMatchListData(loadMatchType: LoadMatchType) {
         viewModelScope.launch {
+            //检查SportType是否合法
+            if (SportType.fromId(_sportId) == null) {
+                return@launch
+            }
             requestScrollToTop =
                 loadMatchType == LoadMatchType.RELOAD || loadMatchType == LoadMatchType.RETRY // 是否是強制更新，會刪除原本的資料ref關聯表，並且更新列表後會滾到頂端
             setState(HomeState.Match.Loading)
