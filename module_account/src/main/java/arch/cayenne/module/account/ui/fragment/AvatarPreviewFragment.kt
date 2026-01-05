@@ -48,7 +48,7 @@ class AvatarPreviewFragment : BaseFragment<AvatarPreviewViewModel, FragmentAvata
             ) {
                 mBinding.ivUserAvatar.apply {
                     maxScale = 10f
-                    minScale = 0.8f               // ← 0.1f 通常太小，容易出 NaN 或顯示異常
+                    minScale = 1f               // ← 0.1f 通常太小，容易出 NaN 或顯示異常
                     setMinimumScaleType(SCALE_TYPE_CUSTOM)
                     mBinding.ivUserAvatar.setBitmaps(it)
                 }
