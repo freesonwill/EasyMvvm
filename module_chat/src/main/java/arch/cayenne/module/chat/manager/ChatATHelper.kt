@@ -167,7 +167,10 @@ class ChatATHelper(
 //        }
 //    }
 
-    fun checkAtInEtInput(uid: String): Boolean {
+    fun checkAtInEtInput(uid: String,myUid:String): Boolean {
+//        if(uid == myUid){
+//            return false
+//        }
         val spannable = SpannableStringBuilder(chatEtInput.text)
         val spans = spannable.getSpans(0, spannable.length, MentionSpan::class.java)
         val atSpan = spans.filter { it.msgType == ChatMsgType.AT }.find {

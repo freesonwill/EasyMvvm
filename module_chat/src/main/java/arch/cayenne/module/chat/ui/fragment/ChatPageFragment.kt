@@ -18,6 +18,8 @@ import arch.cayenne.module.chat.databinding.FragementChatPageLayoutBinding
 import arch.cayenne.module.chat.ui.adapter.ChatPageAdapter
 import arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel
 import arch.cayenne.module.chat.ui.viewmodel.ChatPageViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
@@ -108,31 +110,55 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
 
     }
 
+    private var refreshJob: Job? = null
+
     /**
      * 接收到新数据做更新
      * */
     @SuppressLint("NotifyDataSetChanged")
-    private fun refreshChatList() {
+    private fun refreshChatList(flagFlash: Boolean = false) {
         val adapter = mBinding.liveChatRecycler.adapter?.let { it as ChatPageAdapter }
         val nList = mutableListOf<ChatMsgPageBean>()
         nList.addAll(mViewModel.msgLists)
         adapter?.submitList(nList) {
+
             if (nList.isEmpty()) {
                 return@submitList
             }
-            mBinding.liveChatRecycler.postDelayed({
-                try {
-                    mBinding.liveChatRecycler.scrollToPosition(0)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }, 500)
+            if (refreshJob?.isActive == true) {
+                refreshJob?.cancel()
+            }
+            "refreshChat flagFlash $flagFlash".logd(TAG)
+            refreshJob = lifecycleScope.launch {
+                mBinding.liveChatRecycler.postDelayed({
+                    try {
+                        mBinding.liveChatRecycler.scrollToPosition(0)
+                        mBinding.liveChatRecycler.postDelayed({
+                            itemFlash()
+                        },500)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }, 500)
+            }
         }
     }
 
     override fun initListener() {
 
 
+    }
+
+    private fun itemFlash() {
+        "itemFlash1".logd(TAG)
+
+        val adapter = mBinding.liveChatRecycler.adapter?.let { it as ChatPageAdapter }
+        adapter?.currentList?.indexOfFirst { it.flashFlag }?.let { position ->
+            "itemFlash position=$position".logd(TAG)
+            val holder =
+                mBinding.liveChatRecycler.findViewHolderForAdapterPosition(position) as? ChatPageAdapter.LiveChatViewHolder
+            holder?.startFlash(position)
+        }
     }
 
     override suspend fun createObserver() {
@@ -145,7 +171,7 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                 MsgType.getSendMsgType(it.msgType.value),
                 it.extraData
             )
-            refreshChatList()
+            refreshChatList(it.flashFlag)
         }
         viewLifecycleOwner.lifecycleScope.launch {
 
@@ -158,7 +184,7 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
             launch {
                 homeViewModel.registerNewMsgFlow().collect {
                     mViewModel.addNewMsgs(it)
-                    refreshChatList()
+                    refreshChatList(it.msg.refUids?.contains(homeViewModel.myUid) == true)
                 }
             }
         }
