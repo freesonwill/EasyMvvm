@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class UserDataBean(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey val id: Int = 0,
     val Uid: Long,
     var nickname: String,
     @Embedded(prefix = "avatar_")
