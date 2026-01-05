@@ -134,7 +134,7 @@ class PopupSlotFragment :
                             ((data as Pair<PopupSlotDataModel, Int>).first as PopupSlotDataModel).operateParams[0]
                         navigate(
                             arch.cayenne.lib.res.R.string.nav_module_web_fragment
-                                .deeplink("url" to url)
+                                .deeplink("outerSite" to true, "url" to url)
                         )
 
 //                        val intent = android.content.Intent(
@@ -164,7 +164,7 @@ class PopupSlotFragment :
                             ((data as Pair<PopupSlotDataModel, Int>).first as PopupSlotDataModel).operateParams[0]
                         navigate(
                             arch.cayenne.lib.res.R.string.nav_module_web_fragment
-                                .deeplink("url" to url)
+                                .deeplink("outerSite" to true, "url" to url)
                         )
 
 //                        val intent = android.content.Intent(
