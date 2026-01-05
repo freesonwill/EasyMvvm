@@ -7,15 +7,19 @@ import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.UserDataKey
+import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.databinding.TitleBarSimpleBinding
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2dp
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.helper.showToast
 import com.blankj.utilcode.util.ScreenUtils
 import com.gyf.immersionbar.ImmersionBar
 import com.walisport.module.misc.databinding.FragmentDebugBinding
 import com.walisport.module.misc.ui.viewmodel.DebugViewModel
+import org.koin.java.KoinJavaComponent.inject
 import java.util.Locale
 import kotlin.reflect.KClass
 
@@ -27,6 +31,8 @@ class DebugFragment : BaseFragment<DebugViewModel, FragmentDebugBinding>() {
 
     override val vbClass: KClass<FragmentDebugBinding> = FragmentDebugBinding::class
     override val vmClass: KClass<DebugViewModel> = DebugViewModel::class
+
+    private val manager: UserDataManager by inject(UserDataManager::class.java)
 
 
     private val titleBarBinding: TitleBarSimpleBinding by lazy {
@@ -48,6 +54,9 @@ class DebugFragment : BaseFragment<DebugViewModel, FragmentDebugBinding>() {
                     it
                 )
             }
+
+        mBinding.tvUid.setText(manager.getValue<Int>(UserDataKey.KEY_UID, 0).toString())
+        mBinding.tvToken.setText(manager.getValue<String>(UserDataKey.KEY_TOKEN, ""))
     }
 
     private fun calculateTopSafeInset(it: Int): Int {
@@ -84,6 +93,27 @@ class DebugFragment : BaseFragment<DebugViewModel, FragmentDebugBinding>() {
                 findNavController().navigateUp()
             }
 
+        }
+
+        with(mBinding) {
+            btnSetAccount.clickNoRepeat {
+                if (tvUid.text.isNullOrEmpty()) {
+                    showToast("请输入uid")
+                    return@clickNoRepeat
+                }
+
+                if (tvToken.text.isNullOrEmpty()) {
+                    showToast("请输入token")
+                    return@clickNoRepeat
+                }
+
+                val uid = tvUid.text!!.trim().toString().toInt()
+                val token = tvToken.text!!.trim().toString()
+                manager.setKeyValue(UserDataKey.KEY_UID, uid)
+                manager.setKeyValue(UserDataKey.KEY_TOKEN, token)
+
+                showToast("设置成功，重启app生效")
+            }
         }
     }
 
