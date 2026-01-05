@@ -502,14 +502,13 @@ class SoftKeyboardManager(
 
     private var checkSoftKeyBoardJob: Job? = null
     fun checkOpenSoftKeyboard() {
-        checkSoftKeyBoardJob = scope.launch {
-            delay(400)
-            if (!isSoftKeyboardShow) {
-                openSoftKeyBoard()
-            }
-
-        }
-
+//        checkSoftKeyBoardJob = scope.launch {
+//            delay(400)
+//            if (!isSoftKeyboardShow) {
+//                openSoftKeyBoard()
+//            }
+//
+//        }
     }
 
 

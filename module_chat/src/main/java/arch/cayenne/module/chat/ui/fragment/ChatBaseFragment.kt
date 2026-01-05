@@ -306,7 +306,10 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
 //                onAnimEnd = {
 //                    updateInputIcon(it)
 //                })
-            keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD, 9)
+           lifecycleScope.launch { //因为diaog关闭后会抢焦点，延时处理
+               delay(500)
+               keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD, 9)
+           }
         }
     }
 
