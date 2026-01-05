@@ -7,16 +7,21 @@ import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.log.Utils
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.databinding.TitleBarSimpleBinding
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2dp
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
 import com.blankj.utilcode.util.ScreenUtils
 import com.gyf.immersionbar.ImmersionBar
+import com.walisport.module.misc.BuildConfig
+import com.walisport.module.misc.R
 import com.walisport.module.misc.databinding.FragmentDebugBinding
 import com.walisport.module.misc.ui.viewmodel.DebugViewModel
 import org.koin.java.KoinJavaComponent.inject
@@ -45,6 +50,7 @@ class DebugFragment : BaseFragment<DebugViewModel, FragmentDebugBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root, null)
+        titleBarBinding.root.setBackgroundColor(arch.cayenne.lib.common.R.color.blue.getColor())
         titleBarBinding.tvTitleName.text = "调试信息"
         mBinding.tvStatusBarHeight.text =
             ImmersionBar.getStatusBarHeight(requireContext()).let {
@@ -113,6 +119,14 @@ class DebugFragment : BaseFragment<DebugViewModel, FragmentDebugBinding>() {
                 manager.setKeyValue(UserDataKey.KEY_TOKEN, token)
 
                 showToast("设置成功，重启app生效")
+            }
+
+
+            btnShareLog.clickNoRepeat {
+                if(BuildConfig.BUILD_TYPE != "release")
+                    launch {
+                        Utils.shareLogFile(requireContext())
+                    }
             }
         }
     }
