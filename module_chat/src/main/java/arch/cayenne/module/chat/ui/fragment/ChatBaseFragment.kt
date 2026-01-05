@@ -155,7 +155,8 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
     fun observeMatchId(matchId: Long) {
         mViewModel.setArguments(matchId, chatType)
         updateLanguageIcon()
-
+        val position = ChatMsgUtils.mainChatRoom().indexOf(mViewModel.matchId ?: 102L)
+        mViewModel.mainChatLanguagePosition = position
     }
 
     fun observeLiveMatch(liveStart: Boolean, matchStatus: Int) {
@@ -223,16 +224,18 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                 mViewModel.enterRoomFlow.collect{
                     if(it?.code == 0){
                      updateLanguageIcon()
+                    }else{ //进入房间失败后重新进入
+                        mViewModel.enterRoom(chatType)
                     }
                 }
             }
             launch {
                 mViewModel.leaveRoomFLow.collect{
                     //聊天切换聊天室离开聊天室后重新进入新聊天室
-//                    "leaveRoom ${mViewModel.updateRoom}".logd(TAG)
-//                    if(mViewModel.updateRoom){
-//                        mViewModel.updateRoom = false
-//                    }
+                    if(mViewModel.updateRoom){
+                        mViewModel.updateRoom = false
+                        mViewModel.enterRoom(chatType)
+                    }
                 }
             }
             launch {//选择注单返回监听
