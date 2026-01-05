@@ -44,10 +44,10 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
 
     private var avatarCheckable = false
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root) {
+        mBinding.titleBar.loadDynamicsTitleBars(titleBarBinding.root)
+        titleBarBinding.ivBack.clickNoRepeat {
             findNavController().navigateUp()
         }
-
         mBinding.tvSave.clickNoRepeat {
             personalInfoAdapter.setIsUpAvatar(false)
             saveBitmap()
@@ -62,6 +62,7 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
             rvPersonalHeadGrid.layoutManager = layoutManager
             val spanCount = 5
             val spacingTop = 0.dp2px
+            val spacingLeft = 10.dp2px
             val spacingBottom = 15.dp2px
             rvPersonalHeadGrid.addItemDecoration(object : RecyclerView.ItemDecoration() {
                 override fun getItemOffsets(
@@ -72,7 +73,7 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
                 ) {
                     val position = parent.getChildAdapterPosition(view)
                     if (position == RecyclerView.NO_POSITION) return
-                    outRect.left = spacingTop
+                    outRect.right = spacingLeft
                     val row = position / spanCount
                     outRect.top = if (row == 0) {
                         spacingTop
