@@ -28,6 +28,7 @@ class AccountEditeNameFragment :
     override val vmClass: KClass<AccountEditNameViewModel> = AccountEditNameViewModel::class
     private val personalViewModel: PersonalInfoViewModel by sharedViewModel<PersonalInfoViewModel, PersonalInfoFragment>()
     val maxInputLength = 12
+    private var previousText = ""
     private val titleBarBinding: TitleBarAccountBinding by lazy {
         TitleBarAccountBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
@@ -75,37 +76,44 @@ class AccountEditeNameFragment :
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
-                val inputLength = s?.length ?: 0
-                mBinding.tvNumber.text =
-                    if (inputLength == 0) "" else "$inputLength/${maxInputLength}"
-                //超限输入
-                //输入框停止接收新字符，字数统计显示为红色警示
-                //有输入且未超限，字数统计显示为红色，保存按钮可用
-                if (inputLength ==0) {
-                    mBinding.tvNumber.setTextColor(
-                        resources.getColor(
-                            arch.cayenne.lib.common.R.color.color_999999,
-                            null
-                        )
-                    )
+
+                val current = s.toString()
+
+                // 簡單判斷：如果新文字比之前短或有代理對 → 認為有 emoji 被加入
+                val hasEmoji = current.length != previousText.length &&
+                        current.any { Character.isSurrogate(it) }
+
+                if (hasEmoji) {
+                    // 1. 立刻把文字恢復成之前的（最接近「返回」）
+                    mBinding.ceName.setText(previousText)
+
+                    // 2. 把光標放回最後面（或原位置）
+                    mBinding.ceName.setSelection(previousText.length)
+
+                    return
+                }
+                previousText = s.toString()
+
+                val input = s?.toString() ?: ""
+                // 过滤表情和空格
+                val filtered = input.replace(Regex("[\\uD83C-\\uDBFF\\uDC00-\\uDFFF]+|\\s"), "")
+                if (input != filtered) {
+                    mBinding.ceName.setText(filtered)
+                    mBinding.ceName.setSelection(filtered.length)
+                    return
+                }
+                val inputLength = filtered.length
+                mBinding.tvNumber.text = if (inputLength == 0) "" else "$inputLength/${maxInputLength}"
+                if (inputLength == 0) {
+                    mBinding.tvNumber.setTextColor(resources.getColor(arch.cayenne.lib.common.R.color.color_999999, null))
                     titleBarBinding.tvSave.isClickable = false
                     titleBarBinding.tvSave.isSelected = false
                 } else if (inputLength == maxInputLength) {
-                    mBinding.tvNumber.setTextColor(
-                        resources.getColor(
-                            arch.cayenne.lib.common.R.color.color_FE3666,
-                            null
-                        )
-                    )
+                    mBinding.tvNumber.setTextColor(resources.getColor(arch.cayenne.lib.common.R.color.color_FE3666, null))
                     titleBarBinding.tvSave.isClickable = true
                     titleBarBinding.tvSave.isSelected = true
                 } else {
-                    mBinding.tvNumber.setTextColor(
-                        resources.getColor(
-                            arch.cayenne.lib.common.R.color.color_999999,
-                            null
-                        )
-                    )
+                    mBinding.tvNumber.setTextColor(resources.getColor(arch.cayenne.lib.common.R.color.color_999999, null))
                     titleBarBinding.tvSave.isClickable = true
                     titleBarBinding.tvSave.isSelected = true
                 }

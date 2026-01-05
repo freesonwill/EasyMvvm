@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.BASE_URL
 import arch.cayenne.lib.common.utils.FileUtils
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -17,6 +18,8 @@ import arch.cayenne.module.account.databinding.FragmentAvatarPreviewBinding
 import arch.cayenne.module.account.databinding.TitleBarSystemAvatarBinding
 import arch.cayenne.module.account.ui.viewmodel.AvatarPreviewViewModel
 import arch.cayenne.module.account.ui.viewmodel.PersonalInfoViewModel
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.SCALE_TYPE_CUSTOM
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +48,7 @@ class AvatarPreviewFragment : BaseFragment<AvatarPreviewViewModel, FragmentAvata
             ) {
                 mBinding.ivUserAvatar.apply {
                     maxScale = 10f
-                    minScale = 0.8f               // ← 0.1f 通常太小，容易出 NaN 或顯示異常
+                    minScale = 1f               // ← 0.1f 通常太小，容易出 NaN 或顯示異常
                     setMinimumScaleType(SCALE_TYPE_CUSTOM)
                     mBinding.ivUserAvatar.setBitmaps(it)
                 }
@@ -85,7 +88,6 @@ class AvatarPreviewFragment : BaseFragment<AvatarPreviewViewModel, FragmentAvata
                 Toast.makeText(requireContext(), "上传失败", Toast.LENGTH_SHORT).show()
             }
         }
-
     }
 
     private fun saveBitmap() {

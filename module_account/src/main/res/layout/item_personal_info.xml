@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <arch.cayenne.lib.common.ui.view.ClipRoundedFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/cl_personal_head_root"
-    android:layout_width="50dp"
-    android:layout_height="50dp">
+    android:layout_width="57dp"
+    android:layout_height="57dp">
 
     <ImageView
         android:id="@+id/iv_personal_head"
+        android:scaleType="centerCrop"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

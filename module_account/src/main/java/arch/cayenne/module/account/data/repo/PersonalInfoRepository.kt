@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.common.data.constants.BASE_URL
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.GameDatabase
@@ -48,6 +49,7 @@ class PersonalInfoRepository(
 
     private val _uploadResult = MutableLiveData<String>()
     val uploadResult: LiveData<String> = _uploadResult
+
     fun getAccountNicknameRecommendations(): UnPeekLiveData<List<String>> {
         val nicknameRecommenListLiveData = UnPeekLiveData<List<String>>()
         val api = httpClient.create(IAccount::class.java)
@@ -78,6 +80,7 @@ class PersonalInfoRepository(
                     LogUtils.d("ChangeNickname", "Response: $resp")
                     if (resp.code == 0) {
                         saveUserInfo(nickNames)
+                        getAccountInfo()
                         changeNickNameLiveData.postValue(true)
                     }
                 },
@@ -101,6 +104,9 @@ class PersonalInfoRepository(
                 onSuccess = { resp ->
                     LogUtils.d("updateAvatar", "Response: $resp")
                     if (resp.code == 0) _uploadAvatarResult.postValue(avatarUrl)
+                    scope.launch {
+                        database.userDataDao().updateAvatarUrl(BASE_URL + avatarUrl)
+                    }
                 },
                 onFailure = { code, msg, _ ->
                     LogUtils.d("updateAvatar", "Response: $code, $msg")
@@ -198,22 +204,4 @@ class PersonalInfoRepository(
         return database.systemAvatarDao().querySystemAvatar().toMutableList()
     }
 
-    fun saveData(nickName: String, resId: Int, position: Int) {
-        // Save the personal info data to user data manager or database
-        // This is a placeholder for the actual implementation
-        val savedNickname = userDataManager.getValue(UserDataKey.KEY_PERSONAL_INFO_NICKNAME, "")
-        if (savedNickname.isEmpty()) {
-            userDataManager.setKeyValue(UserDataKey.KEY_PERSONAL_INFO_NICKNAME, nickName)
-        }
-        userDataManager.setKeyValue(UserDataKey.KEY_PERSONAL_INFO_RES_ID, resId)
-        userDataManager.setKeyValue(UserDataKey.KEY_PERSONAL_INFO_POSITION, position)
-    }
-
-    fun getDefaultNickName(): String {
-        return userDataManager.getValue(UserDataKey.KEY_PERSONAL_INFO_NICKNAME, "")
-    }
-
-    fun getDefaultPosition(): Int {
-        return userDataManager.getValue(UserDataKey.KEY_PERSONAL_INFO_POSITION, -1)
-    }
 }

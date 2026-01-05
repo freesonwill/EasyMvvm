@@ -41,12 +41,15 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
         TitleBarSystemAvatarBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
 
+
+    private var avatarCheckable = false
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root) {
+        mBinding.titleBar.loadDynamicsTitleBars(titleBarBinding.root)
+        titleBarBinding.ivBack.clickNoRepeat {
             findNavController().navigateUp()
         }
-
         mBinding.tvSave.clickNoRepeat {
+            personalInfoAdapter.setIsUpAvatar(false)
             saveBitmap()
         }
         var params: ViewGroup.LayoutParams = mBinding.ivUserAvatar.layoutParams
@@ -59,6 +62,7 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
             rvPersonalHeadGrid.layoutManager = layoutManager
             val spanCount = 5
             val spacingTop = 0.dp2px
+            val spacingLeft = 10.dp2px
             val spacingBottom = 15.dp2px
             rvPersonalHeadGrid.addItemDecoration(object : RecyclerView.ItemDecoration() {
                 override fun getItemOffsets(
@@ -69,7 +73,7 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
                 ) {
                     val position = parent.getChildAdapterPosition(view)
                     if (position == RecyclerView.NO_POSITION) return
-                    outRect.left = spacingTop
+                    outRect.right = spacingLeft
                     val row = position / spanCount
                     outRect.top = if (row == 0) {
                         spacingTop
@@ -87,6 +91,8 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
             (rvPersonalHeadGrid?.itemAnimator as SimpleItemAnimator).supportsChangeAnimations =
                 false
             personalInfoAdapter.setOnItemClickListener { data ->
+                avatarCheckable = true
+                mBinding.ivUserAvatar.setRotationAngle(0f)
                 // 加载网络图片并高斯模糊后设置为背景
                 Glide.with(this@SystemAvatarFragment)
                     .asBitmap()
@@ -147,14 +153,16 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
 //                        sendResult(CHANGE_FILE_PATH, result)
 //                        navigateUp()
                     } else {
+                        personalInfoAdapter.setIsUpAvatar(true)
                         mBinding.tvSave.isSelected = true
                         mBinding.tvSave.isClickable = true
-                        mBinding.tvSave.text = R.string.account_avatar_confirm.getString()
+                        mBinding.tvSave.text = R.string.personal_avatar_save.getString()
                         Toast.makeText(requireContext(), "保存失败", Toast.LENGTH_SHORT).show()
                     }
                 }
             } else {
                 withContext(Dispatchers.Main) {
+                    personalInfoAdapter.setIsUpAvatar(true)
                     Toast.makeText(requireContext(), "无法获取图像", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -163,6 +171,7 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
 
     override fun initListener() {
         titleBarBinding.ivRotate.clickNoRepeat {
+            if (!avatarCheckable) return@clickNoRepeat
             mBinding.ivUserAvatar.setRotationAngle((mBinding.ivUserAvatar.getRotationAngle() + 90f) % 360f)
         }
     }

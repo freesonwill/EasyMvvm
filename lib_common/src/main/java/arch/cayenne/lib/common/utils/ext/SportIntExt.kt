@@ -50,9 +50,8 @@ object SportIntExt {
      */
     fun Long.getMoney(odds: Int,stripTrailingZero:Boolean=true): String {
         if (this == 0L || odds <= 0) return "0" // ← 明確處理 0
-
-        val result = this * odds
-        val decimal = BigDecimal(result).divide(BigDecimal(10000))
+        val decimal = BigDecimal(this).multiply(BigDecimal(odds))
+            .divide(BigDecimal(10000))
             .setScale(2, RoundingMode.DOWN)
         if(!stripTrailingZero) return decimal.toPlainString()
 
@@ -141,8 +140,7 @@ object SportIntExt {
     fun Int.getOdds(odds: Int,stripTrailingZero:Boolean = true): String {
         if (this <= 0) return DecimalFormat("#.##").format(this/100f)// ← 明確處理 0
 
-        val result = this * odds
-        val decimal = BigDecimal(result).divide(BigDecimal(10000))
+        val decimal = BigDecimal(this).multiply(BigDecimal(odds)).divide(BigDecimal(10000))
         return decimal.setScale(2, RoundingMode.DOWN)
             .apply { if(stripTrailingZero) stripTrailingZeros() }
             .toPlainString()
