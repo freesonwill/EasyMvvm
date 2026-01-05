@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.BASE_URL
 import arch.cayenne.lib.common.utils.ThumbHashUtils
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -156,6 +157,13 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
                     goToAvatarFragment(it.toString())
                 }
             }
+
+        personalViewModel.showAvatar.observe(viewLifecycleOwner) { filePath ->
+            Glide.with(this@AvatarFragment)
+                .load(BASE_URL +filePath)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(mBinding.ivUserAvatar)
+        }
     }
 
     // 请求权限

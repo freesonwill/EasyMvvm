@@ -24,8 +24,8 @@ class PersonalInfoViewModel : BaseViewModel() {
     val onUserInfoListener: LiveData<UserDataBean> get() = _onUserInfoListener
 
 
-    private val _uploadResult = MutableLiveData<String>()
-    val uploadResult: LiveData<String> = _uploadResult
+    private val _showAvatar = MutableLiveData<String>()
+    val showAvatar: LiveData<String> = _showAvatar
 
 
     override fun initViewModel() {
@@ -38,7 +38,8 @@ class PersonalInfoViewModel : BaseViewModel() {
     }
 
     fun setUploadResul(filePath: String) {
-        _uploadResult.value = filePath
+
+        _showAvatar.value = filePath
     }
 
     //获取账户信息

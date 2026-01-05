@@ -8,6 +8,7 @@ import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.BASE_URL
 import arch.cayenne.lib.common.utils.ThumbHashUtils
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.touchBackPressed
@@ -77,8 +78,12 @@ class  PersonalInfoFragment : BaseFragment<PersonalInfoViewModel, FragmentPerson
             }
         }
 
-        mViewModel.uploadResult.observe(viewLifecycleOwner) { filePath ->
-               mViewModel.getAccountInfo()
+
+        mViewModel.showAvatar.observe(viewLifecycleOwner) { filePath ->
+            Glide.with(this@PersonalInfoFragment)
+                .load(BASE_URL+filePath)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(mBinding.ivAvatar)
         }
     }
 }
