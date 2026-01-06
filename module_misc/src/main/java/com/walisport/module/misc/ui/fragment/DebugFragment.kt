@@ -136,6 +136,8 @@ class DebugFragment : BaseFragment<DebugViewModel, FragmentDebugBinding>() {
                 ComboDetailFragment.newInstance(
                     GsonUtils.fromJson(
                         ResourceExt.getAssets("mock_combo_detail_20@19@1.json"),
+                        //ResourceExt.getAssets("mock_combo_detail_4@15.json"),
+                        //ResourceExt.getAssets("mock_combo_detail_3@1.json"),
                         ComboDetailFragment.Parameter::class.java
                     )
                 ).show(parentFragmentManager, "ComboDetailFragment")
