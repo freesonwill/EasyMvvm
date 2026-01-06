@@ -22,7 +22,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:ellipsize="end"
         android:gravity="center_vertical"
+        android:maxLines="1"
         android:text="1234"
         android:textColor="@drawable/selector_custom_game_tab_tint"
         android:textSize="@dimen/sp_14" />
