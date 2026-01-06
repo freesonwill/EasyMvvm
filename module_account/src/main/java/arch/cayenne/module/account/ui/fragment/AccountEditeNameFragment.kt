@@ -20,6 +20,7 @@ import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.account.ui.viewmodel.PersonalInfoViewModel
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.module.account.R
 
 class AccountEditeNameFragment :
     BaseFragment<AccountEditNameViewModel, FragmentAccountEditNameBinding>() {
@@ -64,8 +65,17 @@ class AccountEditeNameFragment :
             getString(arch.cayenne.module.account.R.string.account_edit_name_text_hint),
             changeCount
         )
-            mBinding.ceName.isEnabled = changeCount != 0
-            titleBarBinding.tvSave.isSelected = false
+        //changeCount为0时，ceName不能输入， 在点击时展示toast
+        if (changeCount == 0) {
+            mBinding.ceName.isFocusable = false
+            mBinding.ceName.isClickable = true
+            mBinding.ceName.setOnClickListener {
+                showToast(getString(R.string.account_edit_name_toast_limit))
+            }
+        } else {
+            mBinding.ceName.isEnabled = true
+        }
+        titleBarBinding.tvSave.isSelected = false
 
         super.initData()
     }
@@ -115,6 +125,8 @@ class AccountEditeNameFragment :
                 }
             }
         })
+
+
 
     }
 
