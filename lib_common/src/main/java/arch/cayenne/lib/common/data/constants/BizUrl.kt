@@ -82,11 +82,11 @@ val CHAT_SERVER
     get() = run {
         when (BuildConfig.BUILD_TYPE) {
             "qatest" -> {
-                "wss://sport-dev.ra781.com/api/game/chat/ws"
+                "wss://sport-test.ra781.com/api/game/chat/ws"
             }
 
             "release" -> {
-                "wss://sport-dev.ra781.com/api/game/chat/ws"
+                "wss://sport-pre.ra781.com/api/game/chat/ws"
             }
 
             else -> {

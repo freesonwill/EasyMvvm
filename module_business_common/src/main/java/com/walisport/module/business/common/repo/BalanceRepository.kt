@@ -278,8 +278,7 @@ class BalanceRepository(
         if (keyword.isEmpty()) return "%"
         return "%" + keyword.uppercase().map { "$it%" }.joinToString("")
     }
-
-    //金额精度换算，bl =true保留小数点后两位 =false有多少位显示多少位
+    
     fun Long.getFormalMoney(scale: Long = 100, bl: Boolean): String {
         if (this == 0L)
             return "0.00"

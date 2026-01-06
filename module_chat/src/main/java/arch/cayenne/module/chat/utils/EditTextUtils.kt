@@ -4,6 +4,9 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Rect
 import android.util.DisplayMetrics
+import android.view.InputDevice
+import android.view.KeyCharacterMap
+import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
@@ -70,6 +73,23 @@ object EditTextUtils {
         }
     }
 
+
+    fun EditText.editDelBtn(){
+        // 创建完整参数的 KeyEvent
+        val keyEventDown = KeyEvent(
+            System.currentTimeMillis(),
+            System.currentTimeMillis(),
+            KeyEvent.ACTION_DOWN,
+            KeyEvent.KEYCODE_DEL,
+            0,
+            0,
+            KeyCharacterMap.VIRTUAL_KEYBOARD,
+            0,
+            KeyEvent.FLAG_FROM_SYSTEM,
+            InputDevice.SOURCE_KEYBOARD
+        )
+        this.dispatchKeyEvent(keyEventDown)
+    }
 
 
 }
