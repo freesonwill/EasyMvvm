@@ -666,9 +666,9 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
     }
 
     override fun keyboardChangeClick(keyBoardType: KeyBoardType, flag: Int) {
-        "keyboardChangeClick keyBoardType:$keyBoardType,currentKeyBoardType:${mViewModel.currentKeyBoardType},flag:$flag".logd(
-            "aaa"
-        )
+//        "keyboardChangeClick keyBoardType:$keyBoardType,currentKeyBoardType:${mViewModel.currentKeyBoardType},flag:$flag".logd(
+//            "aaa"
+//        )
         if (keyBoardType == mViewModel.currentKeyBoardType) {
             return
         }

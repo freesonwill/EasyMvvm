@@ -186,7 +186,7 @@ class SoftKeyboardManager(
     }
 
     private fun softKeyboardChange(value: Boolean, flag: Int) {
-        "softKeyboardChange $value  $flag".logd("aaa")
+//        "softKeyboardChange $value  $flag".logd("aaa")
         softKeyboardStatus = value
         if (value) {  //显示软件盘状态 it == true  当前软件盘没有收缩状态
             openSoftKeyBoard()
@@ -291,7 +291,7 @@ class SoftKeyboardManager(
 
     fun showKeyboardAnimation() {
         val animationType = getKeyBoardActionType(clickKeyBoardType, currentKeyBoardType)
-        "showKeyboardAnimation $animationType } softKeyBoardHeight  ${softKeyBoardHeight} ".logd("aaa")
+//        "showKeyboardAnimation $animationType } softKeyBoardHeight  ${softKeyBoardHeight} ".logd("aaa")
         when (animationType) {
             KeyboardActionType.CHAT_TO_CHAT -> keyBoardListener.changeKeyboardUi(KeyBoardType.CHAT)
             //展示软件盘
@@ -393,7 +393,6 @@ class SoftKeyboardManager(
      *打开软件盘
      * */
     fun openSoftKeyBoard() {
-        "openSoftKeyBoard ${etInput == null}".logd("aaa")
         etInput?.let {
             etRequestFocus()
             it.post {
