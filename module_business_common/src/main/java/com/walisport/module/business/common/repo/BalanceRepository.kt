@@ -2,7 +2,6 @@ package com.walisport.module.business.common.repo
 
 import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.data.repository.BaseRepository
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.data.constants.UserDataKey
@@ -17,7 +16,6 @@ import arch.cayenne.lib.database.entity.WalletBean
 import arch.cayenne.lib.http.HttpClient
 import arch.cayenne.lib.http._interface.IAccount
 import arch.cayenne.lib.http.data.AccountInfo
-import arch.cayenne.lib.http.data.ApiNickname
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
@@ -39,10 +37,6 @@ class BalanceRepository(
     fun observeCurrency() = infoDao.observeCurrency().map { it ?: "" }
 
     fun observeInfo() = infoDao.observeInfo()
-
-    suspend fun getBalance(): Long {
-        return infoDao.getBalance()
-    }
 
     suspend fun getCurrency(): String {
         return infoDao.getCurrency2() ?: "CNY"
@@ -67,7 +61,6 @@ class BalanceRepository(
                 },
                 onSuccess = { resp ->
                     if (resp.code == 0) {
-                        "切换法币后返回------>${resp.data}".loge("测试")
                         launch {
                             saveCurrencyInfo(resp.data)
                             updateLiveData.postValue(true)
@@ -128,6 +121,7 @@ class BalanceRepository(
                 fiat.add(
                     currency.toCurrencyContentData2(
                         wallet?.balance ?: 0L,
+                        currency.scale,
                         null,  //法幣不需要匯率轉換,
                         "",
                         currentSelectedCCY,
@@ -138,6 +132,7 @@ class BalanceRepository(
                 crypto.add(
                     currency.toCurrencyContentData2(
                         wallet?.balance ?: 0L,
+                        currency.scale,
                         wallet?.convertedAmount,
                         exchangeAmountUnit,
                         currentSelectedCCY,
@@ -168,7 +163,7 @@ class BalanceRepository(
                     ccy = "",
                     currencyName = "",
                     amount = 0L,
-                    amountStr = 0L.getFormalMoney(),
+                    amountStr = "0.00",
                     exchangeAmount = "",
                     unit = "",
                     scale = 0
@@ -192,7 +187,7 @@ class BalanceRepository(
                     ccy = "",
                     currencyName = "",
                     amount = 0L,
-                    amountStr = 0L.getFormalMoney(),
+                    amountStr = "0.00",
                     exchangeAmount = "",
                     unit = "",
                     scale = 0,
@@ -206,6 +201,7 @@ class BalanceRepository(
 
     private fun CurrencyBean.toCurrencyContentData2(
         amount: Long,
+        scale: Long,
         exchangeAmount: Long?,
         exchangeAmountUnit: String,
         currencySelectedCCY: String,
@@ -217,10 +213,18 @@ class BalanceRepository(
             ccy = ccy,
             currencyName = name,
             amount = amount,
-            amountStr = if (this.crypto && this.ccy != "USDT") amount.getFormalMoney(1) else amount.getFormalMoney(), //TODO 以後會加上rate，根據不同的需求除不同的rate
-            exchangeAmount = if (exchangeAmount == null) "" else "$exchangeAmountUnit${exchangeAmount.getFormalMoney()}",
+            amountStr = if (crypto) amount.getFormalMoney(scale, false) else amount.getFormalMoney(
+                scale,
+                true
+            ),
+            exchangeAmount = if (exchangeAmount == null) "" else "$exchangeAmountUnit${
+                exchangeAmount.getFormalMoney(
+                    scale,
+                    true
+                )
+            }",
             unit = unit,
-            scale = if (this.crypto && this.ccy != "USDT") 0 else 2,
+            scale = scale.toInt(),
             isSelected = ccy == currencySelectedCCY,
             fiatSelected = ccy == currentSelectedFiat
         )
@@ -245,6 +249,7 @@ class BalanceRepository(
                 fiat.add(
                     currency.toCurrencyContentData2(
                         wallet?.balance ?: 0L,
+                        currency.scale,
                         null,
                         "",
                         "",
@@ -255,6 +260,7 @@ class BalanceRepository(
                 crypto.add(
                     currency.toCurrencyContentData2(
                         wallet?.balance ?: 0L,
+                        currency.scale,
                         wallet?.convertedAmount,
                         exchangeAmountUnit,
                         "",
@@ -276,19 +282,14 @@ class BalanceRepository(
         return "%" + keyword.uppercase().map { "$it%" }.joinToString("")
     }
 
-    fun Long.getFormalMoney(divisor: Int = 100): String {
-        if (this == 0L) return "0.00"
-
-        val value = this.toBigDecimal()
-            .divide(BigDecimal(divisor), 8, RoundingMode.DOWN)
-
-        // 是否為整數（小數部分 = 0）
-        return if (value.stripTrailingZeros().scale() <= 0) {
-            // 整數 → 補 .00
-            value.setScale(2, RoundingMode.DOWN).toPlainString()
+    fun Long.getFormalMoney(scale: Long = 100, bl: Boolean): String {
+        if (this == 0L)
+            return "0.00"
+        val value = this.toBigDecimal().divide(BigDecimal(scale))
+        return if (bl) {
+            value.setScale(2, RoundingMode.DOWN).toString()
         } else {
-            // 非整數 → 去掉多餘 0
-            value.stripTrailingZeros().toPlainString()
+            value.stripTrailingZeros().toString()
         }
     }
 }
