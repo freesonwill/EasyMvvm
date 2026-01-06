@@ -6,6 +6,8 @@ import androidx.room.PrimaryKey
 @Entity
 data class SystemAvatarBean(
     @PrimaryKey val id: Int,
+    val groupId: Int,
+    val subId: Int,
     val url: String,
     val host: String
 )

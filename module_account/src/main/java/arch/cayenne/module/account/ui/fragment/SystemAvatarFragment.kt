@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.utils.FileUtils
 import arch.cayenne.module.account.ui.viewmodel.SystemAvatarViewModel
 import arch.cayenne.module.account.databinding.FragmentSystemAvatarBinding
@@ -23,6 +24,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.database.entity.SystemAvatarBean
 import arch.cayenne.module.account.databinding.TitleBarSystemAvatarBinding
 import arch.cayenne.module.account.ui.viewmodel.PersonalInfoViewModel
 import com.bumptech.glide.Glide
@@ -178,7 +180,18 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
 
     override suspend fun createObserver() {
         mViewModel.systemAvatarList.observe(viewLifecycleOwner) { list ->
-            personalInfoAdapter.submitList(list)
+            //对list按groupId排序, 取每个groupId的第一个
+            val set = mutableSetOf<Int>()
+
+            val newList = mutableListOf<SystemAvatarBean>()
+            list.forEach {
+                if (!set.contains(it.groupId)) {
+                    newList.add(it)
+                    set.add(it.groupId)
+                }
+            }
+
+            personalInfoAdapter.submitList(newList)
         }
         mViewModel.uploadResult.observe(viewLifecycleOwner) { success ->
             if (success.isNotEmpty()) {
