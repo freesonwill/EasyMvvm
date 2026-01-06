@@ -437,9 +437,9 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                             KeyBoardType.EMOJI
                         }
                     keyboardChangeClick(clickType)
-                    chatAtHelper.dismissWindow()
+//                    chatAtHelper.dismissWindow()
                 }
-                calculationLayoutSize()
+//                calculationLayoutSize()
                 return@setOnTouchListener true
             }
             chatTvSend.setOnTouchListener { v, event ->
