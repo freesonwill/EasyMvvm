@@ -148,6 +148,9 @@ class AccountEditeNameFragment :
                         val changeCount = personalViewModel.onUserInfoListener.value?.nicknameChangeCount ?: 2
                         if (changeCount != 0) {
                             mBinding.ceName.setText(bean)
+                        } else {
+                            //changeCount为0时，ceName不能输入， 在点击时展示toast
+                            showToast(getString(R.string.account_edit_name_toast_limit))
                         }
                     }
                 }
