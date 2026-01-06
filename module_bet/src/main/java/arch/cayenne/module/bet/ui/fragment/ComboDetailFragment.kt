@@ -9,8 +9,6 @@ import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimensionPixelSize
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
@@ -37,7 +35,8 @@ class ComboDetailFragment :
     override val vmClass: KClass<BetCombViewModel> = BetCombViewModel::class
     private val listAdapter by lazy { ComboDetailAdapter() }
     private var tipStr = ""
-
+    private val minHeight by lazy { (getScreenHeight() * 425f/812).toInt() }
+    private val maxHeight by lazy { (getScreenHeight() * 699f/812).toInt() }
 
     companion object {
         private const val PARAMETER = "PARAMETER"
@@ -163,9 +162,6 @@ class ComboDetailFragment :
             rvContent.layoutManager = LinearLayoutManager(requireContext())
             rvContent.adapter = listAdapter
         }
-        val screenHeight = getScreenHeight()
-        val minHeight = (screenHeight * 425f/812).toInt()
-        val maxHeight = (screenHeight * 699f/812).toInt()
 
         mBinding.clRoot.maxHeight = maxHeight
         mBinding.clRoot.layoutParams = mBinding.clRoot.layoutParams.apply {
@@ -193,7 +189,7 @@ class ComboDetailFragment :
             mBinding.ivBetInfo.getLocationInWindow(location)
             val positionX = location.first() + mBinding.ivBetInfo.width / 2
             val positionY = location.last()
-            BetInfoDialogFragment.newInstance(positionX, positionY, tipStr)
+            BetInfoDialogFragment.newInstance(positionX, positionY, mBinding.ivBetInfo.height,tipStr)
                 .show(parentFragmentManager)
         }
         mBinding.ivBetExpand.clickNoRepeat {
@@ -236,9 +232,8 @@ class ComboDetailFragment :
             mViewModel.isExpand = BetCombViewModel.ExpandState.EXPANDING
             BetCombViewModel.ExpandState.EXPANDED
         }
-        val screenHeight = getScreenHeight()
-        val min = (screenHeight * 425f/812).toInt()
-        val max = (screenHeight * 699f/812).toInt()
+        val min = this.minHeight
+        val max = this.maxHeight
         val start = if (mViewModel.isExpand == BetCombViewModel.ExpandState.EXPANDING) min else max
         val end = if (mViewModel.isExpand == BetCombViewModel.ExpandState.EXPANDING) max else min
         val layoutParams = mBinding.clRoot.layoutParams
