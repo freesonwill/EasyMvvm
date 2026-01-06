@@ -13,7 +13,6 @@ import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import androidx.core.view.doOnPreDraw
 import androidx.core.widget.addTextChangedListener
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.data.constants.StatusBarMode
@@ -27,7 +26,9 @@ import arch.cayenne.lib.common.ui.adapter.CurrencyAdapter
 import arch.cayenne.lib.common.ui.adapter.CurrencySettingAdapter
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.helper.showToast
 import com.blankj.utilcode.util.SizeUtils
 import com.walisport.module.business.common.viewmodel.BalanceViewModel
 import kotlin.reflect.KClass
@@ -142,7 +143,7 @@ class CurrencyDialogFragment constructor() :
                 spanCount = 2,
                 horizontalSpacing = 6.dp2px,
                 verticalSpacing = 8.dp2px,
-                includeEdge = false // 確保邊緣沒有空隙
+                includeEdge = false
             )
             rvCurrencySetting.addItemDecoration(itemDecoration)
             ivSetting.clickNoRepeat {
@@ -231,6 +232,8 @@ class CurrencyDialogFragment constructor() :
                 balanceViewModel.changeFiat(bean.ccy).observe(viewLifecycleOwner) { success ->
                     if (success) {
                         balanceViewModel.getUserCurrency()
+                    } else {
+                        showToast(R.string.error_net.getString())
                     }
                 }
                 settingAdapter.updateSelect(bean.ccy)

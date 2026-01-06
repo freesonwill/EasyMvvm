@@ -69,6 +69,7 @@ class BalanceView : FrameLayout {
     private fun isPortrait(): Boolean {
         return context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     }
+
     fun setMoney(money: String){
         mBinding.tvWalletBalance.text = money
     }
