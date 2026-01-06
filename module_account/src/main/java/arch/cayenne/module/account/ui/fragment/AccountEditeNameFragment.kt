@@ -65,7 +65,6 @@ class AccountEditeNameFragment :
             changeCount
         )
             mBinding.ceName.isEnabled = changeCount != 0
-            titleBarBinding.tvSave.isClickable = false
             titleBarBinding.tvSave.isSelected = false
 
         super.initData()
@@ -106,15 +105,12 @@ class AccountEditeNameFragment :
                 mBinding.tvNumber.text = if (inputLength == 0) "" else "$inputLength/${maxInputLength}"
                 if (inputLength == 0) {
                     mBinding.tvNumber.setTextColor(resources.getColor(arch.cayenne.lib.common.R.color.color_999999, null))
-                    titleBarBinding.tvSave.isClickable = false
                     titleBarBinding.tvSave.isSelected = false
                 } else if (inputLength == maxInputLength) {
                     mBinding.tvNumber.setTextColor(resources.getColor(arch.cayenne.lib.common.R.color.color_FE3666, null))
-                    titleBarBinding.tvSave.isClickable = true
                     titleBarBinding.tvSave.isSelected = true
                 } else {
                     mBinding.tvNumber.setTextColor(resources.getColor(arch.cayenne.lib.common.R.color.color_999999, null))
-                    titleBarBinding.tvSave.isClickable = true
                     titleBarBinding.tvSave.isSelected = true
                 }
             }
