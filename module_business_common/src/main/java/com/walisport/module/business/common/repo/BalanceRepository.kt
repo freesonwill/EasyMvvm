@@ -38,10 +38,6 @@ class BalanceRepository(
 
     fun observeInfo() = infoDao.observeInfo()
 
-    suspend fun getBalance(): Long {
-        return infoDao.getBalance()
-    }
-
     suspend fun getCurrency(): String {
         return infoDao.getCurrency2() ?: "CNY"
     }
@@ -159,7 +155,6 @@ class BalanceRepository(
                     emit(manager.getValue(UserDataKey.KEY_DEFAULT_CURRENCY))
                 }
         ) { user, defaultCurrency ->
-            // profile/info沒進資料庫
             if (user == null) {
                 return@combine BaseCurrencyData.CurrencyContentData(
                     id = 0,
@@ -173,9 +168,7 @@ class BalanceRepository(
                     scale = 0
                 )
             }
-
             val (fait, crypto) = mappingCurrency(user)
-            //之前有紀錄預設顯示的錢包，並且在原本user的內容中
             if (defaultCurrency != null) {
                 val currency = fait.find { it.ccy == defaultCurrency }
                     ?: crypto.find { it.ccy == defaultCurrency }
@@ -211,9 +204,6 @@ class BalanceRepository(
         currencySelectedCCY: String,
         currentSelectedFiat: String,
     ): BaseCurrencyData.CurrencyContentData {
-        "========scale=$scale=======amount=$amount=======ccy=$ccy==============$name=======$exchangeAmount".loge(
-            "测试"
-        )
         return BaseCurrencyData.CurrencyContentData(
             id = id,
             icon = icon,
