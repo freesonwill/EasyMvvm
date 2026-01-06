@@ -325,6 +325,7 @@ class MatchListPagerFragmentV2 :
 
         subHomeViewModelV2.currentSelectedTournaments.observe(viewLifecycleOwner) {
             mBinding.rvHomeGameList.startFadeAnim { onComplete ->
+                matchAdapter.submitList(emptyList())
                 mViewModel.setTournamentIdList(it)
                 mViewModel.startObserveMatch()
                 helper?.reset()
@@ -335,6 +336,7 @@ class MatchListPagerFragmentV2 :
 
         subHomeViewModelV2.sortType.observe(viewLifecycleOwner){
             mBinding.rvHomeGameList.startFadeAnim { onComplete ->
+                matchAdapter.submitList(emptyList())
                 mViewModel.forceTop()
                 mViewModel.setSortType(it)
                 mViewModel.startObserveMatch()
