@@ -9,6 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimensionPixelSize
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
@@ -22,6 +23,7 @@ import arch.cayenne.module.bet.util.BetUtils.isSuperCombo
 import arch.cayenne.module.bet.viewmodel.BetCombViewModel
 import com.blankj.utilcode.util.GsonUtils
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import me.jessyan.autosize.utils.ScreenUtils
 import kotlin.reflect.KClass
 
 /**
@@ -162,8 +164,9 @@ class ComboDetailFragment :
             rvContent.adapter = listAdapter
         }
         val screenHeight = getScreenHeight()
-        val minHeight = R.dimen.bet_pop_min_height.getDimensionPixelSize()
-        val maxHeight = R.dimen.bet_pop_max_height.getDimensionPixelSize()
+        val minHeight = (screenHeight * 425f/812).toInt()
+        val maxHeight = (screenHeight * 699f/812).toInt()
+
         mBinding.clRoot.maxHeight = maxHeight
         mBinding.clRoot.layoutParams = mBinding.clRoot.layoutParams.apply {
             if (data.items.size > 12) {
@@ -216,7 +219,7 @@ class ComboDetailFragment :
     }
 
     private fun getScreenHeight(): Int {
-        return requireContext().resources.displayMetrics.heightPixels
+        return ScreenUtils.getScreenSize(requireContext())[1]
     }
 
     private fun toggleExpandOrCollapse() {
@@ -233,8 +236,9 @@ class ComboDetailFragment :
             mViewModel.isExpand = BetCombViewModel.ExpandState.EXPANDING
             BetCombViewModel.ExpandState.EXPANDED
         }
-        val min = R.dimen.bet_pop_min_height.getDimensionPixelSize()
-        val max = R.dimen.bet_pop_max_height.getDimensionPixelSize()
+        val screenHeight = getScreenHeight()
+        val min = (screenHeight * 425f/812).toInt()
+        val max = (screenHeight * 699f/812).toInt()
         val start = if (mViewModel.isExpand == BetCombViewModel.ExpandState.EXPANDING) min else max
         val end = if (mViewModel.isExpand == BetCombViewModel.ExpandState.EXPANDING) max else min
         val layoutParams = mBinding.clRoot.layoutParams
