@@ -23,6 +23,7 @@ import androidx.core.animation.addListener
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.core.view.drawToBitmap
+import arch.cayenne.lib.base.utils.ext.getActivity
 
 object ViewUtils {
     private const val TAG = "ViewUtils"
@@ -41,15 +42,9 @@ object ViewUtils {
     }
 
     fun getStatusBarHeight(context: Context): Int {
-        var ctx = context //context可能不是Activity，要循环找到Activity为止, 否则获取到的高度会不正确
-        while (ctx is ContextThemeWrapper) {
-            if (ctx is Activity) {// 找到 Activity
-                break
-            }
-            ctx = ctx.baseContext
-        }
+        val ctx = context.getActivity() //context可能不是Activity，要找到Activity, 否则获取到的高度会不正确
         val rect = Rect()
-        val window = (ctx as? Activity)?.window
+        val window = ctx?.window
         window?.decorView?.getWindowVisibleDisplayFrame(rect)
         return rect.top
     }
