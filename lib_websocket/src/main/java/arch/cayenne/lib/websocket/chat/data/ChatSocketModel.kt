@@ -56,7 +56,7 @@ enum class MsgType(val value: Int) {
         fun getMsgType(value: Int): MsgType {
             return when (value) {
                 0 -> MSG_TYPE_SYSTEM
-                2 -> MSG_TYPE_SHARE_ORDER
+                2,9 -> MSG_TYPE_SHARE_ORDER
                 3 -> MSG_TYPE_SHARE_GAME
                 4 -> MSG_TYPE_AT
                 else -> MSG_TYPE_TEXT
