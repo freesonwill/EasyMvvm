@@ -67,8 +67,6 @@
                     tools:ignore="MissingConstraints" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
             <com.walisport.module.business.common.ui.BalanceView
                 android:id="@+id/balance_view"
                 android:layout_width="179dp"
@@ -79,8 +77,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@+id/clAvava"
                 app:layout_constraintTop_toTopOf="parent"/>
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--  搜尋列  -->
