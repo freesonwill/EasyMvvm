@@ -27,6 +27,7 @@
     <string name="account_avatar_up" translatable="false">头像上传中</string>
     <string name="account_avatar_delete" translatable="false">删除头像</string>
     <string name="account_close" translatable="false">取消</string>
-    <string name="account_edit_name_toast_empty" translatable="false">请设置用户呢称</string>
+    <string name="account_edit_name_toast_empty" translatable="false">请输入昵称</string>
     <string name="tip_copy_id">复制成功</string>
+    <string name="account_edit_name_toast_limit">本月的修改次数已满，请下个月再来尝试</string>
 </resources>

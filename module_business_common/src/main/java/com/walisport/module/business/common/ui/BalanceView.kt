@@ -92,7 +92,7 @@ class BalanceView : FrameLayout {
                 setMoney("0.00")
                 setIcon("")
             } else {
-                setMoney(it.amount.toBalanceString(it.scale))
+                setMoney(it.amountStr)
                 setIcon(it.icon)
             }
         }

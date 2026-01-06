@@ -20,6 +20,7 @@ import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.account.ui.viewmodel.PersonalInfoViewModel
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.module.account.R
 
 class AccountEditeNameFragment :
     BaseFragment<AccountEditNameViewModel, FragmentAccountEditNameBinding>() {
@@ -64,9 +65,17 @@ class AccountEditeNameFragment :
             getString(arch.cayenne.module.account.R.string.account_edit_name_text_hint),
             changeCount
         )
-            mBinding.ceName.isEnabled = changeCount != 0
-            titleBarBinding.tvSave.isClickable = false
-            titleBarBinding.tvSave.isSelected = false
+        //changeCount为0时，ceName不能输入， 在点击时展示toast
+        if (changeCount == 0) {
+            mBinding.ceName.isFocusable = false
+            mBinding.ceName.isClickable = true
+            mBinding.ceName.setOnClickListener {
+                showToast(getString(R.string.account_edit_name_toast_limit))
+            }
+        } else {
+            mBinding.ceName.isEnabled = true
+        }
+        titleBarBinding.tvSave.isSelected = false
 
         super.initData()
     }
@@ -106,19 +115,18 @@ class AccountEditeNameFragment :
                 mBinding.tvNumber.text = if (inputLength == 0) "" else "$inputLength/${maxInputLength}"
                 if (inputLength == 0) {
                     mBinding.tvNumber.setTextColor(resources.getColor(arch.cayenne.lib.common.R.color.color_999999, null))
-                    titleBarBinding.tvSave.isClickable = false
                     titleBarBinding.tvSave.isSelected = false
                 } else if (inputLength == maxInputLength) {
                     mBinding.tvNumber.setTextColor(resources.getColor(arch.cayenne.lib.common.R.color.color_FE3666, null))
-                    titleBarBinding.tvSave.isClickable = true
                     titleBarBinding.tvSave.isSelected = true
                 } else {
                     mBinding.tvNumber.setTextColor(resources.getColor(arch.cayenne.lib.common.R.color.color_999999, null))
-                    titleBarBinding.tvSave.isClickable = true
                     titleBarBinding.tvSave.isSelected = true
                 }
             }
         })
+
+
 
     }
 
@@ -140,6 +148,9 @@ class AccountEditeNameFragment :
                         val changeCount = personalViewModel.onUserInfoListener.value?.nicknameChangeCount ?: 2
                         if (changeCount != 0) {
                             mBinding.ceName.setText(bean)
+                        } else {
+                            //changeCount为0时，ceName不能输入， 在点击时展示toast
+                            showToast(getString(R.string.account_edit_name_toast_limit))
                         }
                     }
                 }
