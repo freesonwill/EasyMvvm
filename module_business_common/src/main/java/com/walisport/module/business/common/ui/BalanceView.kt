@@ -12,7 +12,6 @@ import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.databinding.ViewBalanceBinding
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.SportIntExt.toBalanceString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.bumptech.glide.Glide
@@ -69,6 +68,7 @@ class BalanceView : FrameLayout {
     private fun isPortrait(): Boolean {
         return context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     }
+
     fun setMoney(money: String){
         mBinding.tvWalletBalance.text = money
     }

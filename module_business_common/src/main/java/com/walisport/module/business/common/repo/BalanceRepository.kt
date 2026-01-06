@@ -155,7 +155,6 @@ class BalanceRepository(
                     emit(manager.getValue(UserDataKey.KEY_DEFAULT_CURRENCY))
                 }
         ) { user, defaultCurrency ->
-            // profile/info沒進資料庫
             if (user == null) {
                 return@combine BaseCurrencyData.CurrencyContentData(
                     id = 0,
@@ -169,9 +168,7 @@ class BalanceRepository(
                     scale = 0
                 )
             }
-
             val (fait, crypto) = mappingCurrency(user)
-            //之前有紀錄預設顯示的錢包，並且在原本user的內容中
             if (defaultCurrency != null) {
                 val currency = fait.find { it.ccy == defaultCurrency }
                     ?: crypto.find { it.ccy == defaultCurrency }
@@ -277,11 +274,11 @@ class BalanceRepository(
         return Pair(fiat, crypto)
     }
 
-    fun keywordToSqlPattern(keyword: String): String {
+    private fun keywordToSqlPattern(keyword: String): String {
         if (keyword.isEmpty()) return "%"
         return "%" + keyword.uppercase().map { "$it%" }.joinToString("")
     }
-
+    
     fun Long.getFormalMoney(scale: Long = 100, bl: Boolean): String {
         if (this == 0L)
             return "0.00"

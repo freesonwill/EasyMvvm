@@ -143,7 +143,7 @@ class CurrencyDialogFragment constructor() :
                 spanCount = 2,
                 horizontalSpacing = 6.dp2px,
                 verticalSpacing = 8.dp2px,
-                includeEdge = false // 確保邊緣沒有空隙
+                includeEdge = false
             )
             rvCurrencySetting.addItemDecoration(itemDecoration)
             ivSetting.clickNoRepeat {
