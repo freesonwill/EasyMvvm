@@ -4,7 +4,7 @@ include:
       deploy_name:  "tio"
       runner_type: "docker"
       runner_tag: "ios"
-      branch_build_type_map: "dev:Debug,test:Qatest,pre-production:Release"
+      branch_build_type_map: "dev:debug,test:qatest,pre-production:release"
       auto_package_branches: "^(test|pre-production)$"
 
 before_script:
