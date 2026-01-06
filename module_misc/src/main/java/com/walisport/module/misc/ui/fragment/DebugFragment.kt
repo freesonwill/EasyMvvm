@@ -14,10 +14,13 @@ import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.databinding.TitleBarSimpleBinding
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2dp
+import arch.cayenne.lib.common.utils.ext.ResourceExt
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.module.bet.ui.fragment.ComboDetailFragment
+import com.blankj.utilcode.util.GsonUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.gyf.immersionbar.ImmersionBar
 import com.walisport.module.misc.BuildConfig
@@ -128,6 +131,16 @@ class DebugFragment : BaseFragment<DebugViewModel, FragmentDebugBinding>() {
                         Utils.shareLogFile(requireContext())
                     }
             }
+
+            comboDetail.clickNoRepeat {
+                ComboDetailFragment.newInstance(
+                    GsonUtils.fromJson(
+                        ResourceExt.getAssets("mock_combo_detail_20@19@1.json"),
+                        ComboDetailFragment.Parameter::class.java
+                    )
+                ).show(parentFragmentManager, "ComboDetailFragment")
+            }
+
         }
     }
 
