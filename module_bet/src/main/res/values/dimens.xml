@@ -1,5 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="bet_pop_min_height">425dp</dimen>
-    <dimen name="bet_pop_max_height">699dp</dimen>
 </resources>

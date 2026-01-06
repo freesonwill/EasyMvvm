@@ -24,7 +24,7 @@
         android:maxLines="1"
         android:fontFamily="@font/sf_pro"
         android:gravity="start|center_vertical"
-        android:paddingStart="@dimen/dp_24"
+        android:paddingStart="@dimen/dp_26"
         android:textColor="@color/color_C0C0C0"
         android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -32,7 +32,7 @@
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.25"
+        app:layout_constraintWidth_percent="0.26"
         app:skinnableFontWeight="400"
         android:paddingBottom="1.6dp"
         tools:text="1·2·3" />
@@ -51,7 +51,7 @@
         app:layout_constraintEnd_toStartOf="@+id/tv_tab_win"
         app:layout_constraintStart_toEndOf="@+id/tv_tab_combo"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.25"
+        app:layout_constraintWidth_percent="0.24"
         app:skinnableFontWeight="400"
         android:paddingBottom="1.6dp"
         android:paddingEnd="3dp"
@@ -72,7 +72,7 @@
         app:layout_constraintEnd_toStartOf="@+id/tv_tab_odds"
         app:layout_constraintStart_toEndOf="@+id/tv_tab_bet"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.25"
+        app:layout_constraintWidth_percent="0.24"
         app:skinnableFontWeight="400"
         android:paddingBottom="1.6dp"
         tools:text="$91.30" />
@@ -85,16 +85,16 @@
         android:fontFamily="@font/sf_pro"
         android:gravity="end|center_vertical"
         android:maxLines="1"
-        android:paddingEnd="@dimen/dp_24"
+        android:paddingEnd="@dimen/dp_26"
         android:textColor="@color/color_C0C0C0"
         android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_tab_win"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.25"
+        app:layout_constraintWidth_percent="0.26"
         app:skinnableFontWeight="400"
         android:paddingBottom="1.6dp"
-        tools:text="\@9.13" />
+        tools:text="\@98836.56" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

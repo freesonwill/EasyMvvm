@@ -37,11 +37,6 @@ class DemoPopup(context: Context) : BottomPopupView(context) {
         vb = DemoPopupBinding.bind(popupImplView)
 
         vb?.apply {
-            tvStatusBarHeight.text = ImmersionBar.getStatusBarHeight(context).let {
-                String.format(Locale.ROOT,"状态栏高度: $it px,\t${it.px2dp} dp, dp2px:${1f.dp2px},px2dp:${1f.px2dp},w-h:${ScreenUtils.getScreenWidth()}-${ScreenUtils.getScreenHeight()}", it)
-            }
-            tvUid.setText(manager.getValue<Int>(UserDataKey.KEY_UID,0).toString())
-            tvToken.setText(manager.getValue<String>(UserDataKey.KEY_TOKEN,""))
 
             val data1 = DemoData.getDemoData(manager,UserDataKey.KEY_ANIM_ROUTE)!!
             data1Time.setText(data1.duration.toString())
@@ -83,10 +78,6 @@ class DemoPopup(context: Context) : BottomPopupView(context) {
             tvOk.clickNoRepeat {
                 if(!checkedDataValid()) return@clickNoRepeat
 
-                val uid = tvUid.text!!.trim().toString().toInt()
-                val token = tvToken.text!!.trim().toString()
-                manager.setKeyValue(UserDataKey.KEY_UID,uid)
-                manager.setKeyValue(UserDataKey.KEY_TOKEN,token)
 
                 val data1 = DemoData(
                     data1Time.text!!.trim().toString().toLong(), data1X1.text!!.trim().toString().toFloat(), data1Y1.text!!.trim().toString().toFloat(), data1X2.text!!.trim().toString().toFloat(), data1Y2.text!!.trim().toString().toFloat()
@@ -173,24 +164,10 @@ class DemoPopup(context: Context) : BottomPopupView(context) {
             ).forEach {
                 it.filters = arrayOf(InputFilterMinMax(0.0, 1.0))
             }
-            btnShareLog.clickNoRepeat {
-                if(BuildConfig.BUILD_TYPE != "release")
-                launch {
-                    Utils.shareLogFile(context)
-                    dismiss()
-                }
-            }
+
         }
     }
     private fun checkedDataValid():Boolean{
-        if((vb!!.tvUid.text!!).trim().length < 8){
-            showToast("uid位数<8")
-            return false
-        }
-        if((vb!!.tvToken.text!!).trim().length < 52){
-            showToast("token位数<52")
-            return false
-        }
         return true
     }
 
