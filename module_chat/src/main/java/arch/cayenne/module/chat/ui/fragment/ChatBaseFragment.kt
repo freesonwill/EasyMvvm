@@ -3,6 +3,8 @@ package arch.cayenne.module.chat.ui.fragment
 import android.animation.AnimatorSet
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.InputDevice
+import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
@@ -48,6 +50,7 @@ import arch.cayenne.module.chat.manager.ChatATHelper
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim.getInputAnim
 import arch.cayenne.module.chat.utils.ChatMsgUtils
+import arch.cayenne.module.chat.utils.EditTextUtils.editDelBtn
 import arch.cayenne.module.order.data.model.BetShareBean
 import arch.cayenne.module.order.ui.fragment.ChatChooseBetFragment
 import kotlinx.coroutines.delay
@@ -785,9 +788,10 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
             if (text?.length == 0) {
                 return@apply
             }
-            dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
-            dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL))
-            softKeyBoardManager.etRequestFocus()
+            if(!(hasFocus() && selectionStart == selectionEnd)){
+                requestFocus()
+            }
+           editDelBtn()
         }
     }
 
