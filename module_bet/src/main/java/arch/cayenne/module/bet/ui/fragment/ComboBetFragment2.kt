@@ -46,6 +46,7 @@ import arch.cayenne.module.bet.ui.custom.BetMoneyKeyboard
 import arch.cayenne.module.bet.util.BetSheetDecoration
 import arch.cayenne.module.bet.viewmodel.ComboBetViewModel
 import com.blankj.utilcode.util.GsonUtils
+import me.jessyan.autosize.utils.ScreenUtils
 import kotlin.reflect.KClass
 
 /**
@@ -164,6 +165,9 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
         setSumBetMoney(emptyList())
         mBinding.firstMultiItem.apply {
             etMoney.isFocusable = false //不弹出系统软键盘
+        }
+        mBinding.root.layoutParams = mBinding.root.layoutParams.apply {
+            height = (ScreenUtils.getScreenSize(requireContext())[1] * 699f/812).toInt()
         }
     }
 
