@@ -4,6 +4,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.findFragment
@@ -14,9 +15,9 @@ import arch.cayenne.lib.common.ui.fragment.AllInfoDialogFragment
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
+import arch.cayenne.lib.common.utils.ext.TextViewExt.hasShownEllipsize
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.locationInWindow
-import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.ItemComboDetail1Binding
 import arch.cayenne.module.bet.databinding.ItemComboDetail2Binding
@@ -84,21 +85,25 @@ class ComboDetailAdapter : BaseAdapter<ParameterUIItem, BaseViewHolder, ViewBind
             with(mBinding) {
                 tvTabCombo.text = bean.comboStr.apply {
                     tvTabCombo.clickNoRepeat {
-                        showDetailDialog(it, this)
+                        if(!(it as TextView).hasShownEllipsize()) return@clickNoRepeat
+                        showDetailDialog(it, this, arrowMarginEnd = if(length>24) 80.dp2px else 0.dp2px)
                     }
                 }
                 tvTabBet.text = bean.moneyStr.apply {
                     tvTabBet.clickNoRepeat {
+                        if(!(it as TextView).hasShownEllipsize()) return@clickNoRepeat
                         showDetailDialog(it, this)
                     }
                 }
                 tvTabWin.text = bean.winMoneyStr.apply {
                     tvTabWin.clickNoRepeat {
+                        if(!(it as TextView).hasShownEllipsize()) return@clickNoRepeat
                         showDetailDialog(it, this)
                     }
                 }
                 tvTabOdds.text = bean.oddsStr.apply {
                     tvTabOdds.clickNoRepeat {
+                        if(!(it as TextView).hasShownEllipsize()) return@clickNoRepeat
                         showDetailDialog(it, this)
                     }
                 }
@@ -110,17 +115,20 @@ class ComboDetailAdapter : BaseAdapter<ParameterUIItem, BaseViewHolder, ViewBind
             }
         }
 
-        private fun showDetailDialog(view: View, text: String?) {
+        private fun showDetailDialog(view: View, text: String?,arrowMarginEnd:Int = 0) {
             if(text.isNullOrBlank()) return
             val location = view.locationInWindow
             val h = ViewUtils.getStatusBarHeight(view.context)
             val positionX = location.first() + view.width / 2
-            val positionY = location.last() - h - 1.dp2px
+            val positionY = location.last() - h - 2.dp2px
             val fragment = view.findFragment<Fragment>()
             AllInfoDialogFragment.newInstance(
                 positionX ,
                 positionY ,
-                text
+                text,
+                textMaxLines = 2,
+                textMaxWidth = 170.dp2px,
+                arrowMarginEnd = arrowMarginEnd,
             ).show(fragment.parentFragmentManager , TAG)
         }
     }
