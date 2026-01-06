@@ -70,7 +70,7 @@ class ComboDetailFragment :
         val oddsStr:String get() = "@${odds.getOdds(false)}"
         val winMoneyStr: String? get() = money.takeIf { it != 0L }?.let { "$moneySymbol${money.getMoney(odds,false)}" }
         val moneyStr:String? get() = money.takeIf { it != 0L }?.let { "$moneySymbol${it.getMoney(false)}" }
-        val odds: Int get() = BetUtils.calculateCombinationOdds(oddsList,oddsList.size)
+        val odds: Long get() = BetUtils.calculateCombinationOdds(oddsList,oddsList.size)
     }
 
     data class ParameterUI(
