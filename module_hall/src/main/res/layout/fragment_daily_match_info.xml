@@ -134,18 +134,18 @@
             android:id="@+id/tv_money"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="9dp"
-            android:layout_marginEnd="@dimen/dp_9"
-            android:fontFamily="@font/sf_pro_display_bold"
+            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginEnd="@dimen/dp_2"
+            android:fontFamily="@font/sf_pro"
             android:gravity="start"
             android:includeFontPadding="false"
             android:text="¥49999"
             android:textColor="@color/color_464136"
+            android:textFontWeight="500"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/iv_money"
             app:layout_constraintEnd_toStartOf="@id/iv_rank"
             app:layout_constraintStart_toEndOf="@+id/iv_money"
-            app:layout_constraintTop_toTopOf="@+id/iv_money"
             app:layout_constraintVertical_bias="0.0" />
 
         <androidx.appcompat.widget.AppCompatImageView
