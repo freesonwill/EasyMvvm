@@ -14,7 +14,7 @@ abstract class UserDataDao : BaseDao<UserDataBean>() {
     @Query("SELECT * FROM UserDataBean limit 1")
     abstract fun observeUser(): Flow<UserDataBean?>
 
-    @Query("UPDATE UserDataBean SET avatar_url = :url")
-    abstract suspend fun updateAvatarUrl(url: String)
+    @Query("UPDATE UserDataBean SET avatar_url = :url, avatar_type = :type")
+    abstract suspend fun updateAvatarUrl(url: String, type: Int)
 
 }

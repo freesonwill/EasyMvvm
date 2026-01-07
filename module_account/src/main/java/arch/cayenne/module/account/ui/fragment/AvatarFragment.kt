@@ -159,6 +159,7 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
             }
 
         personalViewModel.showAvatar.observe(viewLifecycleOwner) { filePath ->
+
             Glide.with(this@AvatarFragment)
                 .load(BASE_URL +filePath)
                 .transition(DrawableTransitionOptions.withCrossFade())
