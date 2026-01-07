@@ -206,13 +206,15 @@ class HallRepository(
         return list
     }
     private fun roomSystemAvatar(
-        avatarVo: List<SystemAvatarVo>,host:String
+        avatarVo: List<SysAvatarVo>,host:String
     ) {
         var list: MutableList<SystemAvatarBean> = mutableListOf()
         avatarVo.forEach { data ->//分类列表
             list.add(
                 SystemAvatarBean(
                     id = data.id ,
+                    groupId = data.groupId ,
+                    subId = data.subId ,
                     url = data.url ,
                     host = host
                 )
