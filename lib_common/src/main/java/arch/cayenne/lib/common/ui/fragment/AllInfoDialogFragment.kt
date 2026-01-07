@@ -95,13 +95,13 @@ class AllInfoDialogFragment :
             val locationX = requireArguments().getInt(LOCATION_X)
             val locationY = requireArguments().getInt(LOCATION_Y)
             val offsetX = root.measuredWidth / 2
-            val layoutParams = w.attributes
-            layoutParams.gravity = Gravity.TOP or Gravity.START
-            layoutParams.x = locationX-offsetX
-            val y = locationY - clRoot.measuredHeight
-            ivBgBottom.visibility = View.VISIBLE
-            layoutParams.y = y - 3.dp2px
-            w.attributes = layoutParams
+            w.attributes = w.attributes.also { lp->
+                lp.gravity = Gravity.TOP or Gravity.START
+                lp.x = locationX - offsetX
+                val y = locationY - root.measuredHeight
+                ivBgBottom.visibility = View.VISIBLE
+                lp.y = y - 3.dp2px
+            }
             mBinding.root.visibility = View.VISIBLE
         }
     }
