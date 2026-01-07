@@ -128,14 +128,15 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
             if (refreshJob?.isActive == true) {
                 refreshJob?.cancel()
             }
-            "refreshChat flagFlash $flagFlash".logd(TAG)
             refreshJob = lifecycleScope.launch {
                 mBinding.liveChatRecycler.postDelayed({
                     try {
                         mBinding.liveChatRecycler.scrollToPosition(0)
-                        mBinding.liveChatRecycler.postDelayed({
-                            itemFlash()
-                        },500)
+                       if(flagFlash){
+                           mBinding.liveChatRecycler.postDelayed({
+                               itemFlash()
+                           },500)
+                       }
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -150,11 +151,8 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
     }
 
     private fun itemFlash() {
-        "itemFlash1".logd(TAG)
-
         val adapter = mBinding.liveChatRecycler.adapter?.let { it as ChatPageAdapter }
         adapter?.currentList?.indexOfFirst { it.flashFlag }?.let { position ->
-            "itemFlash position=$position".logd(TAG)
             val holder =
                 mBinding.liveChatRecycler.findViewHolderForAdapterPosition(position) as? ChatPageAdapter.LiveChatViewHolder
             holder?.startFlash(position)
@@ -171,7 +169,7 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                 MsgType.getSendMsgType(it.msgType.value),
                 it.extraData
             )
-            refreshChatList(it.flashFlag)
+            refreshChatList()
         }
         viewLifecycleOwner.lifecycleScope.launch {
 
