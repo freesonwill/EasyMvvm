@@ -48,7 +48,7 @@ class SystemAvatarViewModel :  BaseViewModel() {
     }
 
     fun uploadAvatarUrl(avatarUrl: String) {
-        repository.updateAvatar(avatarUrl = avatarUrl, type = "1", avatarId = "")
+        repository.updateAvatar(avatarUrl = avatarUrl, type = "0", avatarId = "")
     }
 
 
