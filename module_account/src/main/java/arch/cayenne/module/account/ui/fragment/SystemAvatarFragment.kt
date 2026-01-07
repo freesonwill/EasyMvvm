@@ -6,18 +6,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.utils.FileUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.SystemAvatarBean
 import arch.cayenne.module.account.R
 import arch.cayenne.module.account.databinding.FragmentSystemAvatarBinding
@@ -172,7 +171,7 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
                     mBinding.tvSave.isSelected = true
                     mBinding.tvSave.isClickable = true
                     mBinding.tvSave.text = R.string.personal_avatar_save.getString()
-                    Toast.makeText(requireContext(), "上传失败", Toast.LENGTH_SHORT).show()
+                    showToast("上传失败")
                 }
                 return@launch
             } else {
@@ -207,11 +206,11 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
         }
         mViewModel.uploadResult.observe(viewLifecycleOwner) { success ->
             if (success.isNotEmpty()) {
-                Toast.makeText(requireContext(), "上传成功", Toast.LENGTH_SHORT).show()
+                showToast("上传成功")
                 personalViewModel.setUploadResul(success)
                 navigateUp()
             } else {
-                Toast.makeText(requireContext(), "上传失败", Toast.LENGTH_SHORT).show()
+                showToast("上传失败")
             }
         }
     }
