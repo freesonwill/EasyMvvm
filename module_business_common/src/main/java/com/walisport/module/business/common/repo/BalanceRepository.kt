@@ -237,8 +237,7 @@ class BalanceRepository(
         val currencyList = currencyConfigDao.searchByKeyword(pattern, firstChar)
         val fiat = arrayListOf<BaseCurrencyData.CurrencyContentData>()
         val crypto = arrayListOf<BaseCurrencyData.CurrencyContentData>()
-        if (user == null)
-            return Pair(fiat, crypto)
+        if (user == null) return Pair(fiat, crypto)
         val showAllCurrency = manager.getValue(UserDataKey.KEY_SHOW_ALL_CURRENCY, false)
         val currencyData = currencyConfigDao.getCurrencyConfigList()
         val exchangeAmountUnit = currencyData.find { it.ccy == manager.getValue<String>(UserDataKey.KEY_DEFAULT_FIAT) }?.unit?: "$"
@@ -275,7 +274,7 @@ class BalanceRepository(
         return Pair(fiat, crypto)
     }
 
-    fun keywordToSqlPattern(keyword: String): String {
+    private fun keywordToSqlPattern(keyword: String): String {
         if (keyword.isEmpty()) return "%"
         return "%" + keyword.uppercase().map { "$it%" }.joinToString("")
     }
