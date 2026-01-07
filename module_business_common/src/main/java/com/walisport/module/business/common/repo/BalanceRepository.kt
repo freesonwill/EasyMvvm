@@ -219,7 +219,7 @@ class BalanceRepository(
             ),
             exchangeAmount = if (exchangeAmount == null) "" else "$exchangeAmountUnit${
                 exchangeAmount.getFormalMoney(
-                    scale,
+                    100,
                     true
                 )
             }",
@@ -240,7 +240,9 @@ class BalanceRepository(
         if (user == null) return Pair(fiat, crypto)
         val showAllCurrency = manager.getValue(UserDataKey.KEY_SHOW_ALL_CURRENCY, false)
         val currencyData = currencyConfigDao.getCurrencyConfigList()
-        val exchangeAmountUnit = currencyData.find { it.ccy == manager.getValue<String>(UserDataKey.KEY_DEFAULT_FIAT) }?.unit?: "$"
+        val exchangeAmountUnit =
+            currencyData.find { it.ccy == manager.getValue<String>(UserDataKey.KEY_DEFAULT_FIAT) }?.unit
+                ?: "$"
         currencyList.forEach { currency ->
             val wallet = user.list.find { currency.ccy == it.currency }
             if (!currency.crypto) {
