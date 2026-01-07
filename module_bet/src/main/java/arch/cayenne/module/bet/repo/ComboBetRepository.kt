@@ -322,7 +322,7 @@ class ComboBetRepository(
         //"aaaa---calculateMultiBetSums,data:$data,risk:$riskList".logd(TAG)
         for (k in n downTo 0) {
             riskMap[k]?.let { risk ->
-                val odds = calculateCombinationOdds(oddsList,k)
+                val odds = calculateCombinationOdds(oddsList,k).toInt()
                 val count = when (k) {
                     0 -> 0
                     else -> CombinationExt.cNK(data.size,k)
@@ -363,7 +363,7 @@ class ComboBetRepository(
 
         //超级组合
         riskMap[ComboMultiBetBean.SERIAL_VALUE_SUPER]?.let { risk ->
-            val odds = calculateCombinationOdds(oddsList,1)
+            val odds = calculateCombinationOdds(oddsList,1).toInt()
             //"aaaa---hasSerialSuper,odds:$odds".logd(TAG)
             val count = data.size
             totalSumOdds += odds
@@ -424,7 +424,7 @@ class ComboBetRepository(
 
         for (k in n downTo 0) {
             riskMap[k]?.let { risk ->
-                val odds = calculateCombinationOdds(oddsList,k)
+                val odds = calculateCombinationOdds(oddsList,k).toInt()
                 totalSumOdds += odds
 
                 if (k == 0) {
@@ -442,7 +442,7 @@ class ComboBetRepository(
         }
 
         riskMap[ComboMultiBetBean.SERIAL_VALUE_SUPER]?.let { risk ->
-            val odds = calculateCombinationOdds(oddsList,1)
+            val odds = calculateCombinationOdds(oddsList,1).toInt()
             totalSumOdds += odds
             result[risk.serialValue] = ComboMultiBetOddsBean(
                 serialValue = risk.serialValue,
