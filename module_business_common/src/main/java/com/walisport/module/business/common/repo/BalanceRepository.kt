@@ -279,14 +279,22 @@ class BalanceRepository(
         return "%" + keyword.uppercase().map { "$it%" }.joinToString("")
     }
 
-    fun Long.getFormalMoney(scale: Long = 100, bl: Boolean): String {
+    private fun Long.getFormalMoney(scale: Long = 100, bl: Boolean): String {
         if (this == 0L)
             return "0.00"
         val value = this.toBigDecimal().divide(BigDecimal(scale))
         return if (bl) {
             value.setScale(2, RoundingMode.DOWN).toString()
         } else {
-            value.stripTrailingZeros().toString()
+            if (isInteger(value)) {//小数点后无数字时，应该显示.00
+                value.toPlainString() + ".00"
+            } else {
+                value.stripTrailingZeros().toPlainString()
+            }
         }
+    }
+
+    private fun isInteger(value: BigDecimal): Boolean {
+        return value.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) == 0
     }
 }
