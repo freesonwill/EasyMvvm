@@ -112,7 +112,8 @@ class PersonalInfoRepository(
                             } else if (type == "0") {
                                 //系统头像
                                 val systemAvatarBean =
-                                    database.systemAvatarDao().querySystemAvatar()[avatarId]
+                                    database.systemAvatarDao().querySystemAvatar()
+                                        .find { it.id == avatarId }
                                 systemAvatarBean?.let {
                                     _uploadAvatarResult.postValue(it.url)
                                     database.userDataDao().updateAvatarUrl(it.url, 0)
