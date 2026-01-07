@@ -167,7 +167,10 @@ class ChatATHelper(
 //        }
 //    }
 
-    fun checkAtInEtInput(uid: String): Boolean {
+    fun checkAtInEtInput(uid: String,myUid:String): Boolean {
+        if(uid == myUid){
+            return false
+        }
         val spannable = SpannableStringBuilder(chatEtInput.text)
         val spans = spannable.getSpans(0, spannable.length, MentionSpan::class.java)
         val atSpan = spans.filter { it.msgType == ChatMsgType.AT }.find {
@@ -226,7 +229,7 @@ class ChatATHelper(
             )
 
             //两个@中间，在后一个@前面插入
-            if (position in spanStart..<spanEnd) {
+            if (position in spanStart+1..<spanEnd) {
                 spannable.removeSpan(mention)
                 val checkLastIndex = position + count
                 if (checkLastIndex > spanEnd) {
@@ -278,6 +281,7 @@ class ChatATHelper(
     //删除Editext时，检查到有at消息进行三次确认删除
     fun setEditTextDelCheck(editText: EditText) {
         editText.setOnKeyListener { v, keyCode, event ->
+
             if (keyCode == KeyEvent.KEYCODE_DEL && event.action == KeyEvent.ACTION_DOWN) {
                 val cursorPositionStart = editText.selectionStart
                 val cursorPositionEnd = editText.selectionEnd

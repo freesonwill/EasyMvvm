@@ -64,7 +64,30 @@ object ChatMsgUtils {
      *     大图：/bid=xx/
      * */
     fun createContent(spannable: SpannableStringBuilder, spans: Array<MentionSpan>): String {
-        var newStr = spannable.replace(Regex("@\\w+\\s?"), "[**]").replace("\u2060", "")
+
+//        var newStr = spannable.replace(Regex("@\\w+\\s?"), "[**]").replace("\u2060", "")
+
+        // 创建一个可变的字符串构建器来处理替换
+        val result = StringBuilder(spannable.toString())
+
+        // 按起始位置从大到小排序，这样替换时不会影响后续索引
+        val sortedSpans = spans.sortedByDescending { spannable.getSpanStart(it) }
+
+        for (span in sortedSpans) {
+            val start = spannable.getSpanStart(span)
+            val end = spannable.getSpanEnd(span)
+
+            if (start >= 0 && end <= spannable.length) {
+                val spanText = spannable.substring(start, end)
+
+                // 检查该段文本是否符合 @mention 的正则表达式
+                if (Regex("@\\w+\\s?").matches(spanText)) {
+                    // 替换这个范围的文本
+                    result.replace(start, end, "[**]")
+                }
+            }
+        }
+        var  newStr = result.toString().replace("\u2060", "")
         val sharSpan =
             spans.find { it.msgType == ChatMsgType.BET_SPORT || it.msgType == ChatMsgType.BET_GAME }
         sharSpan?.let {
@@ -73,6 +96,8 @@ object ChatMsgUtils {
         }
         return newStr
     }
+
+
 
     /**
      * 恢复内容中的占位符

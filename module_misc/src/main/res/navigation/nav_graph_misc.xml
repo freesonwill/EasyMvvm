@@ -38,6 +38,12 @@
         tools:layout="@layout/fragment_web">
 
         <argument
+            android:name="outerSite"
+            android:defaultValue="false"
+            app:argType="boolean"
+            app:nullable="false" />
+
+        <argument
             android:name="url"
             android:defaultValue="@null"
             app:argType="string"

@@ -49,10 +49,16 @@ object SportIntExt {
      * @param odds 乘數: 通常為賠率
      */
     fun Long.getMoney(odds: Int,stripTrailingZero:Boolean=true): String {
-        if (this == 0L || odds <= 0) return "0" // ← 明確處理 0
+        return getMoney(odds.toLong(),stripTrailingZero)
+    }
 
-        val result = this * odds
-        val decimal = BigDecimal(result).divide(BigDecimal(10000))
+    /***
+     * @param odds 乘數: 通常為賠率
+     */
+    fun Long.getMoney(odds: Long,stripTrailingZero:Boolean=true): String {
+        if (this == 0L || odds <= 0) return "0" // ← 明確處理 0
+        val decimal = BigDecimal(this).multiply(BigDecimal(odds))
+            .divide(BigDecimal(10000))
             .setScale(2, RoundingMode.DOWN)
         if(!stripTrailingZero) return decimal.toPlainString()
 
@@ -128,6 +134,10 @@ object SportIntExt {
      * @return string: 1234 轉換為 12.34, 1000 轉換為 10.00
      */
     fun Int.getOdds(stripTrailingZero:Boolean = true): String {
+        return this.toLong().getOdds(stripTrailingZero)
+    }
+
+    fun Long.getOdds(stripTrailingZero:Boolean = true): String {
         if (this <= 0) return DecimalFormat("#.##").format(this/100f)
         //BigDecimal(this / 100f).setScale(2, RoundingMode.HALF_UP).toFloat()
         //(this / 100f).let { String.format("%.2f", it).toFloat() }
@@ -141,8 +151,7 @@ object SportIntExt {
     fun Int.getOdds(odds: Int,stripTrailingZero:Boolean = true): String {
         if (this <= 0) return DecimalFormat("#.##").format(this/100f)// ← 明確處理 0
 
-        val result = this * odds
-        val decimal = BigDecimal(result).divide(BigDecimal(10000))
+        val decimal = BigDecimal(this).multiply(BigDecimal(odds)).divide(BigDecimal(10000))
         return decimal.setScale(2, RoundingMode.DOWN)
             .apply { if(stripTrailingZero) stripTrailingZeros() }
             .toPlainString()

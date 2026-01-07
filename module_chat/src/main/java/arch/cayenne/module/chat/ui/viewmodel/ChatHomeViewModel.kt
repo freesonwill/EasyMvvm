@@ -97,9 +97,9 @@ class ChatHomeViewModel() : BaseViewModel() {
 
     var currentSelectBetShare: BetShareBean? = null
     var myUid: String = ""
-    var mainChatLanguagePosition = 1
+    var mainChatLanguagePosition = -1
 
-//    var updateRoom:Boolean = false
+    var updateRoom:Boolean = false
 
     override fun initViewModel() {
         super.initViewModel()
@@ -315,14 +315,10 @@ class ChatHomeViewModel() : BaseViewModel() {
         }
 
         if(languageSelectPosition != position){
-//            updateRoom = true
+            updateRoom = true
             leaveRoom(chatType)
             languageSelectPosition = position
             this.matchId = ChatMsgUtils.mainChatRoom()[position]
-            viewModelScope.launch {
-                delay(500)
-                enterRoom(chatType)
-            }
         }
     }
 
@@ -333,10 +329,11 @@ class ChatHomeViewModel() : BaseViewModel() {
 
 
     fun saveMainChatRoom(){
+        "saveMainChatRoom mainChatLanguagePosition $mainChatLanguagePosition  languageSelectPosition $languageSelectPosition".logd(TAG)
+
         if(mainChatLanguagePosition != languageSelectPosition){
             mainChatLanguagePosition = languageSelectPosition
             userDataManager.setKeyValue(UserDataKey.MAIN_CHAT_LANGUAGE,mainChatLanguagePosition)
-            "saveMainChatRoom $mainChatLanguagePosition".logd(TAG)
         }
     }
 
