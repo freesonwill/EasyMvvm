@@ -6,4 +6,6 @@
     <color name="account_edit_name_hint">#33FFFFFF</color>
     <color name="dialog_line">#272727</color>
     <color name="user_avatar_text_bg">#45000000</color>
+    <color name="account_tab_select_text">#FFFFFF</color>
+
 </resources>

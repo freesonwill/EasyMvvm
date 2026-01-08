@@ -9,14 +9,15 @@ import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.module.account.R
 import arch.cayenne.module.account.databinding.FragmentLoginOrRegisterBinding
+import arch.cayenne.module.account.ui.viewmodel.LoginOrRegisterViewModel
 import arch.cayenne.module.account.ui.viewmodel.SystemAvatarViewModel
 import kotlin.reflect.KClass
 
 class LoginOrRegisterFragment :
-    BaseFragment<SystemAvatarViewModel, FragmentLoginOrRegisterBinding>() {
+    BaseFragment<LoginOrRegisterViewModel, FragmentLoginOrRegisterBinding>() {
     override val vbClass: KClass<FragmentLoginOrRegisterBinding> =
         FragmentLoginOrRegisterBinding::class
-    override val vmClass: KClass<SystemAvatarViewModel> = SystemAvatarViewModel::class
+    override val vmClass: KClass<LoginOrRegisterViewModel> = LoginOrRegisterViewModel::class
 
     private val titleBarBinding: TitleBarSimpleBinding by lazy {
         TitleBarSimpleBinding.inflate(

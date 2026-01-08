@@ -309,7 +309,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel , FragmentNewHomeBinding>() {
             tabStrip.requestLayout()
 
             indicatorDrawable =
-                ResourcesCompat.getDrawable(resources, R.drawable.shape_home_tab_indicator, null)
+                ResourcesCompat.getDrawable(resources, arch.cayenne.lib.common.R.drawable.shape_home_tab_indicator, null)
             setSelectedTabIndicator(indicatorDrawable)
             setSelectedTabIndicatorColor(android.graphics.Color.TRANSPARENT)
         }
