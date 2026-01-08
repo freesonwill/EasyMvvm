@@ -72,5 +72,14 @@
             android:textSize="@dimen/sp_15" />
     </LinearLayout>
 
+    <arch.cayenne.lib.skin.widget.SkinnableButton
+        android:id="@+id/button_next"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_45"
+        android:layout_marginTop="@dimen/dp_306"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
