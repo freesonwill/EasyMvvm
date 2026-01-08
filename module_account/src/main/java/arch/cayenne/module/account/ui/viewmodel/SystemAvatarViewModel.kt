@@ -16,6 +16,8 @@ class SystemAvatarViewModel :  BaseViewModel() {
 
     private val repository: PersonalInfoRepository by inject()
 
+    fun observeUserInfo() = repository.observeUserInfo()
+
     private val _systemAvatarList = MutableLiveData<List<SystemAvatarBean>>()
     val systemAvatarList: LiveData<List<SystemAvatarBean>> = _systemAvatarList
     override fun initViewModel() {
