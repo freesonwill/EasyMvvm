@@ -54,4 +54,12 @@
         <deepLink app:uri="@string/nav_module_avatar_preview_fragment" />
     </fragment>
 
+
+    <fragment
+        android:id="@+id/loginOrRegisterFragment"
+        android:name="arch.cayenne.module.account.ui.fragment.LoginOrRegisterFragment"
+        android:label="loginOrRegisterFragment">
+        <deepLink app:uri="@string/nav_module_login_or_register_fragment" />
+    </fragment>
+
 </navigation>
