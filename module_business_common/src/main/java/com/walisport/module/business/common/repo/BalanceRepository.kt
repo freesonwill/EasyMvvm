@@ -82,7 +82,8 @@ class BalanceRepository(
                 nickname = profileInfo.nickname,
                 avatar = AvatarEmbedded(
                     url = profileInfo.avatar.url,
-                    thumbhash = profileInfo.avatar.thumbhash
+                    thumbhash = profileInfo.avatar.thumbhash,
+                    type = profileInfo.avatar.type
                 ),
                 Uid = 100L,
                 registerTime = profileInfo.registerTime,
@@ -216,7 +217,7 @@ class BalanceRepository(
             ),
             exchangeAmount = if (exchangeAmount == null) "" else "$exchangeAmountUnit${
                 exchangeAmount.getFormalMoney(
-                    scale,
+                    100,
                     true
                 )
             }",
@@ -235,11 +236,11 @@ class BalanceRepository(
         val fiat = arrayListOf<BaseCurrencyData.CurrencyContentData>()
         val crypto = arrayListOf<BaseCurrencyData.CurrencyContentData>()
         if (user == null) return Pair(fiat, crypto)
-        val showAllCurrency = manager.getValue(UserDataKey.KEY_SHOW_ALL_CURRENCY, false)//先暫時為false
+        val showAllCurrency = manager.getValue(UserDataKey.KEY_SHOW_ALL_CURRENCY, false)
+        val currencyData = currencyConfigDao.getCurrencyConfigList()
         val exchangeAmountUnit =
-            currencyList.find { it.ccy == manager.getValue<String>(UserDataKey.KEY_DEFAULT_CURRENCY) }?.unit
-                ?: ""
-
+            currencyData.find { it.ccy == manager.getValue<String>(UserDataKey.KEY_DEFAULT_FIAT) }?.unit
+                ?: "$"
         currencyList.forEach { currency ->
             val wallet = user.list.find { currency.ccy == it.currency }
             if (!currency.crypto) {
@@ -270,7 +271,6 @@ class BalanceRepository(
             fiat.removeIf { it.amount == 0L }
             crypto.removeIf { it.amount == 0L }
         }
-
         return Pair(fiat, crypto)
     }
 
@@ -278,7 +278,7 @@ class BalanceRepository(
         if (keyword.isEmpty()) return "%"
         return "%" + keyword.uppercase().map { "$it%" }.joinToString("")
     }
-    
+
     fun Long.getFormalMoney(scale: Long = 100, bl: Boolean): String {
         if (this == 0L)
             return "0.00"
@@ -286,7 +286,15 @@ class BalanceRepository(
         return if (bl) {
             value.setScale(2, RoundingMode.DOWN).toString()
         } else {
-            value.stripTrailingZeros().toString()
+            if (isInteger(value)) {//小数点后无数字时，应该显示.00
+                value.toPlainString() + ".00"
+            } else {
+                value.stripTrailingZeros().toPlainString()
+            }
         }
+    }
+
+    private fun isInteger(value: BigDecimal): Boolean {
+        return value.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) == 0
     }
 }

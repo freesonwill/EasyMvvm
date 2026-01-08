@@ -22,6 +22,7 @@ import arch.cayenne.lib.common.utils.ThumbHashUtils
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.account.databinding.FragmentAvatarBinding
 import arch.cayenne.module.account.databinding.TitleBarPreviewAvatarBinding
 import arch.cayenne.module.account.ui.viewmodel.AvatarViewModel
@@ -79,8 +80,7 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
                 ) camera else storage
             )
         } else {
-            Toast.makeText(requireContext(), "权限被拒绝，无法使用相机或相册", Toast.LENGTH_SHORT)
-                .show()
+            showToast("权限被拒绝，无法使用相机或相册")
         }
     }
 
@@ -158,7 +158,19 @@ class AvatarFragment : BaseFragment<AvatarViewModel, FragmentAvatarBinding>() {
                 }
             }
 
+        personalViewModel.onUserInfoListener.observe(viewLifecycleOwner) {
+            it?.let {
+                if (it.avatar.type == 0) {
+                    titleBarBinding.ivMore.visibility = ViewGroup.GONE
+                } else {
+                    titleBarBinding.ivMore.visibility = ViewGroup.VISIBLE
+                }
+            }
+
+        }
+
         personalViewModel.showAvatar.observe(viewLifecycleOwner) { filePath ->
+
             Glide.with(this@AvatarFragment)
                 .load(BASE_URL +filePath)
                 .transition(DrawableTransitionOptions.withCrossFade())

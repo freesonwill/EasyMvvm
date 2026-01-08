@@ -54,7 +54,8 @@ class MeRepository(
                 nickname = profileInfo.nickname,
                 avatar = AvatarEmbedded(
                     url = profileInfo.avatar.url,
-                    thumbhash = profileInfo.avatar.thumbhash
+                    thumbhash = profileInfo.avatar.thumbhash,
+                    type = profileInfo.avatar.type
                 ),
                 Uid = 100L,
                 registerTime = profileInfo.registerTime,

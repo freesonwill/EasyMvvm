@@ -26,7 +26,8 @@ data class UserDataBean(
 
 data class AvatarEmbedded(
     val url: String,
-    val thumbhash: String
+    val thumbhash: String,
+    val type: Int
 )
 
 data class WalletBean(
