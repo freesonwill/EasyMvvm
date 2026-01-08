@@ -25,6 +25,7 @@ import java.io.IOException
 import java.net.SocketException
 import java.net.UnknownHostException
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.cancellation.CancellationException
 
 /**
  * @author: zhangsan
@@ -114,6 +115,7 @@ class HttpClient private constructor(private val retrofit: Retrofit) {
                 "${request.getScopeName()} ${System.currentTimeMillis() - start} ms".logd(this@HttpClient.javaClass.simpleName)
             }
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             e.printStackTrace()
             val failure = when (e) {
                 is SocketException,

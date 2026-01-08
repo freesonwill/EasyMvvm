@@ -1,4 +1,4 @@
-package com.walisport.module.business.common.ui
+package com.walisport.module.business.common.ui.fragment
 
 import android.animation.ObjectAnimator
 import android.app.Dialog
@@ -30,7 +30,7 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
 import com.blankj.utilcode.util.SizeUtils
-import com.walisport.module.business.common.viewmodel.BalanceViewModel
+import com.walisport.module.business.common.ui.viewmodel.BalanceViewModel
 import kotlin.reflect.KClass
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

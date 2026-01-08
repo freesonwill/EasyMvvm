@@ -1,4 +1,4 @@
-package com.walisport.module.business.common.ui
+package com.walisport.module.business.common.ui.view
 
 import android.content.Context
 import android.content.res.Configuration
@@ -15,7 +15,8 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.bumptech.glide.Glide
-import com.walisport.module.business.common.viewmodel.BalanceViewModel
+import com.walisport.module.business.common.ui.fragment.CurrencyDialogFragment
+import com.walisport.module.business.common.ui.viewmodel.BalanceViewModel
 
 class BalanceView : FrameLayout {
 
