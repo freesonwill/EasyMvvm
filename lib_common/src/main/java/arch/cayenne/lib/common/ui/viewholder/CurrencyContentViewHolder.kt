@@ -23,17 +23,18 @@ class CurrencyContentViewHolder(
             }
             clRoot.isSelected = item.isSelected
             tvCurrencyName.text = item.currencyName
-            tvCurrencyAmount.text = "${item.unit}${item.amountStr}"  //金额
-            tvCurrencyExchange.text = item.exchangeAmount            //汇率转化后的金额
+            tvCurrencyExchange.text = item.exchangeAmount
             Glide.with(root.context)
                 .load(item.icon)
                 .placeholder(R.drawable.ic_wali_demo)
                 .error(R.drawable.ic_wali_demo)
                 .into(ivIcon)
             if (TextUtils.isEmpty(item.exchangeAmount)) {
+                tvCurrencyAmount.text = "${item.unit}${item.amountStr}"
                 tvCurrencyExchange.visibility = View.GONE
                 tvCurrencyAmount.setPadding(0, -5, 0, 0)
             } else {
+                tvCurrencyAmount.text = "${item.amountStr}"
                 tvCurrencyExchange.visibility = View.VISIBLE
                 if (item.ccy != "USDT") {
                     tvCurrencyAmount.setPadding(0, -5, 0, 0)
