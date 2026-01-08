@@ -31,4 +31,5 @@
     <string name="account_edit_name_toast_empty" translatable="false">请输入昵称</string>
     <string name="tip_copy_id">复制成功</string>
     <string name="account_edit_name_toast_limit">本月的修改次数已满，请下个月再来尝试</string>
+    <string name="account_avatar_select">请选择头像</string>
 </resources>
