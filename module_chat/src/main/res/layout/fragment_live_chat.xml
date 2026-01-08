@@ -97,6 +97,7 @@
                 android:maxLines="5"
                 android:hint="@string/live_chat_talk"
                 android:imeActionLabel="@string/send"
+                android:textCursorDrawable="@drawable/chat_cursor"
                 android:imeOptions="actionSend"
                 android:inputType="textMultiLine|textCapSentences"
                 android:textColor="@color/main_text"
