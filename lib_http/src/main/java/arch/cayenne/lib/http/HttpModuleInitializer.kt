@@ -30,6 +30,7 @@ class HttpModuleInitializer : DefaultInitializer<String> {
             single(named("3n1_http")) {
                 HttpClient.Builder("$BASE_URL/" ,5000)
                     .addInterceptor(HeaderInterceptor(get()))
+                    .enableLog(BuildConfig.DEBUG)
                     .build()
             }
         })

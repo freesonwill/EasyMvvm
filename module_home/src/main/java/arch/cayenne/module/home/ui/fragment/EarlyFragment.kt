@@ -3,9 +3,6 @@ package arch.cayenne.module.home.ui.fragment
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
-import android.graphics.LinearGradient
-import android.graphics.Shader
-import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -26,7 +23,7 @@ import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
-import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
+import com.walisport.module.business.common.ui.adapter.BannerImageMatchAdapter
 import arch.cayenne.lib.common.ui.view.CustomTabLayoutMediator
 import arch.cayenne.lib.common.ui.view.WLLinearGradientFontSpan
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -34,10 +31,8 @@ import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
-import arch.cayenne.lib.common.utils.ext.VIPDataExt
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
@@ -123,7 +118,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
 
     override fun initView(savedInstanceState: Bundle?) {
         initSportLayout()
-        initSportBanner()
+        launch { initSportBanner()  }
         initTournamentLayout()
         // 初始化聯賽按鈕狀態
         updateTournamentButtonStyle(mViewModel.hasTournamentSelections())
@@ -293,14 +288,8 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
 
     // init Sport Banner 輪播區塊
     @SuppressLint("ClickableViewAccessibility")
-    private fun initSportBanner() {
-        val mockBannerList = listOf(
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-        )
+    private suspend fun initSportBanner() {
+        val mockBannerList = mViewModel.getBannerList()
         with(mBinding.includeSportBanner) {
             pbSportBanner.setTriggerListener {
                 vpSportBanner.setLoopTime(50)

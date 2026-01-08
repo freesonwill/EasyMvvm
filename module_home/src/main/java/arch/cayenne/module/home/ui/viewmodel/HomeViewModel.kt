@@ -8,16 +8,20 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.InfoBean
+import arch.cayenne.lib.http.data.Result
 import arch.cayenne.lib.skin.LanguageManager
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.getPlayTypeById
 import arch.cayenne.module.home.data.repo.HomeRepository
-import com.walisport.module.business.common.repo.BalanceRepository
+import com.walisport.module.business.common.data.BannerActiveBean
+import com.walisport.module.business.common.data.repo.BalanceRepository
+import com.walisport.module.business.common.utils.biz.HomeCommonBiz
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -26,6 +30,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
@@ -75,6 +80,8 @@ class HomeViewModel : BaseViewModel() {
     private val _scrollStateChanged = UnPeekLiveData<Int>()
     val scrollStateChanged: LiveData<Int> = _scrollStateChanged
 
+    private val _curveBannerLiveData = MutableLiveData<List<BannerActiveBean>>(emptyList())
+    val curveBannerLiveData:LiveData<List<BannerActiveBean>> = _curveBannerLiveData
 
     init {
         viewModelScope.launch {
@@ -176,5 +183,14 @@ class HomeViewModel : BaseViewModel() {
     override fun onCleared() {
         super.onCleared()
         stopTimer()
+    }
+
+    suspend fun getBannerActive() {
+        val result = HomeCommonBiz.getBannerActive()
+        if(result is Result.Success){
+            _curveBannerLiveData.value = result.data.data
+        } else {
+            "getBannerActive failed: $result".loge(TAG)
+        }
     }
 }

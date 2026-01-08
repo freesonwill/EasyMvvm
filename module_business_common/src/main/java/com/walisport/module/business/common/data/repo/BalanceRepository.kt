@@ -1,4 +1,4 @@
-package com.walisport.module.business.common.repo
+package com.walisport.module.business.common.data.repo
 
 import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.data.repository.BaseRepository
@@ -160,7 +160,6 @@ class BalanceRepository(
                     emit(manager.getValue(UserDataKey.KEY_DEFAULT_CURRENCY))
                 }
         ) { user, defaultCurrency ->
-            // profile/info沒進資料庫
             if (user == null) {
                 return@combine BaseCurrencyData.CurrencyContentData(
                     id = 0,
@@ -174,9 +173,7 @@ class BalanceRepository(
                     scale = 0
                 )
             }
-
             val (fait, crypto) = mappingCurrency(user)
-            //之前有紀錄預設顯示的錢包，並且在原本user的內容中
             if (defaultCurrency != null) {
                 val currency = fait.find { it.ccy == defaultCurrency }
                     ?: crypto.find { it.ccy == defaultCurrency }
@@ -286,7 +283,7 @@ class BalanceRepository(
         return "%" + keyword.uppercase().map { "$it%" }.joinToString("")
     }
 
-    private fun Long.getFormalMoney(scale: Long = 100, bl: Boolean): String {
+    fun Long.getFormalMoney(scale: Long = 100, bl: Boolean): String {
         if (this == 0L)
             return "0.00"
         val value = this.toBigDecimal().divide(BigDecimal(scale))

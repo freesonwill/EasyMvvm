@@ -31,7 +31,7 @@ import arch.cayenne.module.bet.data.remote.ComboRiskDataModel
 import arch.cayenne.module.bet.data.remote.ReserveBetDataModel
 import arch.cayenne.module.bet.data.remote.SingleBetDataModel
 import arch.cayenne.module.bet.data.remote.SingleRiskDataModel
-import com.walisport.module.business.common.repo.BalanceRepository
+import com.walisport.module.business.common.data.repo.BalanceRepository
 import galaxy.client.proto.Client
 import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope

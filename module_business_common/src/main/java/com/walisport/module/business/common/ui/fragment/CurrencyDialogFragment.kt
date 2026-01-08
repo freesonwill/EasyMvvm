@@ -1,4 +1,4 @@
-package com.walisport.module.business.common.ui
+package com.walisport.module.business.common.ui.fragment
 
 import android.animation.ObjectAnimator
 import android.app.Dialog
@@ -32,7 +32,7 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
 import com.blankj.utilcode.util.SizeUtils
-import com.walisport.module.business.common.viewmodel.BalanceViewModel
+import com.walisport.module.business.common.ui.viewmodel.BalanceViewModel
 import kotlin.reflect.KClass
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -145,7 +145,7 @@ class CurrencyDialogFragment constructor() :
                 spanCount = 2,
                 horizontalSpacing = 6.dp2px,
                 verticalSpacing = 8.dp2px,
-                includeEdge = false // 確保邊緣沒有空隙
+                includeEdge = false
             )
             rvCurrencySetting.addItemDecoration(itemDecoration)
             ivSetting.clickNoRepeat {

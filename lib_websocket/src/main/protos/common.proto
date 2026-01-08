@@ -12,6 +12,7 @@ message Match {
     bool collect = 2;         //用户是否收藏
     MatchBasicInfo basic_info = 3; //比赛基本信息
     repeated Market market = 4;  // 所有的盘口和赔率
+    bool active = 5; //比赛是否可用
 }
 
 //比赛基本信息

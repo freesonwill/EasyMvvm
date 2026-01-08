@@ -10,6 +10,7 @@ import android.view.ViewGroup.LayoutParams
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -20,7 +21,7 @@ import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
-import arch.cayenne.lib.common.data.constants.BizUrl
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
@@ -47,7 +48,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.business.common.data.Category
-import com.walisport.module.business.common.viewmodel.BalanceViewModel
+import com.walisport.module.business.common.ui.viewmodel.BalanceViewModel
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.GameCategoryVo
 import com.walisport.module.hall.data.HallGamePage
@@ -98,6 +99,12 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
     }
 
 
+    override fun initData() {
+        launch {
+            mViewModel.getBannerActive()
+        }
+    }
+
     override fun onDestroyView() {
         tabIndicatorHelper?.release()
         tabIndicatorHelper = null
@@ -140,10 +147,9 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
 //            }
 
             ivRightLogo.setOnBannerListener { Int, position ->
-                navigate(
-                    arch.cayenne.lib.res.R.string.nav_module_web_fragment
-                        .deeplink("url" to BizUrl.ACTIVITY.url)
-                )
+                val url = mViewModel.curveBannerLiveData.value?.get(position)?.targetUrl ?: ""
+                "aaaa---url:$url".logd(TAG)
+                navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment.deeplink("url" to url))
             }
 
             llSearchBar.apply {
@@ -338,6 +344,13 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
     }
 
     override suspend fun createObserver() {
+        mViewModel.curveBannerLiveData.observe(viewLifecycleOwner) { bannerList ->
+            val adapter = mBinding.ivRightLogo.adapter as BannerImageAdapter
+            val images = bannerList.map { it.imagePath }
+            adapter.setDatas(images)
+            mBinding.ivRightLogo.isVisible = adapter.itemCount != 0
+        }
+
         mViewModel.gameCategory.observe(viewLifecycleOwner) { categoryList ->
             LogUtils.e("HallFragment--->gameCategory--->$categoryList")
             //分类列表数据更新后处理
@@ -404,19 +417,13 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
     }
 
 
-    private fun initCurveBanner() {
-        val images = listOf(
-            arch.cayenne.lib.common.R.drawable.home_bar_left_icon,
-            arch.cayenne.lib.common.R.drawable.home_bar_left_icon,
-            arch.cayenne.lib.common.R.drawable.home_bar_left_icon,
-            arch.cayenne.lib.common.R.drawable.home_bar_left_icon
-        )
+    private fun initCurveBanner(images:List<String> = emptyList()) {
         // 自定义适配器
         val adapter = BannerImageAdapter(images)
         mBinding.ivRightLogo.setAdapter(adapter)
-        mBinding.ivRightLogo.setLoopTime(3000)
+        mBinding.ivRightLogo.setLoopTime(5000)
         // 设置滑动时长丝滑,不影响曲线,
-        mBinding.ivRightLogo.setScrollTime(500)  // 1 秒
+        mBinding.ivRightLogo.setScrollTime(500)
         mBinding.ivRightLogo.setPageTransformer(CustomCurveTransformer())
         // 启动轮播
         mBinding.ivRightLogo.start()

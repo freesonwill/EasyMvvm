@@ -2,7 +2,6 @@
 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/title_bg"
@@ -67,9 +66,7 @@
                     tools:ignore="MissingConstraints" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
-            <com.walisport.module.business.common.ui.BalanceView
+            <com.walisport.module.business.common.ui.view.BalanceView
                 android:id="@+id/balance_view"
                 android:layout_width="179dp"
                 android:layout_height="wrap_content"
@@ -79,8 +76,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@+id/clAvava"
                 app:layout_constraintTop_toTopOf="parent"/>
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--  搜尋列  -->

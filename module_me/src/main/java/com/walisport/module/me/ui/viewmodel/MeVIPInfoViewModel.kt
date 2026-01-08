@@ -7,7 +7,7 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.database.entity.UserDataBean
-import com.walisport.module.business.common.repo.BalanceRepository
+import com.walisport.module.business.common.data.repo.BalanceRepository
 import com.walisport.module.me.data.MeRepository
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
