@@ -16,7 +16,8 @@ data class ProfileInfo(
 
 data class Avatar(
     val url: String,
-    val thumbhash: String
+    val thumbhash: String,
+    val type: Int//头像类型 0 系统头像 1 自定义头像
 )
 
 data class AccountInfo(
