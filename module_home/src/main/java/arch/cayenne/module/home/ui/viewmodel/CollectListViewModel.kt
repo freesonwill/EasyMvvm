@@ -13,7 +13,7 @@ import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.repo.BaseMatchRepository
 import arch.cayenne.module.home.data.repo.BaseMatchRepository.Companion.DEFAULT_MATCH_SIZE
 import arch.cayenne.module.home.data.repo.CollectListRepository
-import com.walisport.module.business.common.repo.BalanceRepository
+import com.walisport.module.business.common.data.repo.BalanceRepository
 import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

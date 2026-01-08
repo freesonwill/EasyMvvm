@@ -20,7 +20,7 @@ import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.data.OddsChangeEnum
 import arch.cayenne.module.bet.repo.ComboBetRepository
 import arch.cayenne.module.bet.ui.fragment.ComboDetailFragment
-import com.walisport.module.business.common.repo.BalanceRepository
+import com.walisport.module.business.common.data.repo.BalanceRepository
 import kotlinx.coroutines.launch
 
 class ComboBetViewModel(
