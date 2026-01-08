@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.youth.banner.adapter.BannerAdapter
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 // 示例适配器
-class BannerImageAdapter(private val images: List<Int>) : BannerAdapter<Int, BannerImageAdapter.Holder>(images) {
+class BannerImageAdapter(images: List<String>) : BannerAdapter<String, BannerImageAdapter.Holder>(images) {
 
     override fun onCreateHolder(parent: ViewGroup, viewType: Int): Holder {
         val container = FrameLayout(parent.context).apply {
@@ -33,9 +33,8 @@ class BannerImageAdapter(private val images: List<Int>) : BannerAdapter<Int, Ban
         return Holder(container)
     }
 
-    override fun onBindView(holder: Holder, data: Int, position: Int, size: Int) {
-        holder.imageView.setImageResource(data)
-        // Glide.with(holder.imageView).load(data).into(holder.imageView)
+    override fun onBindView(holder: Holder, data: String, position: Int, size: Int) {
+        Glide.with(holder.imageView).load(data).into(holder.imageView)
     }
 
     class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {

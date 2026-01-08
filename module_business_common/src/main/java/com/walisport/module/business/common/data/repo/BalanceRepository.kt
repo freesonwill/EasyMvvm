@@ -1,4 +1,4 @@
-package com.walisport.module.business.common.repo
+package com.walisport.module.business.common.data.repo
 
 import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.data.repository.BaseRepository
