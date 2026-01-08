@@ -23,7 +23,8 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/ll_wrapper"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:gravity="center_vertical">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_country_code"
@@ -31,7 +32,10 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:paddingStart="@dimen/dp_12"
-                android:paddingEnd="@dimen/dp_4" />
+                android:paddingEnd="@dimen/dp_4"
+                android:textColor="@color/account_country_code_text_color"
+                android:textFontWeight="400"
+                android:textSize="@dimen/sp_15" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_16"
@@ -40,10 +44,11 @@
 
 
             <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/dp_3"
+                android:layout_height="@dimen/dp_21"
                 android:layout_marginStart="@dimen/dp_4"
                 android:layout_marginEnd="@dimen/dp_8"
-                android:layout_width="@dimen/dp_3"
-                android:layout_height="@dimen/dp_21" />
+                app:srcCompat="@drawable/account_register_separator_line" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -51,13 +56,20 @@
         <arch.cayenne.lib.skin.widget.SkinnableEditText
             android:id="@+id/edit_text_phone"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:hint="请输入手机号"
-            android:inputType="phone"
-            android:padding="12dp"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="@string/hint_phone_number"
+            android:inputType="number"
+            android:maxLength="15"
+            android:paddingStart="@dimen/dp_4"
+            android:paddingEnd="@dimen/dp_0"
             android:textColor="@color/white"
-            android:textColorHint="@color/gray" />
+            android:textColorHint="@color/account_register_hint_text_color"
+            android:textCursorDrawable="@drawable/shape_account_register_edittext_cursor"
+            android:textFontWeight="500"
+            android:textSize="@dimen/sp_15" />
     </LinearLayout>
 
 

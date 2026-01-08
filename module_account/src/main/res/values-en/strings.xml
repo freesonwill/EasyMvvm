@@ -4,5 +4,6 @@
     <string name="title_login_or_register" translatable="false">Login/Register</string>
     <string name="account_phone_register">Phone Number</string>
     <string name="account_email_register">Email</string>
+    <string name="hint_phone_number">Phone Number</string>
 
 </resources>

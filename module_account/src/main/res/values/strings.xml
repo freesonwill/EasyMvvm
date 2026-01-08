@@ -34,4 +34,5 @@
     <string name="title_login_or_register" translatable="false">登录/注册</string>
     <string name="account_phone_register" translatable="false">手机号码</string>
     <string name="account_email_register" translatable="false">电子邮箱</string>
+    <string name="hint_phone_number">手机号码</string>
 </resources>
