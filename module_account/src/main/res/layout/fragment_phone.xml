@@ -14,18 +14,39 @@
         android:layout_marginTop="@dimen/dp_30"
         android:layout_marginEnd="@dimen/dp_28"
         android:background="@drawable/shape_register_edittext"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Spinner
-            android:id="@+id/spinner_country_code"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/ll_wrapper"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:entries="@array/country_codes"
-            android:paddingEnd="8dp" />
+            android:layout_height="match_parent">
+
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_country_code"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/dp_12"
+                android:paddingEnd="@dimen/dp_4" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
+                app:srcCompat="@drawable/account_register_drop_down" />
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_width="@dimen/dp_3"
+                android:layout_height="@dimen/dp_21" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
 
         <arch.cayenne.lib.skin.widget.SkinnableEditText
             android:id="@+id/edit_text_phone"
