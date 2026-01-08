@@ -42,7 +42,7 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
 
 
     private var avatarCheckable = false
-    private var rotationAngle = 90f
+    private var rotationAngle = 0f
     private var imageIndex = -1
 
     override fun initView(savedInstanceState: Bundle?) {
