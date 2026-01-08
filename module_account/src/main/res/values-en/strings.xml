@@ -2,5 +2,7 @@
     <string name="account_edit_name_toast_limit">You have reached the limit of changes for this month. Please try again next month.</string>
     <string name="system_avatar_save" translatable="false">Save Avatar</string>
     <string name="title_login_or_register" translatable="false">Login/Register</string>
+    <string name="account_phone_register">Phone Number</string>
+    <string name="account_email_register">Email</string>
 
 </resources>
