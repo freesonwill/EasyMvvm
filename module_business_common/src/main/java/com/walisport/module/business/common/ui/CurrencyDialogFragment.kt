@@ -18,7 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BasePositionDialogFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.data.constants.BaseCurrencyData
 import arch.cayenne.lib.common.databinding.FragmentCurrencyDialogBinding
@@ -222,6 +224,20 @@ class CurrencyDialogFragment constructor() :
                 list.addAll(crypto)
             }
             currencyAdapter.submitList(list)
+            //计算被选中币种的item，如果被选中币种item处于不可见状态，就将其滑动至可见区域
+            mBinding.rvCurrency.post {
+                launch {
+                    val ccy = balanceViewModel.getSelectCurrency()
+                    var pos = 0
+                    list.withIndex().forEach { (index, element) ->
+                        if (element is BaseCurrencyData.CurrencyContentData) {
+                            if (element.ccy == ccy) pos = index
+                        }
+                    }
+                    val layoutManager = mBinding.rvCurrency.layoutManager as LinearLayoutManager
+                    layoutManager.scrollToPositionWithOffset(pos, 10.dp2px)
+                }
+            }
             mBinding.rvCurrency.doOnPreDraw {
                 mBinding.blurView.invalidateOutline()
             }
