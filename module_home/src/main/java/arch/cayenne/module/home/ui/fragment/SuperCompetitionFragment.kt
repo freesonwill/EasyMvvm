@@ -11,8 +11,9 @@ import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
-import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
+import com.walisport.module.business.common.ui.adapter.BannerImageMatchAdapter
 import arch.cayenne.lib.common.ui.view.WLLinearGradientFontSpan
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
@@ -41,6 +42,9 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.reflect.KClass
 
+/**
+ * 超级大赛
+ */
 class SuperCompetitionFragment :
     BaseFragment<SuperCompetitionViewModel, FragmentSuperCompetitionBinding>(),
     ISubFragmentLifecycle {
@@ -50,7 +54,7 @@ class SuperCompetitionFragment :
     override val vmClass: KClass<SuperCompetitionViewModel> = SuperCompetitionViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
-        initSportBanner()
+        launch { initSportBanner() }
         initMatchListFragment()
     }
 
@@ -112,14 +116,8 @@ class SuperCompetitionFragment :
 
     // init Sport Banner 輪播區塊
     @SuppressLint("ClickableViewAccessibility")
-    private fun initSportBanner() {
-        val mockBannerList = arrayListOf(
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-        )
+    private suspend fun initSportBanner() {
+        val mockBannerList = mViewModel.getBannerList()
         with(mBinding.includeSportBanner) {
             pbSportBanner.setTriggerListener {
                 vpSportBanner.setLoopTime(50)

@@ -66,7 +66,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     api(libs.glide)
     implementation(libs.core)
-    implementation(libs.banner)
+    api(libs.banner)
     implementation(libs.glide.avif)
     api(libs.calendarview)
     kapt(libs.glidecompiler)

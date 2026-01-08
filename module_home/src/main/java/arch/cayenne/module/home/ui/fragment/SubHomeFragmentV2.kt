@@ -19,8 +19,9 @@ import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
-import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
+import com.walisport.module.business.common.ui.adapter.BannerImageMatchAdapter
 import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
 import arch.cayenne.lib.common.ui.view.WLLinearGradientFontSpan
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -90,7 +91,7 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModelV2, FragmentSubHomeV2Bind
 
 
     override fun initView(savedInstanceState: Bundle?) {
-        initSportBanner()
+        launch { initSportBanner() }
         initSportLayout()
         setupMatchFragment()
         initTournamentLayout()
@@ -264,14 +265,8 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModelV2, FragmentSubHomeV2Bind
 
     // init Sport Banner 輪播區塊
     @SuppressLint("ClickableViewAccessibility")
-    private fun initSportBanner() {
-        val mockBannerList = arrayListOf(
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-        )
+    private suspend fun initSportBanner() {
+        val mockBannerList = mViewModel.getBannerList()
 
         with(mBinding.includeSportBanner) {
             pbSportBanner.setTriggerListener {
