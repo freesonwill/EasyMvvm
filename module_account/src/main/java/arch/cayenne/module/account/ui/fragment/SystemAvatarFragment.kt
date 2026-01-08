@@ -2,7 +2,12 @@ package arch.cayenne.module.account.ui.fragment
 
 import android.graphics.Bitmap
 import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.renderscript.Allocation
+import android.renderscript.Element
+import android.renderscript.RenderScript
+import android.renderscript.ScriptIntrinsicBlur
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.BASE_URL
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -25,6 +31,8 @@ import arch.cayenne.module.account.ui.adapter.PersonalInfoAdapter
 import arch.cayenne.module.account.ui.viewmodel.PersonalInfoViewModel
 import arch.cayenne.module.account.ui.viewmodel.SystemAvatarViewModel
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -52,7 +60,7 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
         }
         mBinding.tvSave.clickNoRepeat {
             if (imageIndex == -1) {
-                showToast("请选择头像")
+                showToast(R.string.account_avatar_select.getString())
                 return@clickNoRepeat
             }
             personalInfoAdapter.setIsUpAvatar(false)
@@ -102,52 +110,56 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
                 rotationAngle = 0f
                 mBinding.ivUserAvatar.setRotationAngle(0f)
                 // 加载网络图片并高斯模糊后设置为背景
-                Glide.with(this@SystemAvatarFragment)
-                    .asBitmap()
-                    .load(data.host + data.url.trim())
-                    .into(object : com.bumptech.glide.request.target.CustomTarget<Bitmap>() {
-                        override fun onResourceReady(
-                            bit: Bitmap,
-                            transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?
-                        ) {
-                            var blurBit = bit
-                            // 先放大再高斯模糊，提升磨砂自然度
-                            val blurRadius = 25f
-                            val blurSize = 1200 // 先放大到更高分辨率
-                            val scaledBitmap =
-                                Bitmap.createScaledBitmap(blurBit, blurSize, blurSize, true)
-                            val rs = android.renderscript.RenderScript.create(requireContext())
-                            val input =
-                                android.renderscript.Allocation.createFromBitmap(rs, scaledBitmap)
-                            val output = android.renderscript.Allocation.createTyped(rs, input.type)
-                            val script = android.renderscript.ScriptIntrinsicBlur.create(
-                                rs,
-                                android.renderscript.Element.U8_4(rs)
-                            )
-                            script.setRadius(blurRadius)
-                            script.setInput(input)
-                            script.forEach(output)
-                            output.copyTo(scaledBitmap)
-                            rs.destroy()
-                            // 再缩放回目标尺寸
-                            val blurredBitmap = Bitmap.createScaledBitmap(
-                                scaledBitmap,
-                                blurBit.width,
-                                blurBit.height,
-                                true
-                            )
-                            mBinding.backgroundImage.setImageBitmap(blurredBitmap)
-                            mBinding.ivUserAvatar.setImageBitmap(bit)
-                        }
-
-                        override fun onLoadCleared(placeholder: android.graphics.drawable.Drawable?) {
-                        }
-                    })
+                loadImage(data.host + data.url.trim())
 
             }
         }
         mBinding.tvSave.isSelected = true
         mBinding.tvSave.isClickable = true
+    }
+
+    private fun loadImage(url: String) {
+        Glide.with(this@SystemAvatarFragment)
+            .asBitmap()
+            .load(url)
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(
+                    bit: Bitmap,
+                    transition: Transition<in Bitmap>?
+                ) {
+                    var blurBit = bit
+                    // 先放大再高斯模糊，提升磨砂自然度
+                    val blurRadius = 25f
+                    val blurSize = 1200 // 先放大到更高分辨率
+                    val scaledBitmap =
+                        Bitmap.createScaledBitmap(blurBit, blurSize, blurSize, true)
+                    val rs = RenderScript.create(requireContext())
+                    val input =
+                        Allocation.createFromBitmap(rs, scaledBitmap)
+                    val output = Allocation.createTyped(rs, input.type)
+                    val script = ScriptIntrinsicBlur.create(
+                        rs,
+                        Element.U8_4(rs)
+                    )
+                    script.setRadius(blurRadius)
+                    script.setInput(input)
+                    script.forEach(output)
+                    output.copyTo(scaledBitmap)
+                    rs.destroy()
+                    // 再缩放回目标尺寸
+                    val blurredBitmap = Bitmap.createScaledBitmap(
+                        scaledBitmap,
+                        blurBit.width,
+                        blurBit.height,
+                        true
+                    )
+                    mBinding.backgroundImage.setImageBitmap(blurredBitmap)
+                    mBinding.ivUserAvatar.setImageBitmap(bit)
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                }
+            })
     }
 
     override fun initData() {
@@ -216,6 +228,13 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
             } else {
                 showToast("上传失败")
             }
+        }
+
+        mViewModel.observeUserInfo().collect {
+            it?.let {
+                loadImage(if (it.avatar.url.startsWith(BASE_URL)) it.avatar.url else BASE_URL + it.avatar.url)
+            }
+
         }
     }
 
