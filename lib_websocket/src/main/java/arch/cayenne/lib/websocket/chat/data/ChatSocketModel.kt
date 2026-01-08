@@ -1,5 +1,7 @@
 package arch.cayenne.lib.websocket.chat.data
 
+import android.os.Parcel
+import android.os.Parcelable
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.websocket.data.IResponse
 import arch.cayenne.lib.websocket.data.ISocketData
@@ -56,13 +58,14 @@ enum class MsgType(val value: Int) {
         fun getMsgType(value: Int): MsgType {
             return when (value) {
                 0 -> MSG_TYPE_SYSTEM
-                2,9 -> MSG_TYPE_SHARE_ORDER
+                2, 9 -> MSG_TYPE_SHARE_ORDER
                 3 -> MSG_TYPE_SHARE_GAME
                 4 -> MSG_TYPE_AT
                 else -> MSG_TYPE_TEXT
             }
         }
-         //服务器没有At消息类型
+
+        //服务器没有At消息类型
         fun getSendMsgType(value: Int): MsgType {
             return when (value) {
                 2 -> MSG_TYPE_SHARE_ORDER
@@ -130,7 +133,7 @@ data class ChatSendMsgRequest(
     val refUid: List<String>? = null,
     val chatType: Int,
     val msgType: Int,
-    val extraData: Map<String,String>? = null
+    val extraData: Map<String, String>? = null
 ) : ChatRequestData
 
 data class ChatSendMsgResponse(override val code: Int, val errorMessage: String? = "") : IResponse,
@@ -162,7 +165,37 @@ data class ChatRefUser(
     val userName: String,
     val avatarId: Int,
     val replaceRefUserName: String? = null
-)
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readInt(),
+        parcel.readString()
+    ) {
+    }
+
+    override fun describeContents(): Int {
+
+        return 0
+    }
+
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeString(uid)
+        dest.writeString(userName)
+        dest.writeInt(avatarId)
+        dest.writeString(replaceRefUserName)
+    }
+
+    companion object CREATOR : Parcelable.Creator<ChatRefUser> {
+        override fun createFromParcel(parcel: Parcel): ChatRefUser {
+            return ChatRefUser(parcel)
+        }
+
+        override fun newArray(size: Int): Array<ChatRefUser?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
 
 /**
  * 消息Bean
@@ -179,7 +212,7 @@ data class ChatMsg(
     val onlyForSelf: Int = -1,
     val replaceUserName: String? = null,
     val msgType: MsgType = MsgType.MSG_TYPE_TEXT,
-    val extraData: Map<String,String>? = null,
+    val extraData: Map<String, String>? = null,
     val chatType: ChatType = ChatType.LOBBY
 ) {
 }

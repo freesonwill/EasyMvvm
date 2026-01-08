@@ -71,7 +71,7 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
 
                     ChatMsgType.AT -> {
 //                        ChatPrivateUserFragment.show(this)
-                        ChatUserInfoFragment().show(childFragmentManager)
+                        ChatUserInfoFragment.show(childFragmentManager,bean.toChatRefUsers())
                     }
 
                     ChatMsgType.TEXT -> {
@@ -79,7 +79,7 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                     }
 
                     ChatMsgType.NAME ->{
-                        ChatUserInfoFragment().show(childFragmentManager)
+                        ChatUserInfoFragment.show(childFragmentManager,bean.toChatRefUsers())
                     }
 
                     else -> {}
@@ -212,7 +212,6 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                     homeViewModel.addAtMsgToChat(it)
                 }
             }
-
         }
     }
 

@@ -263,6 +263,7 @@
 
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_report"
                         android:layout_marginTop="@dimen/dp_8"
                         android:layout_width="74dp"
                         android:layout_height="48dp"
@@ -274,6 +275,7 @@
                         android:textSize="14sp" />
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_at"
                         android:layout_width="0dp"
                         android:layout_height="48dp"
                         android:layout_marginTop="@dimen/dp_8"

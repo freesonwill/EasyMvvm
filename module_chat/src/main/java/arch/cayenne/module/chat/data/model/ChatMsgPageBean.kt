@@ -27,6 +27,16 @@ data class ChatMsgPageBean(
     var flashFlag:Boolean = false
 ) : Comparable<ChatMsgPageBean> {
 
+    fun toChatRefUsers(): ChatRefUser {
+
+        return ChatRefUser(
+            uid = uid,
+            userName = userName,
+            avatarId = avatarId,
+            replaceRefUserName = replaceUserName
+        )
+    }
+
     companion object {
 
         fun toChatPageBean(
