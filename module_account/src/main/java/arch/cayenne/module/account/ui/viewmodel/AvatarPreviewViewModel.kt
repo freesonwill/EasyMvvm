@@ -33,7 +33,7 @@ class AvatarPreviewViewModel : BaseViewModel() {
             filePath
         )
         repository.uploadResult.observeForever { result ->
-            repository.updateAvatar(avatarUrl = result, type = "1", avatarId = "")
+            repository.updateAvatar(avatarUrl = result, type = "1", avatarId = -1)
         }
     }
 }

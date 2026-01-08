@@ -175,7 +175,7 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
                 }
                 return@launch
             } else {
-                mViewModel.uploadAvatarUrl(systemAvatarBean.url)
+                mViewModel.uploadAvatarUrl(systemAvatarBean.id)
             }
 
         }

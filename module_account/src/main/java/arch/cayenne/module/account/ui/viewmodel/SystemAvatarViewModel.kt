@@ -36,19 +36,21 @@ class SystemAvatarViewModel :  BaseViewModel() {
     val uploadResult: LiveData<String> = _uploadResult
 
     // 上传头像
-    fun uploadAvatar(filePath: String) {
-        repository.uploadAvatar(
-            "100",
-            "MTAwXzE3NjU0Mzc1NTk1MDk6ZFBoc3dpelQwazRTaUJnbg",
-            filePath
-        )
-        repository.uploadResult.observeForever { result ->
-            repository.updateAvatar(avatarUrl = result, type = "1", avatarId = "")
-        }
-    }
+//    fun uploadAvatar(filePath: String) {
+//        repository.uploadAvatar(
+//            "100",
+//            "MTAwXzE3NjU0Mzc1NTk1MDk6ZFBoc3dpelQwazRTaUJnbg",
+//            filePath
+//        )
+//        repository.uploadResult.observeForever { result ->
+//            repository.updateAvatar(avatarUrl = result, type = "1", avatarId = "")
+//        }
+//    }
 
-    fun uploadAvatarUrl(avatarUrl: String) {
-        repository.updateAvatar(avatarUrl = avatarUrl, type = "0", avatarId = "")
+
+
+    fun uploadAvatarUrl(id:Int){
+        repository.updateAvatar(avatarUrl = "", type = "0", avatarId = id)
     }
 
 
