@@ -34,7 +34,7 @@ import arch.cayenne.module.home.databinding.ItemTournamentHeaderBinding
 import arch.cayenne.module.home.ui.adapter.TournamentSectionAdapter
 import arch.cayenne.module.home.ui.view.CustomFilterSideBarView
 import arch.cayenne.module.home.ui.view.decoration.StickyHeaderItemDecoration
-import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModel
+import arch.cayenne.module.home.ui.viewmodel.ChampionSubViewModel
 import arch.cayenne.module.home.ui.viewmodel.TournamentListViewModel
 import kotlin.reflect.KClass
 
@@ -45,7 +45,7 @@ class TournamentListFragment :
         FragmentTournamentListBinding::class
     override val vmClass: KClass<TournamentListViewModel> = TournamentListViewModel::class
 
-    private val subHomeViewModel: SubHomeViewModel by viewModels({ requireParentFragment() })
+    private val championSubViewModel: ChampionSubViewModel by viewModels({ requireParentFragment() })
     private lateinit var adapter: TournamentSectionAdapter
     private var pendingJumpIndex: Int? = null // 用來判斷是否為點擊字母列表來跳選列表分類，null代表非自動跳轉狀態
     private var stickyHeaderDecoration: StickyHeaderItemDecoration? = null
@@ -94,7 +94,7 @@ class TournamentListFragment :
             adapter = TournamentSectionAdapter(
                 tournamentListType = tournamentType,
                 onTournamentClick = { tournament ->
-                    subHomeViewModel.onTournamentListSelected(tournament)
+                    championSubViewModel.onTournamentListSelected(tournament)
                 }
             )
             rvTournamentList.layoutManager = LinearLayoutManager(context)

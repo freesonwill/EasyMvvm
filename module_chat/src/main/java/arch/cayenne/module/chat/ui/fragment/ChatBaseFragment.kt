@@ -3,6 +3,8 @@ package arch.cayenne.module.chat.ui.fragment
 import android.animation.AnimatorSet
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.InputDevice
+import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
@@ -27,6 +29,7 @@ import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.websocket.chat.data.ChatRefUser
 import arch.cayenne.lib.websocket.chat.data.ChatType
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.R
@@ -47,6 +50,7 @@ import arch.cayenne.module.chat.manager.ChatATHelper
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim.getInputAnim
 import arch.cayenne.module.chat.utils.ChatMsgUtils
+import arch.cayenne.module.chat.utils.EditTextUtils.editDelBtn
 import arch.cayenne.module.order.data.model.BetShareBean
 import arch.cayenne.module.order.ui.fragment.ChatChooseBetFragment
 import kotlinx.coroutines.delay
@@ -82,13 +86,6 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
         initInputListener()
         initHotRecycler()
         initChatHelper()
-
-//        arguments?.let { //TODO  首页过来的 之后需要处理聊天室要matchId的问题
-//            val value = it.getBoolean("chat", false)
-//            if (value) {
-//                setMainChatStatus()
-//            }
-//        }
     }
 
     fun addEmojiPopupListen(emojiPopupListen: (isPopup: Boolean) -> Unit) {
@@ -160,12 +157,24 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
      * */
     fun observeMatchId(matchId: Long) {
         mViewModel.setArguments(matchId, chatType)
+        updateLanguageIcon()
+        val position = ChatMsgUtils.mainChatRoom().indexOf(mViewModel.matchId ?: 102L)
+        mViewModel.mainChatLanguagePosition = position
     }
 
     fun observeLiveMatch(liveStart: Boolean, matchStatus: Int) {
         updateChatUi(liveStart, matchStatus)
     }
 
+    private fun updateLanguageIcon() {
+        val position = ChatMsgUtils.mainChatRoom().indexOf(mViewModel.matchId ?: 102L)
+        if (position != -1) {
+            mViewModel.languageSelectPosition = position
+            mBinding.ivLanguage.post {
+                mBinding.ivLanguage.setImageResource(ChatMsgUtils.languageIcons()[position])
+            }
+        }
+    }
 
     override fun onStart() {
         StatusBarConfig.statusBarType =
@@ -214,18 +223,36 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
 
                 }
             }
+            launch {
+                mViewModel.enterRoomFlow.collect{
+                    if(it?.code == 0){
+                     updateLanguageIcon()
+                    }else{ //进入房间失败后重新进入
+                        mViewModel.enterRoom(chatType)
+                    }
+                }
+            }
+            launch {
+                mViewModel.leaveRoomFLow.collect{
+                    //聊天切换聊天室离开聊天室后重新进入新聊天室
+                    if(mViewModel.updateRoom){
+                        mViewModel.updateRoom = false
+                        mViewModel.enterRoom(chatType)
+                    }
+                }
+            }
             launch {//选择注单返回监听
                 observeResult<Bundle>(ChatChooseBetFragment.SHARE_BET_LISTEN) {
+                    ChatMsgUtils.checkAndReplaceBetShareInEditable(mBinding.chatEtInput)
                     val data =
                         it.getParcelable<BetShareBean>(ChatChooseBetFragment.SHARE_BET_RESULT)
                     val type = it.getInt(ChatChooseBetFragment.SHARE_BET_TYPE, 0)
-                    val content = data?.content?.let { betStr ->
-                        ChatMsgUtils.addNoDivideCharInBetShar(betStr)
-                    } ?: ""
+                    val tv = data?.content?.let { ChatMsgUtils.addNoDivideCharInBetShar(it) } ?: ""
                     chatAtHelper.addShareBetSpan(
-                        content,
+                        tv,
                         if (type == 0) ChatMsgType.BET_GAME else ChatMsgType.BET_SPORT
                     )
+                    mViewModel.currentSelectBetShare = data
                     SoftKeyBoardAnim.etAnimWhenEtContentChange(
                         mBinding,
                         mViewModel.currentKeyBoardType,
@@ -235,7 +262,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                         onAnimEnd = {
                             updateInputIcon(it)
                         })
-                    keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD,6)
+                    keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD, 6)
                 }
             }
 
@@ -266,16 +293,26 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
             sendText()
         }
         mViewModel.atLiveData.observe(viewLifecycleOwner) {
-            chatAtHelper.addAtMentionSpan(it.userName)
-            SoftKeyBoardAnim.etAnimWhenEtContentChange(
-                mBinding,
-                mViewModel.currentKeyBoardType,
-                onAnimStart = {
-                    updateInputIcon(it)
-                },
-                onAnimEnd = {
-                    updateInputIcon(it)
-                })
+            if(!chatAtHelper.checkAtInEtInput(it.uid,mViewModel.myUid)){
+                return@observe
+            }
+            chatAtHelper.addAtMentionSpan(
+                it.userName,
+                ChatRefUser(it.uid, it.userName, it.avatarId, it.replaceUserName)
+            )
+//            SoftKeyBoardAnim.etAnimWhenEtContentChange(
+//                mBinding,
+//                mViewModel.currentKeyBoardType,
+//                onAnimStart = {
+//                    updateInputIcon(it)
+//                },
+//                onAnimEnd = {
+//                    updateInputIcon(it)
+//                })
+           lifecycleScope.launch { //因为diaog关闭后会抢焦点，延时处理
+               delay(500)
+               keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD, 9)
+           }
         }
     }
 
@@ -311,7 +348,6 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
 
     private fun toChooseBet() {
         findNavController().navigate("walisport://module_betslip/chatChooseBetFragment".deeplink())
-        ChatMsgUtils.checkAndReplaceBetShareInEditable(mBinding.chatEtInput)
     }
 
     private fun initSoftKeyBoardFragment() {
@@ -401,9 +437,9 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                             KeyBoardType.EMOJI
                         }
                     keyboardChangeClick(clickType)
-                    chatAtHelper.dismissWindow()
+//                    chatAtHelper.dismissWindow()
                 }
-                calculationLayoutSize()
+//                calculationLayoutSize()
                 return@setOnTouchListener true
             }
             chatTvSend.setOnTouchListener { v, event ->
@@ -450,7 +486,8 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
             chatEtInput.setOnFocusChangeListener { v, hasFocus ->
 //            如果当前点击事件 softkeyboardlisterner 和 当前状态currentKeyboardListener 一致可以过滤掉聚焦事件
                 if (softKeyBoardManager.softKeyboardStatus && !softKeyBoardManager.isSoftKeyboardShow) { //要打开软件盘并且软件盘在收缩中
-                    softKeyBoardManager.openSoftKeyBoard()
+//                    "onFocusChange openSoftKeyBoard".logd("aaa")
+                    softKeyBoardManager.checkOpenSoftKeyboard()
                 }
             }
             //监听点击事件
@@ -528,13 +565,18 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
     private fun showLanguageDialog() {
         val viewLocation = IntArray(2)
         mBinding.ivLanguage.getLocationOnScreen(viewLocation)
-
         ChatLanguageDialogFragment.newInstance(
             viewLocation[0],
             viewLocation[1],
             mViewModel.languageSelectPosition
         ) {
-            mViewModel.updateLanguageSelect(it)
+            if(mViewModel.languageSelectPosition != it){ //切换离开聊天时清空记录
+                childFragmentManager.findFragmentByTag(ChatPageFragment.TAG)?.let { fragment ->
+                    (fragment as ChatPageFragment).clearChatList()
+                }
+            }
+            mViewModel.updateLanguageSelect(it, chatType)
+
         }.show(childFragmentManager)
     }
 
@@ -721,13 +763,13 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                     })
                 }
                 onEnd.invoke()
-                if (chatAtHelper.shouldOpenAtDialog) { //如果点击了输入框@btn，动画完成后添加@到输入框框
-                    chatAtHelper.shouldOpenAtDialog = false
-                    lifecycleScope.launch {
-                        delay(500)
-                        chatAtHelper.addAtInEt()
-                    }
-                }
+//                if (chatAtHelper.shouldOpenAtDialog) { //如果点击了输入框@btn，动画完成后添加@到输入框框
+//                    chatAtHelper.shouldOpenAtDialog = false
+//                    lifecycleScope.launch {
+//                        delay(500)
+//                        chatAtHelper.addAtInEt()
+//                    }
+//                }
             })
             if (isFirstOpen) {
                 mainAnim?.startDelay = 200L
@@ -746,9 +788,10 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
             if (text?.length == 0) {
                 return@apply
             }
-            dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
-            dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL))
-            softKeyBoardManager.etRequestFocus()
+            if(!(hasFocus() && selectionStart == selectionEnd)){
+                requestFocus()
+            }
+           editDelBtn()
         }
     }
 

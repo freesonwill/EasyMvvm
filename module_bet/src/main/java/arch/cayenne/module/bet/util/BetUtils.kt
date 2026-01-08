@@ -19,13 +19,13 @@ object BetUtils {
      * output: 4524
      * @return
      */
-    fun calculateCombinationOdds(oddsList:List<Int>, k:Int):Int {
+    fun calculateCombinationOdds(oddsList:List<Int>, k:Int):Long {
         val combinationData = oddsList.combination(k)
         val sumOdds = combinationData.sumOf { list ->
             if(list.isEmpty()) 0.0
             else list.fold(1.0) { acc, odds -> acc * (odds*0.01) }// 计算乘积并且每次除以100
         }
-        return (sumOdds* 100).toInt()
+        return (sumOdds* 100).toLong()
     }
 
     fun isSuperCombo(serialValue:Int) = serialValue == SERIAL_VALUE_SUPER

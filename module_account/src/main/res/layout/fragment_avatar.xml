@@ -12,13 +12,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:background="@color/color_1E1E1E"
+        android:layout_height="0dp"
+        android:orientation="vertical">
+
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/tran_0">
+       >
 
-        <arch.cayenne.module.account.view.CircularPhotoView
+        <arch.cayenne.module.account.view.AvatarCircleImageView
             android:id="@+id/ivUserAvatar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -29,7 +38,6 @@
             android:scaleType="centerCrop"
             tools:ignore="MissingConstraints" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
@@ -117,4 +125,5 @@
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>

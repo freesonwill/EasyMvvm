@@ -167,27 +167,13 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         mViewModel.tournaments.observeEvent(viewLifecycleOwner, this) { comboList ->
             setTournamentAndViewPagerLayout(comboList)
         }
-        mViewModel.collapseTournamentDropdown.observeEvent(
-            viewLifecycleOwner,
-            this
-        ) { shouldCollapse ->
-            if (shouldCollapse && isExpanded) {
-                toggleTournamentSorting(false)
-                mViewModel.consumeCollapseTournamentDropdown() // 重置事件，避免重複觸發
-            }
-        }
-        mViewModel.navigationToChampion.observeEvent(viewLifecycleOwner, this) { data ->
-            navigate(Uri.parse("walisport://module_home/championFragment?matchId=${data.championMatchId}&name=${data.name}&icon=${data.icon}"))
-        }
+
 
         mViewModel.displayDate.observe(viewLifecycleOwner) { display ->
             if (display.timestamp == HomeViewModel.DEFAULT_DATE) return@observe
             showSelectedDateTab(mViewModel.getDisplayDateIndex(display.timestamp))
         }
 
-        mViewModel.tournamentSlideOutEnd.observeEvent(viewLifecycleOwner, this) {
-            mBinding.layoutContainer.llTournamentsDropdown.visibility = View.GONE
-        }
 
         // 觀察聯賽按鈕選中狀態變化
         mViewModel.tournamentButtonHasSelection.observeEvent(
@@ -272,7 +258,6 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
 
     // 設置更多按鈕的顯示狀態
     override fun onFragmentUnSelected() {
-        mViewModel.requestCollapseTournamentDropdown()
         // 收起排序選單
         if (isExpanded) {
             toggleTournamentSorting(false)

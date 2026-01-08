@@ -12,18 +12,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:background="@color/app_bg"
         android:paddingTop="@dimen/dp_32"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
         android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <arch.cayenne.lib.common.ui.view.ClipRoundedFrameLayout
         android:id="@+id/ll_head"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_32"
-        android:layout_marginBottom="@dimen/dp_32"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        app:cornerRadius="@dimen/dp_45"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         tool:ignore="MissingConstraints">
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivAvatar"
@@ -31,27 +35,20 @@
             android:layout_height="@dimen/dp_90"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:background="@drawable/account_avatar_default"
-            tool:ignore="MissingConstraints" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/dp_90"
-            android:layout_height="@dimen/dp_90"
-            android:visibility="gone"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            android:background="@drawable/ic_head_info_1"
+            android:scaleType="centerCrop"
+            android:src="@drawable/account_avatar_default"
             tool:ignore="MissingConstraints" />
 
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:visibility="gone"
             android:id="@+id/HalfCircle"
             android:layout_width="@dimen/dp_90"
-            android:layout_marginBottom="@dimen/dp_3"
-            android:layout_height="29dp"
+            android:visibility="gone"
+            android:layout_height="27dp"
             android:orientation="horizontal"
             android:gravity="center"
+            android:layout_gravity="bottom"
+            android:background="@color/user_avatar_text_bg"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -72,7 +69,7 @@
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </arch.cayenne.lib.common.ui.view.ClipRoundedFrameLayout>
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/account_name_item"
         android:layout_marginTop="@dimen/dp_32"
@@ -155,6 +152,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tool:ignore="RtlSymmetry" />
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_copy_userId"
             app:layout_constraintLeft_toRightOf="@+id/tv_UserId"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
@@ -165,5 +163,5 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>

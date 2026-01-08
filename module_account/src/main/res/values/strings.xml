@@ -2,6 +2,7 @@
     <string name="personal_info_title" translatable="false">编辑资料</string>
     <string name="personal_info_save" translatable="false">保存</string>
     <string name="personal_avatar_save" translatable="false">更换头像</string>
+    <string name="system_avatar_save" translatable="false">保存头像</string>
     <string name="personal_avatar_edit_content" translatable="false">拖拽图片调整展示区域</string>
     <string name="personal_info_hint" translatable="false">填写昵称（6字以内）</string>
     <string name="info_name" translatable="false">昵称</string>
@@ -19,7 +20,15 @@
     <string name="account_edit_name_title" translatable="false">设置昵称</string>
     <string name="user_avatar" translatable="false">个人头像</string>
     <string name="account_edit_name_input_hint" translatable="false">请输入昵称</string>
-    <string name="account_edit_name_text_hint" translatable="false">一个月内仅可修改2次昵称</string>
+    <string name="account_edit_name_text_hint" translatable="false">一个月内仅可修改%s次昵称</string>
     <string name="account_edit_name_recommend" translatable="false">试试推荐昵称：</string>
     <string name="account_edit_name_refresh" translatable="false">换一批</string>
+
+    <string name="account_avatar_confirm" translatable="false">保存头像</string>
+    <string name="account_avatar_up" translatable="false">头像上传中</string>
+    <string name="account_avatar_delete" translatable="false">删除头像</string>
+    <string name="account_close" translatable="false">取消</string>
+    <string name="account_edit_name_toast_empty" translatable="false">请输入昵称</string>
+    <string name="tip_copy_id">复制成功</string>
+    <string name="account_edit_name_toast_limit">本月的修改次数已满，请下个月再来尝试</string>
 </resources>

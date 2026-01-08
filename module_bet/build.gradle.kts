@@ -42,7 +42,7 @@ dependencies {
     api(project(":lib_common"))
     api(project(":lib_websocket"))
     implementation(project(":lib_res"))
-
+    implementation(project(":module_business_common"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.common.ui.view.ClipRoundedFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/cl_personal_head_root"
-    android:layout_width="@dimen/dp_55"
-    android:layout_height="@dimen/dp_55">
-    <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="57dp"
+    android:layout_height="57dp">
+
+    <ImageView
         android:id="@+id/iv_personal_head"
+        android:scaleType="centerCrop"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-    <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_height="match_parent" />
+
+    <ImageView
         android:id="@+id/iv_personal_head_selected"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/ic_head_info_selected"
-        android:visibility="invisible"/>
-</RelativeLayout>
+        android:visibility="invisible" />
+</arch.cayenne.lib.common.ui.view.ClipRoundedFrameLayout>

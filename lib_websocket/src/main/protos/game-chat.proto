@@ -79,9 +79,10 @@ message SendMsgReq {
 
 
 enum MsgType {
-  MSG_TYPE_SYSTEM = 0;  // 系统消息 - 仅限后台发送
-  MSG_TYPE_TEXT = 1;    // 文字消息
-  MSG_TYPE_SHARE = 2;   // 分享消息
+  MSG_TYPE_SYSTEM = 0;        // 系统消息 - 仅限后台发送
+  MSG_TYPE_TEXT = 1;          // 文字消息
+  MSG_TYPE_SHARE_ORDER = 2;   // 分享消息 - 分享注单
+  MSG_TYPE_SHARE_GAME = 3;    // 分享消息 - 分享游戏
 }
 
 // 响应：500-1006

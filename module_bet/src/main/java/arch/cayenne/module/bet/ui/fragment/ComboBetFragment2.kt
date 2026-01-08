@@ -46,6 +46,7 @@ import arch.cayenne.module.bet.ui.custom.BetMoneyKeyboard
 import arch.cayenne.module.bet.util.BetSheetDecoration
 import arch.cayenne.module.bet.viewmodel.ComboBetViewModel
 import com.blankj.utilcode.util.GsonUtils
+import me.jessyan.autosize.utils.ScreenUtils
 import kotlin.reflect.KClass
 
 /**
@@ -165,6 +166,9 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
         mBinding.firstMultiItem.apply {
             etMoney.isFocusable = false //不弹出系统软键盘
         }
+        mBinding.root.layoutParams = mBinding.root.layoutParams.apply {
+            height = (ScreenUtils.getScreenSize(requireContext())[1] * 699f/812).toInt()
+        }
     }
 
     override fun initListener() {
@@ -239,7 +243,7 @@ class ComboBetFragment2 : BaseFragment<ComboBetViewModel, FragmentComboBet2Bindi
             with(mBinding.firstMultiItem) {
                 val moneySymbol = mViewModel.moneySymbol
                 tvTitleCombo.text = let {
-                    val combo = R.string.title_combo_bet_odds.getString().format(item.comboK, item.comboV)
+                    val combo = R.string.title_combo_bet_tittle.getString().format(item.comboK, item.comboV)
                     combo
                 }
                 tvMulti.text = let { "@${item.sumOdds.getOdds()}" }

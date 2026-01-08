@@ -109,25 +109,27 @@ class GameAllRankingTodayFragment :
             adapter.submitList(gameList.addDashItem())
         }
 
-        mViewModel.dailyMatchLiveData.observe(viewLifecycleOwner) {
-            mBinding.tvTimer.text = DateUtils.formatMillisToHMS(it.remainingTime)
-            //启动定时器，每秒对剩余时间进行减一，并更新UI
-            var remainingTime = it.remainingTime
-            timer?.cancel()
-            timer = object : CountDownTimer(remainingTime * 1000 , 1000) {
-                override fun onTick(millisUntilFinished: Long) {
-                    remainingTime--
-                    mBinding.tvTimer.text = DateUtils.formatMillisToHMS(remainingTime)
-                }
+        mViewModel.dailyBetMatchDataBeanFlow.collect {
+            it?.let {
+                mBinding.tvTimer.text = DateUtils.formatMillisToHMS(it.remainingTime)
+                //启动定时器，每秒对剩余时间进行减一，并更新UI
+                var remainingTime = it.remainingTime
+                timer?.cancel()
+                timer = object : CountDownTimer(remainingTime * 1000, 1000) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        remainingTime--
+                        mBinding.tvTimer.text = DateUtils.formatMillisToHMS(remainingTime)
+                    }
 
-                override fun onFinish() {
-                    mBinding.tvTimer.text = DateUtils.formatMillisToHMS(0)
+                    override fun onFinish() {
+                        mBinding.tvTimer.text = DateUtils.formatMillisToHMS(0)
+                    }
                 }
+                timer?.start()
+
+                mBinding.tvCurrencySymbol.text = it.ccy.ccyToSymbol()
+                mBinding.tvBonus.text = String.format("%,d", it.betScore)
             }
-            timer?.start()
-
-            mBinding.tvCurrencySymbol.text = it.ccy.ccyToSymbol()
-            mBinding.tvBonus.text = String.format("%,d" , it.betScore)
         }
     }
 

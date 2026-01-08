@@ -19,13 +19,12 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
 class GameRecentRepository(
-    override val scope: CoroutineScope ,
-    private val database: GameDatabase ,
-    private val httpClient: HttpClient ,
-    private val mockHttpClient: HttpClient ,
-    private val socketManager: WebSocketManager ,
-    private val preloadResultChange: MutableStateFlow<PreloadEnum> ,
-    private val manager: UserDataManager ,
+    override val scope: CoroutineScope,
+    private val database: GameDatabase,
+    private val httpClient: HttpClient,
+    private val socketManager: WebSocketManager,
+    private val preloadResultChange: MutableStateFlow<PreloadEnum>,
+    private val manager: UserDataManager,
 ) : BaseRepository() {
 
 
@@ -35,10 +34,10 @@ class GameRecentRepository(
         suppliers: List<Int>,
         category: Int
     ): ApiResponseState {
-        val api = mockHttpClient.create(IGameRecentApi::class.java)
+        val api = httpClient.create(IGameRecentApi::class.java)
         return suspendCancellableCoroutine<ApiResponseState> { cancellableContinuation ->
             scope.launch(Dispatchers.IO) {
-                mockHttpClient.safeRequest(
+                httpClient.safeRequest(
                     request = {
                         api.queryGameList(
                             page = page ,

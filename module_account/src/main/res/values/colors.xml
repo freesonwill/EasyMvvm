@@ -4,4 +4,6 @@
     <color name="account_line">#0FFFFFFF</color>
     <color name="account_edit_name">#0e0f19</color>
     <color name="account_edit_name_hint">#33FFFFFF</color>
+    <color name="dialog_line">#272727</color>
+    <color name="user_avatar_text_bg">#45000000</color>
 </resources>

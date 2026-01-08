@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_1E1E1E"
+    android:background="@color/white"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
@@ -17,7 +17,6 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
 
-
     <TextView
         android:id="@+id/tvStatusBarHeight"
         android:layout_width="match_parent"
@@ -25,9 +24,160 @@
         android:layout_marginStart="@dimen/dp_11"
         android:layout_marginTop="@dimen/dp_11"
         android:layout_marginEnd="@dimen/dp_11"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="16sp"
         android:paddingHorizontal="@dimen/dp_0"
         tools:text="状态栏高度: 11px" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_11"
+        android:background="@drawable/radius_2"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/dp_5"
+        android:paddingTop="@dimen/dp_11"
+        android:paddingBottom="@dimen/dp_11">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="uid:" />
+
+            <arch.cayenne.lib.common.ui.view.LastCursorEditText
+                android:id="@+id/tvUid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/radius_3"
+                android:inputType="number"
+                android:paddingHorizontal="@dimen/dp_10"
+                android:paddingVertical="@dimen/dp_5"
+                tools:text="0.36"
+                android:hint="请输入uid"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_12" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            >
+
+            <TextView
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="token:" />
+
+            <arch.cayenne.lib.common.ui.view.LastCursorEditText
+                android:id="@+id/tvToken"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/radius_3"
+                android:hint="请输入token"
+                android:paddingHorizontal="@dimen/dp_10"
+                android:paddingVertical="@dimen/dp_5"
+                tools:text="0.66"
+                android:inputType="textNoSuggestions"
+                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_12" />
+
+        </LinearLayout>
+
+        <Button
+            android:layout_marginStart="@dimen/dp_11"
+            android:layout_marginEnd="@dimen/dp_11"
+            android:layout_marginTop="@dimen/dp_11"
+            android:paddingHorizontal="@dimen/dp_0"
+            android:id="@+id/btn_set_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="设置账号信息"
+            />
+
+    </LinearLayout>
+
+
+    <GridLayout
+        android:id="@+id/grid3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnCount="3"
+        android:useDefaultMargins="true"
+        >
+
+        <TextView
+            android:id="@+id/comboDetail"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:textAllCaps="false"
+            android:textSize="@dimen/sp_12"
+            android:background="@color/color_00E0E5"
+            android:text="comboDetail" />
+
+        <TextView
+            android:id="@+id/btnShareLog"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:textAllCaps="false"
+            android:textSize="@dimen/sp_12"
+            android:background="@color/color_00E0E5"
+            android:text="分享日志" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:textAllCaps="false"
+            android:layout_columnWeight="1"
+            android:textSize="@dimen/sp_12"
+            android:gravity="center"
+            android:background="@color/color_00E0E5"
+            android:text="Item 3" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:textAllCaps="false"
+            android:textSize="@dimen/sp_12"
+            android:background="@color/color_00E0E5"
+            android:text="Item 4" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:textAllCaps="false"
+            android:background="@color/color_00E0E5"
+            android:textSize="@dimen/sp_12"
+            android:text="Item 5" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_columnWeight="1"
+            android:textSize="@dimen/sp_12"
+            android:gravity="center"
+            android:background="@color/color_00E0E5"
+            android:textAllCaps="false"
+            android:text="Item 6" />
+    </GridLayout>
 
 </arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>

@@ -135,7 +135,7 @@
         app:layout_constraintEnd_toEndOf="@id/view_control_bar"
         app:srcCompat="@drawable/ic_launcher_fullscreen" />
 
-    <arch.cayenne.lib.common.ui.view.BalanceView
+    <com.walisport.module.business.common.ui.BalanceView
         android:id="@+id/view_balance"
         android:layout_width="@dimen/dp_38"
         android:layout_height="@dimen/dp_129"

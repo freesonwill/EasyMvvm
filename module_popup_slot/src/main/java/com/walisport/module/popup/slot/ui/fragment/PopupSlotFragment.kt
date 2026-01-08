@@ -8,10 +8,13 @@ import android.view.View
 import android.view.animation.LinearInterpolator
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
 import com.walisport.module.popup.slot.R
+import com.walisport.module.popup.slot.data.PopupSlotDataModel
 import com.walisport.module.popup.slot.databinding.FragmentPopupSlotBinding
 import com.walisport.module.popup.slot.ui.adapter.BannerUrlImageAdapter
 import com.walisport.module.popup.slot.ui.viewmodel.PopUpSlotViewModel
@@ -127,12 +130,18 @@ class PopupSlotFragment :
                     isAutoLoop(true)
                     setOnBannerListener { data, position ->
                         // 这里处理点击事件，比如：
-//                    val url =
-//                        ((data as Pair<PopupSlotDataModel, Int>).first as PopupSlotDataModel).operateParams[0]
-//                    navigate(
-//                        arch.cayenne.lib.res.R.string.nav_module_web_fragment
-//                            .deeplink("url" to url)
-//                    )
+                        val url =
+                            ((data as Pair<PopupSlotDataModel, Int>).first as PopupSlotDataModel).operateParams[0]
+                        navigate(
+                            arch.cayenne.lib.res.R.string.nav_module_web_fragment
+                                .deeplink("outerSite" to true, "url" to url)
+                        )
+
+//                        val intent = android.content.Intent(
+//                            android.content.Intent.ACTION_VIEW,
+//                            android.net.Uri.parse(url)
+//                        )
+//                        startActivity(intent)
                     }
                     start()
 
@@ -151,12 +160,18 @@ class PopupSlotFragment :
                     isAutoLoop(true)
                     setOnBannerListener { data, position ->
                         // 这里处理点击事件，比如：
-//                    val url =
-//                        ((data as Pair<PopupSlotDataModel, Int>).first as PopupSlotDataModel).operateParams[0]
-//                    navigate(
-//                        arch.cayenne.lib.res.R.string.nav_module_web_fragment
-//                            .deeplink("url" to url)
-//                    )
+                        val url =
+                            ((data as Pair<PopupSlotDataModel, Int>).first as PopupSlotDataModel).operateParams[0]
+                        navigate(
+                            arch.cayenne.lib.res.R.string.nav_module_web_fragment
+                                .deeplink("outerSite" to true, "url" to url)
+                        )
+
+//                        val intent = android.content.Intent(
+//                            android.content.Intent.ACTION_VIEW,
+//                            android.net.Uri.parse(url)
+//                        )
+//                        startActivity(intent)
                     }
                     start()
                 }
@@ -177,7 +192,7 @@ class PopupSlotFragment :
             playTogether(
                 ValueAnimator.ofFloat(
                     view?.translationX ?: 0f,
-                    33.dp2px.toFloat()
+                    27.dp2px.toFloat()
                 ).apply {
                     addUpdateListener {
                         val value = it.animatedValue as Float
@@ -222,7 +237,7 @@ class PopupSlotFragment :
         fadeInAnimator = view?.startSafeAnimateSet({
             playTogether(
                 ValueAnimator.ofFloat(
-                    view?.translationX ?: 33.dp2px.toFloat(),
+                    view?.translationX ?: 27.dp2px.toFloat(),
                     0f
                 ).apply {
                     addUpdateListener {

@@ -5,6 +5,7 @@ import arch.cayenne.lib.websocket.chat.data.ChatEnterRoomResponse
 import arch.cayenne.lib.websocket.chat.data.ChatLeaveRoomResponse
 import arch.cayenne.lib.websocket.chat.data.ChatLoginResponseData
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
+import arch.cayenne.lib.websocket.chat.data.ChatRefUser
 import arch.cayenne.lib.websocket.chat.data.ChatSendMsgResponse
 import arch.cayenne.lib.websocket.chat.data.ChatType
 import arch.cayenne.lib.websocket.chat.data.GetChatHistoryResponse
@@ -12,11 +13,14 @@ import arch.cayenne.lib.websocket.chat.data.MsgNotify
 import arch.cayenne.lib.websocket.chat.data.MsgType
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.data.constants.CheckBetResultEnum
+import com.google.gson.Gson
 import game.chat.proto.GameChat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -32,25 +36,25 @@ class ChatServerController(
 
     val TAG = this.javaClass.simpleName
     private val _sendMsgResultFlow = MutableStateFlow<ChatSendMsgResponse?>(null)
-    private val _historyFlow = MutableStateFlow<GetChatHistoryResponse?>(null)
+    private val _historyFlow = MutableSharedFlow<GetChatHistoryResponse?>(replay = 1, extraBufferCapacity = 2)
     private val _checkBetAmountFlow = MutableStateFlow<CheckBetResultEnum?>(null)
-    private val _enterRoomFlow = MutableStateFlow<ChatEnterRoomResponse?>(null)
-    private val _leaveRoomFlow = MutableStateFlow<ChatLeaveRoomResponse?>(null)
+    private val _enterRoomFlow = MutableSharedFlow<ChatEnterRoomResponse?>(1, extraBufferCapacity = 2)
+    private val _leaveRoomFlow = MutableSharedFlow<ChatLeaveRoomResponse?>(1, extraBufferCapacity = 2)
 
     //检查是否可以发送消息
     var checkBetAmountFlow: StateFlow<CheckBetResultEnum?> = _checkBetAmountFlow
 
     //进入聊天室返回结果
-    val enterRoomFlow: StateFlow<ChatEnterRoomResponse?> = _enterRoomFlow
+    val enterRoomFlow: SharedFlow<ChatEnterRoomResponse?> = _enterRoomFlow
 
     //离开聊天室返回结果
-    val leaveRoomFlow: StateFlow<ChatLeaveRoomResponse?> = _leaveRoomFlow
+    val leaveRoomFlow: SharedFlow<ChatLeaveRoomResponse?> = _leaveRoomFlow
 
     //消息发送返回结果
     val sendMsgResultFlow: StateFlow<ChatSendMsgResponse?> = _sendMsgResultFlow
 
     //查询历史消息返回结果
-    val historyFlow: StateFlow<GetChatHistoryResponse?> = _historyFlow
+    val historyFlow: SharedFlow<GetChatHistoryResponse?> = _historyFlow
 
     var newMsgNotify: Flow<MsgNotify?> = MutableStateFlow(null)
     var matchId: Long? = null
@@ -114,11 +118,11 @@ class ChatServerController(
         chatType: ChatType,
         msgType: MsgType,
         extraData: Map<String, String>?,
-        refUid: List<Long>?,
+        refUid: List<String>?,
     ) {
         scope.launch(Dispatchers.IO) {
             val value =
-                manager.sendMsgToServer(matchId, content,  chatType, msgType, extraData,refUid)
+                manager.sendMsgToServer(matchId, content, chatType, msgType, extraData, refUid)
             _sendMsgResultFlow.emit(value)
         }
     }
@@ -143,29 +147,32 @@ class ChatServerController(
         content: String,
         chatType: ChatType,
         msgType: MsgType,
-        extraData: Map<String, String>?
+        extraData: Map<String, String>?,
+        refUid: List<String>?,
+        refInfos: Map<String, ChatRefUser>?
     ): ChatMsg? {
-        if (getManagerLoginFlow()?.value == null) {
+        if (getManagerLoginFlow().value == null) {
             "login is null".logd(TAG)
             return null
         }
         val id = System.currentTimeMillis().toString()
-        val loginValue = getManagerLoginFlow()?.value
+        val loginValue = getManagerLoginFlow().value
         val msg = ChatMsg(
-            uid = loginValue?.uid.toString(),
+            uid = loginValue?.uid ?: "",
             userName = loginValue?.username ?: "",
             avatarId = loginValue?.avatarId ?: 0,
             content = content,
             msgId = id,
             timestamp = id,
-            refUid = null,
-            refInfos = null,
+            refUids = refUid,
+            refInfos = refInfos,
             onlyForSelf = 0,
             replaceUserName = "",
-            msgType = MsgType.MSG_TYPE_TEXT,
+            msgType = msgType,
             extraData = extraData,
-            chatType = ChatType.LOBBY
+            chatType = chatType,
         )
+//        "addLocalMsg msg=${Gson().toJson(msg)}".logd(TAG)
         return msg
     }
 

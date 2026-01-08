@@ -61,7 +61,7 @@ class ChatLanguageDialogFragment :
             layoutParams.width = 284.dp2px
             layoutParams.height = 399.dp2px
             layoutParams.x = 10.dp2px
-            layoutParams.y = 125.dp2px
+            layoutParams.y = 122.5.dp2px
             layoutParams.dimAmount = 0f
             w.attributes = layoutParams
 

@@ -60,16 +60,33 @@ val SPORT_SERVER_WSS
         }
     }
 
+val SPORT_SERVER_HTTP
+    get() = run {
+        when (BuildConfig.BUILD_TYPE) {
+            "qatest" -> {
+                "https://sport-test.ra781.com"
+            }
+
+            "release" -> {
+                "https://sport-dev.ra781.com"
+            }
+
+            else -> {
+                "https://sport-pre.ra781.com"
+                //"http://192.168.10.38:5173"
+            }
+        }
+    }
 
 val CHAT_SERVER
     get() = run {
         when (BuildConfig.BUILD_TYPE) {
             "qatest" -> {
-                "wss://sport-dev.ra781.com/api/game/chat/ws"
+                "wss://sport-test.ra781.com/api/game/chat/ws"
             }
 
             "release" -> {
-                "wss://sport-dev.ra781.com/api/game/chat/ws"
+                "wss://sport-pre.ra781.com/api/game/chat/ws"
             }
 
             else -> {

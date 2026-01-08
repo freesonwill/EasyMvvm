@@ -6,13 +6,17 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Application
 import android.view.View
+import android.view.animation.PathInterpolator
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.module.chat.data.constants.KeyboardActionType
 import arch.cayenne.module.chat.databinding.FragmentLiveChatBinding
@@ -68,6 +72,7 @@ object SoftKeyBoardAnim {
         })
         return animSet
     }
+
     private val etAnimDuration = 20L
 
     /**
@@ -146,8 +151,8 @@ object SoftKeyBoardAnim {
         ivEmoji: ImageView,
         ivLanguage: View,
         chatLlInput: View,
-        animStart:() ->Unit,
-        animEnd:() -> Unit
+        animStart: () -> Unit,
+        animEnd: () -> Unit
     ): AnimatorSet {
 //                         没有弹出键盘 307(左边距：8 右边距: 10)  弹出键盘 355（左右边距:10）1.15  输入款有内容: 282(左边距：12,有边距：11) 0.91
 //        transX                  0 (58)                           -48   (10)                        -46     (12)
@@ -241,8 +246,8 @@ object SoftKeyBoardAnim {
     fun etAnimWhenEtContentChange(
         binding: FragmentLiveChatBinding,
         currentType: KeyBoardType,
-        onAnimStart: (value:Boolean) -> Unit,
-        onAnimEnd: (value:Boolean) -> Unit
+        onAnimStart: (value: Boolean) -> Unit,
+        onAnimEnd: (value: Boolean) -> Unit
     ) {
 
         binding.apply {
@@ -340,7 +345,7 @@ object SoftKeyBoardAnim {
     fun addBetToEtInputAnim(
         binding: FragmentLiveChatBinding,
         currentType: KeyBoardType,
-        onAnimStart:() -> Unit,
+        onAnimStart: () -> Unit,
         onAnimEnd: () -> Unit
     ) {
         binding.apply {
@@ -372,5 +377,39 @@ object SoftKeyBoardAnim {
             })
             animSet.start()
         }
+    }
+
+    /**
+     * 收到at消息时，item的闪烁动画
+     * */
+    fun atFlashNotifyAnim(targetView: View,msgType:ChatMsgType): ObjectAnimator {
+        val pathinterpolator = PathInterpolator(0.22f, 1f, 0.36f, 1f)
+        val flashColor = ContextCompat.getColorStateList(
+            targetView.context,
+            arch.cayenne.lib.common.R.color.color_FFFFFF
+        )
+        val originColor =if(msgType in arrayOf(ChatMsgType.BET_SPORT,ChatMsgType.BET_GAME))
+            ContextCompat.getColorStateList(
+                targetView.context,
+                arch.cayenne.lib.common.R.color.color_632433
+            )else  ContextCompat.getColorStateList(
+            targetView.context,
+            arch.cayenne.lib.common.R.color.color_0FFFFFFF
+        )
+        val anim = ObjectAnimator.ofFloat(targetView, "alpha", 0.22f, 1f, 0.36f, 1f).apply {
+            duration = 1000L
+//            interpolator = pathinterpolator
+            startDelay = 500L
+            addListener(onStart = {
+                targetView.backgroundTintList = flashColor
+//                targetView.postDelayed({
+//                    targetView.backgroundTintList = originColor
+//                }, 1500-50)
+            }, onEnd = {
+                targetView.backgroundTintList = originColor
+            })
+            start()
+        }
+        return anim
     }
 }

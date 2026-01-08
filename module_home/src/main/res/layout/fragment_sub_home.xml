@@ -67,7 +67,7 @@
                     android:layout_width="@dimen/dp_75"
                     android:layout_height="@dimen/dp_4"
                     android:layout_marginStart="@dimen/dp_12"
-                    android:layout_marginBottom="@dimen/dp_4"
+                    android:layout_marginBottom="@dimen/dp_3"
                     app:layout_constraintBottom_toTopOf="@+id/tv_level_up_info"
                     app:layout_constraintStart_toStartOf="parent" />
 
@@ -199,13 +199,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
-        <!--        <androidx.constraintlayout.widget.Group-->
-        <!--            android:id="@+id/group_champion"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            app:constraint_referenced_ids="ll_banner, layout_container, ll_btn_tournament, ll_tournament_sort, v_league_more_mask"/>-->
-
         <FrameLayout
             android:id="@+id/fl_champion_container"
             android:layout_width="0dp"
@@ -215,5 +208,4 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

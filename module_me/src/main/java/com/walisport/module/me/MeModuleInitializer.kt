@@ -27,7 +27,7 @@ class MeModuleInitializer : DefaultInitializer<String> {
     }
     private val repoModules = module {
         factory {
-            MeRepository(get(), get(), get(), get(), get(named("mock")))
+            MeRepository(get(), get(), get(), get(), get(named("3n1_http")))
         }
     }
     private val moduleList: List<Module> = listOf(viewModules, repoModules)

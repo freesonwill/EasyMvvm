@@ -61,10 +61,9 @@
                     tools:ignore="MissingConstraints" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-            <arch.cayenne.lib.common.ui.view.BalanceView
+            <com.walisport.module.business.common.ui.BalanceView
                 android:id="@+id/balance_view"
-                android:layout_width="wrap_content"
+                android:layout_width="179dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_9"
                 android:layout_marginTop="@dimen/dp_3"
@@ -72,8 +71,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@+id/clAvava"
                 app:layout_constraintTop_toTopOf="parent" />
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <arch.cayenne.module.home.ui.view.ClickSearchConstraintLayout

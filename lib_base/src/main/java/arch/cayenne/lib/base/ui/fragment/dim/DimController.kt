@@ -173,7 +173,7 @@ class DimController private constructor() {
 
     fun hideDim() {
         val v = dimView ?: return
-        if (v.alpha == 0f || !canChangeDim) return
+        if ((v.alpha == 0f && !v.isVisible) || !canChangeDim) return
         v.alpha = 0f
         v.post {
             v.isVisible = false

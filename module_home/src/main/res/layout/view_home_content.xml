@@ -36,7 +36,7 @@
             android:paddingStart="@dimen/dp_10"
             android:paddingTop="@dimen/dp_4"
             android:paddingEnd="35dp"
-            android:paddingBottom="2dp"
+            android:paddingBottom="1.6dp"
             app:tabGravity="start"
             app:tabIndicator="@null"
             app:tabIndicatorColor="@null"

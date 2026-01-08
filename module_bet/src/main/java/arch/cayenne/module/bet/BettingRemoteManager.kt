@@ -1,6 +1,8 @@
 package arch.cayenne.module.bet
 
-import arch.cayenne.lib.common.data.repo.BalanceRepository
+import arch.cayenne.lib.common.data.constants.OddsDisplayEnum
+import arch.cayenne.lib.common.data.constants.UserDataKey
+import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
@@ -29,6 +31,7 @@ import arch.cayenne.module.bet.data.remote.ComboRiskDataModel
 import arch.cayenne.module.bet.data.remote.ReserveBetDataModel
 import arch.cayenne.module.bet.data.remote.SingleBetDataModel
 import arch.cayenne.module.bet.data.remote.SingleRiskDataModel
+import com.walisport.module.business.common.repo.BalanceRepository
 import galaxy.client.proto.Client
 import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
@@ -41,8 +44,9 @@ import kotlinx.coroutines.withContext
 class BettingRemoteManager(
     private val scope: CoroutineScope,
     private val socketManager: WebSocketManager,
-    private val balanceRepo: BalanceRepository
-) {
+    private val balanceRepo: BalanceRepository,
+    private val userDataManager: UserDataManager,
+    ) {
 
     private val _matchMarketNotifyFlow: MutableSharedFlow<List<BetNotifySelectionBean>> =
         MutableSharedFlow(replay = 1, extraBufferCapacity = 1)
@@ -391,7 +395,10 @@ class BettingRemoteManager(
     }
 
     private fun toMatchWithMarket(originMatch: Common.Match): MatchWithMarkets {
+        val value = userDataManager.getValue(UserDataKey.KEY_ODDS, OddsDisplayEnum.EU.value)
+
         val markets = arrayListOf<MarketWithSelections>()
+
         originMatch.marketList.forEach { originMarket ->
             val selections = arrayListOf<SelectionBeanLite>()
             originMarket.marketDetailList.forEach { originMarketDetail ->
@@ -407,6 +414,7 @@ class BettingRemoteManager(
                             odds = originSelection.odds.toOdds(),
                             active = originSelection.active,
                             parlay = originSelection.parlay,
+                            oddsDisplayType = value
                         )
                     )
                 }

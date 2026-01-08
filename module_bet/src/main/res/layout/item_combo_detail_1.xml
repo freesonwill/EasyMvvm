@@ -11,8 +11,10 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:layout_marginStart="@dimen/dp_12"
+        android:gravity="center_horizontal|bottom"
         android:textColor="@color/color_C0C0C0"
         android:textSize="@dimen/sp_14"
+        android:paddingBottom="1dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="所有2串1注单" />
@@ -25,53 +27,66 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title">
+        app:layout_constraintTop_toBottomOf="@+id/tv_title"
+        >
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="start"
+            android:gravity="start|bottom"
+            android:paddingBottom="1dp"
             android:paddingStart="@dimen/dp_24"
             android:text="@string/tab_selection"
             android:textColor="@color/color_999999"
             android:textSize="@dimen/sp_14"
-            tools:ignore="RtlSymmetry" />
+            tools:ignore="RtlSymmetry"
+            />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_tab_bet"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="center_horizontal|bottom"
+            android:paddingBottom="1dp"
             android:paddingStart="-4dp"
             android:text="@string/tab_bet"
             android:textColor="@color/color_999999"
             android:textSize="@dimen/sp_14"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            tools:text="投注"
+            tools:visibility="visible"
+            />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_tab_win"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
-            android:paddingStart="@dimen/dp_4"
+            android:gravity="center_horizontal|bottom"
+            android:paddingBottom="1dp"
+            android:paddingStart="4.5dp"
             android:text="@string/tab_win"
             android:textColor="@color/color_999999"
             android:textSize="@dimen/sp_14"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            tools:text="可赢"
+            tools:visibility="visible"
+            />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="end"
-            android:paddingEnd="@dimen/dp_24"
+            android:gravity="end|bottom"
+            android:paddingBottom="1dp"
+            android:paddingEnd="@dimen/dp_23"
             android:text="@string/tab_odds"
             android:textColor="@color/color_999999"
             android:textSize="@dimen/sp_14"
-            tools:ignore="RtlSymmetry" />
+            tools:ignore="RtlSymmetry"
+            />
     </LinearLayout>
 
     <Space

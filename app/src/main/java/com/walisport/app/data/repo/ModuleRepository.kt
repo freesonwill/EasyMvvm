@@ -46,8 +46,8 @@ import kotlin.random.Random
 class ModuleRepository(
     override val scope: CoroutineScope,
     private val database: GameDatabase,
-    private val httpClient: HttpClient,
-    private val mockHttpClient: HttpClient,
+    private val sportHttpClient: HttpClient,
+    private val tioHttpClient: HttpClient, //3n1 http client. tio = three in one
     private val socketManager: WebSocketManager,
     private val preloadResultChange: MutableStateFlow<PreloadEnum>,
     private val manager: UserDataManager,
@@ -62,7 +62,7 @@ class ModuleRepository(
             Array<UserConfig>::class.java
         )
     }
-    private val pair: Pair<Int, String> = if (BuildConfig.BUILD_TYPE == "debug") {
+    private val pair: Pair<Int, String> = if (BuildConfig.BUILD_TYPE == "debug" || BuildConfig.uid_fixed) {
         Pair(BuildConfig.uid, BuildConfig.token)
     } else if (BuildConfig.BUILD_TYPE != "release") {
         users.filter { it.name.startsWith("qatest") }
@@ -97,9 +97,9 @@ class ModuleRepository(
     }
 
     fun getProfileInfo() {
-        val api = mockHttpClient.create(IAccount::class.java)
+        val api = tioHttpClient.create(IAccount::class.java)
         scope.launch(Dispatchers.IO) {
-            mockHttpClient.safeRequest(
+            tioHttpClient.safeRequest(
                 request = {
                     api.profileInfo()
                 },
@@ -121,8 +121,10 @@ class ModuleRepository(
                 nickname = profileInfo.nickname,
                 avatar = AvatarEmbedded(
                     url = profileInfo.avatar.url,
-                    thumbhash = profileInfo.avatar.thumbhash
+                    thumbhash = profileInfo.avatar.thumbhash,
+                    type = profileInfo.avatar.type
                 ),
+                Uid = 100L,
                 registerTime = profileInfo.registerTime,
                 vipLevel = profileInfo.vipLevel,
                 score = profileInfo.score,
@@ -150,9 +152,9 @@ class ModuleRepository(
     }
 
     fun getCurrencyConfig() {
-        val api = mockHttpClient.create(IConfig::class.java)
+        val api = tioHttpClient.create(IConfig::class.java)
         scope.launch(Dispatchers.IO) {
-            mockHttpClient.safeRequest(
+            tioHttpClient.safeRequest(
                 request = {
                     api.currency()
                 },
@@ -188,12 +190,12 @@ class ModuleRepository(
 
 
     fun preLoadHome() {
-        val api = httpClient.create(IPreLoadHomeApi::class.java)
+        val api = sportHttpClient.create(IPreLoadHomeApi::class.java)
         val uid = manager.getValue(UserDataKey.KEY_UID, -1)
         val token = manager.getValue(UserDataKey.KEY_TOKEN, "")
         val lang = manager.getValue(UserDataKey.KEY_LANGUAGE, LanguageType.LANGUAGE_SIMPLE.value)
         scope.launch(Dispatchers.IO) {
-            httpClient.safeRequest(
+            sportHttpClient.safeRequest(
                 request = {
                     api.preLoad(
                         token = token,

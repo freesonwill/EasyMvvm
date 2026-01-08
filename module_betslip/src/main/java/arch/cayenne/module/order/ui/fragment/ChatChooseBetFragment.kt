@@ -117,11 +117,9 @@ class ChatChooseBetFragment : BaseFragment<ChatChooseViewModel, FragmentChooseBe
         mViewModel.betClickLiveData.observe(viewLifecycleOwner) {
             betType = if (it.type == ChatMsgType.BET_GAME) 0 else 1
             val betCode =
-                if (it.type == ChatMsgType.BET_GAME) "bet-test202512223-wg0s53" else it.betCode
-            val userId = if(it.type == ChatMsgType.BET_GAME) 6660030 else mViewModel.getUid()
+                if (it.type == ChatMsgType.BET_GAME) "bet-test202512223-a2lmn1" else it.betCode
+            val userId = if(it.type == ChatMsgType.BET_GAME) 6660031 else mViewModel.getUid()
             mViewModel.getBetShare(userId, betCode)
-
-            "choose_bet betCode $betType betCode $betCode".logd("aaa")
         }
         mViewModel.betShareLiveData.observe(viewLifecycleOwner) {
             val bundle = Bundle().apply {
@@ -163,4 +161,7 @@ class ChatChooseBetFragment : BaseFragment<ChatChooseViewModel, FragmentChooseBe
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
     }
+
+
+
 }
