@@ -51,8 +51,8 @@
 
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/avatarImageView"
-                                android:layout_width="84dp"
-                                android:layout_height="84dp"
+                                android:layout_width="87dp"
+                                android:layout_height="87dp"
                                 android:background="@drawable/chat_info_avatar" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>

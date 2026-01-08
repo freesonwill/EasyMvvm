@@ -70,12 +70,16 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                     }
 
                     ChatMsgType.AT -> {
-                        ChatPrivateUserFragment.show(this)
-//                        ChatUserInfoFragment().show(childFragmentManager)
+//                        ChatPrivateUserFragment.show(this)
+                        ChatUserInfoFragment().show(childFragmentManager)
                     }
 
                     ChatMsgType.TEXT -> {
                         ChatPersonalDialogFragment.show(this@ChatPageFragment)
+                    }
+
+                    ChatMsgType.NAME ->{
+                        ChatUserInfoFragment().show(childFragmentManager)
                     }
 
                     else -> {}
@@ -121,7 +125,6 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
         val nList = mutableListOf<ChatMsgPageBean>()
         nList.addAll(mViewModel.msgLists)
         adapter?.submitList(nList) {
-
             if (nList.isEmpty()) {
                 return@submitList
             }
@@ -146,7 +149,6 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
     }
 
     override fun initListener() {
-
 
     }
 

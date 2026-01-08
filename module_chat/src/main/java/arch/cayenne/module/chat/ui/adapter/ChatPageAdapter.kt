@@ -85,6 +85,7 @@ class ChatPageAdapter(
                             longPressHandler.removeCallbacks(longPressRunnable)
                             val spans = buffer.getSpans(off - 1, off + 1, MentionSpan::class.java)
                             if (nameSpans.isNotEmpty()) {
+                                specialClick.invoke(getItem(position), "", ChatMsgType.NAME)
                                 return true
                             }
                             if (spans.isNotEmpty()) {
