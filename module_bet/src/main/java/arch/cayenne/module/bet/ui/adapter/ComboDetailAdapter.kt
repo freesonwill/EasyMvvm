@@ -120,7 +120,7 @@ class ComboDetailAdapter : BaseAdapter<ParameterUIItem, BaseViewHolder, ViewBind
             val location = view.locationInWindow
             val h = ViewUtils.getStatusBarHeight(view.context)
             val positionX = location.first() + view.width / 2
-            val positionY = location.last() - h - 2.dp2px
+            val positionY = location.last() - h + 15.dp2px
             val fragment = view.findFragment<Fragment>()
             AllInfoDialogFragment.newInstance(
                 positionX ,

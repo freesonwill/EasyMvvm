@@ -13,6 +13,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.account.R
 import arch.cayenne.module.account.databinding.FragmentAvatarPreviewBinding
 import arch.cayenne.module.account.databinding.TitleBarSystemAvatarBinding
@@ -81,11 +82,11 @@ class AvatarPreviewFragment : BaseFragment<AvatarPreviewViewModel, FragmentAvata
     override suspend fun createObserver() {
         mViewModel.uploadResult.observe(viewLifecycleOwner) { success ->
             if (success.isNotEmpty()) {
-                Toast.makeText(requireContext(), "上传成功", Toast.LENGTH_SHORT).show()
+                showToast("上传成功")
                 personalViewModel.setUploadResul(success)
                 navigateUp()
             } else {
-                Toast.makeText(requireContext(), "上传失败", Toast.LENGTH_SHORT).show()
+                showToast("上传失败")
             }
         }
     }
@@ -112,12 +113,12 @@ class AvatarPreviewFragment : BaseFragment<AvatarPreviewViewModel, FragmentAvata
                         mBinding.tvSave.isSelected = true
                         mBinding.tvSave.isClickable = true
                         mBinding.tvSave.text = R.string.account_avatar_confirm.getString()
-                        Toast.makeText(requireContext(), "保存失败", Toast.LENGTH_SHORT).show()
+                        showToast("保存失败")
                     }
                 }
             } else {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(requireContext(), "无法获取图像", Toast.LENGTH_SHORT).show()
+                    showToast("无法获取图像")
                 }
             }
         }

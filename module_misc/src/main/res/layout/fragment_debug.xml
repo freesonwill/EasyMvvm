@@ -108,15 +108,76 @@
 
     </LinearLayout>
 
-    <Button
-        android:layout_marginStart="@dimen/dp_11"
-        android:layout_marginEnd="@dimen/dp_11"
-        android:layout_marginTop="@dimen/dp_11"
-        android:paddingHorizontal="@dimen/dp_0"
-        android:id="@+id/btnShareLog"
+
+    <GridLayout
+        android:id="@+id/grid3"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="点击分享日志信息"
-        />
+        android:layout_height="match_parent"
+        android:columnCount="3"
+        android:useDefaultMargins="true"
+        >
+
+        <TextView
+            android:id="@+id/comboDetail"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:textAllCaps="false"
+            android:textSize="@dimen/sp_12"
+            android:background="@color/color_00E0E5"
+            android:text="comboDetail" />
+
+        <TextView
+            android:id="@+id/btnShareLog"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:textAllCaps="false"
+            android:textSize="@dimen/sp_12"
+            android:background="@color/color_00E0E5"
+            android:text="分享日志" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:textAllCaps="false"
+            android:layout_columnWeight="1"
+            android:textSize="@dimen/sp_12"
+            android:gravity="center"
+            android:background="@color/color_00E0E5"
+            android:text="Item 3" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:textAllCaps="false"
+            android:textSize="@dimen/sp_12"
+            android:background="@color/color_00E0E5"
+            android:text="Item 4" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:textAllCaps="false"
+            android:background="@color/color_00E0E5"
+            android:textSize="@dimen/sp_12"
+            android:text="Item 5" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_columnWeight="1"
+            android:textSize="@dimen/sp_12"
+            android:gravity="center"
+            android:background="@color/color_00E0E5"
+            android:textAllCaps="false"
+            android:text="Item 6" />
+    </GridLayout>
 
 </arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>
