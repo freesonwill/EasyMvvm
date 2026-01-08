@@ -11,6 +11,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.lib.common.data.constants.ChatMsgType
+import arch.cayenne.lib.websocket.chat.data.ChatRefUser
 import arch.cayenne.lib.websocket.chat.data.ChatType
 import arch.cayenne.lib.websocket.chat.data.MsgType
 import arch.cayenne.module.chat.data.model.ChatMsgPageBean
@@ -52,7 +53,7 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
             reverseLayout = true
         }
         val adapter = ChatPageAdapter(
-            specialClick = { bean, clickSpane, clickType ->
+            specialClick = { bean, clickSpane, atUser,clickType ->
                 "click bean.msgType=${bean.msgType},clickType=$clickType".logd(TAG)
                 if (bean.msgType == ChatMsgType.SYSTEM) {
                     return@ChatPageAdapter
@@ -71,7 +72,9 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
 
                     ChatMsgType.AT -> {
 //                        ChatPrivateUserFragment.show(this)
-                        ChatUserInfoFragment.show(childFragmentManager,bean.toChatRefUsers())
+                        atUser?.let {
+                            ChatUserInfoFragment.show(childFragmentManager, atUser)
+                        }
                     }
 
                     ChatMsgType.TEXT -> {

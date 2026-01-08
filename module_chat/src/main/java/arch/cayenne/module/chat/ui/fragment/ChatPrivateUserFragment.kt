@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.lib.base.utils.ext.FragmentExt.setFragmentResult
+import arch.cayenne.lib.websocket.chat.data.ChatRefUser
 import arch.cayenne.module.chat.databinding.FragmentPrivateUserLayoutBinding
 import arch.cayenne.module.chat.ui.viewmodel.ChatUserInfoViewModel
 import kotlin.reflect.KClass
@@ -19,6 +20,7 @@ class ChatPrivateUserFragment :
         get() = FragmentPrivateUserLayoutBinding::class
     override val vmClass: KClass<ChatUserInfoViewModel>
         get() = ChatUserInfoViewModel::class
+    val user:ChatRefUser by lazy { requireArguments().getParcelable<ChatRefUser>("user")!! }
 
     companion object {
         val TAG = ChatPrivateUserFragment::class.java.simpleName
@@ -33,9 +35,12 @@ class ChatPrivateUserFragment :
             }
         }
 
-        fun show(fragment: Fragment) {
+        fun show(fragment: Fragment,user:ChatRefUser) {
             val f =
                 fragment.childFragmentManager.findFragmentByTag(TAG) as? ChatPrivateUserFragment
+            val bundle = Bundle()
+            bundle.putParcelable("user", user)
+            fragment.arguments = bundle
             f?.customShow()
         }
 

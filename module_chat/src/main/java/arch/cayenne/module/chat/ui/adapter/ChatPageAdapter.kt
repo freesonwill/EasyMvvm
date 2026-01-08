@@ -13,6 +13,7 @@ import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.chat.data.compare.ChatCompare
 import arch.cayenne.lib.common.data.constants.ChatMsgType
+import arch.cayenne.lib.websocket.chat.data.ChatRefUser
 import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 import arch.cayenne.module.chat.data.model.ColorSpan
 import arch.cayenne.module.chat.data.model.MentionSpan
@@ -21,7 +22,7 @@ import arch.cayenne.module.chat.manager.SoftKeyBoardAnim
 import arch.cayenne.module.chat.utils.ChatMsgUtils
 
 class ChatPageAdapter(
-    private val specialClick: (bean: ChatMsgPageBean, clickSpan: String, clickType: ChatMsgType) -> Unit,
+    private val specialClick: (bean: ChatMsgPageBean, clickSpan: String,user:ChatRefUser?, clickType: ChatMsgType) -> Unit,
     private val longClick: (bean: ChatMsgPageBean) -> Unit
 ) :
     BaseAdapter<ChatMsgPageBean, ChatPageAdapter.LiveChatViewHolder, ItemLiveChatBinding>(
@@ -29,9 +30,11 @@ class ChatPageAdapter(
     ) {
     private val longPressTimeout = 700L
     private val longPressHandler = android.os.Handler()
+    private var isLongClick = false
     private val longPressRunnable = object : LongClickListener() {
         override fun run() {
             bean?.let {
+                isLongClick = true
                 longClick.invoke(it)
             }
         }
@@ -76,6 +79,7 @@ class ChatPageAdapter(
                         if (event.action == MotionEvent.ACTION_DOWN) {
 
                             if (nameSpans.isNotEmpty()) {
+                                isLongClick = false
                                 longPressRunnable.updateBean(getItem(position))
                                 longPressHandler.postDelayed(longPressRunnable, longPressTimeout)
                                 return true
@@ -84,17 +88,19 @@ class ChatPageAdapter(
                         } else if (event.action == MotionEvent.ACTION_UP) {
                             longPressHandler.removeCallbacks(longPressRunnable)
                             val spans = buffer.getSpans(off - 1, off + 1, MentionSpan::class.java)
-                            if (nameSpans.isNotEmpty()) {
-                                specialClick.invoke(getItem(position), "", ChatMsgType.NAME)
+                            if (nameSpans.isNotEmpty()) { // name点击要拦截，否则会触发普通点击
+                                if(!isLongClick){ //如果是name的长按，则name的普通点击不会触发
+                                    specialClick.invoke(getItem(position), "", null,ChatMsgType.NAME)
+                                }
                                 return true
                             }
                             if (spans.isNotEmpty()) {
                                 spans.first().also {
-                                    specialClick.invoke(getItem(position), it.tv, it.msgType)
+                                    specialClick.invoke(getItem(position), it.tv, it.user,it.msgType)
                                 }
                                 return true
                             } else {
-                                specialClick.invoke(getItem(position), "", ChatMsgType.TEXT)
+                                specialClick.invoke(getItem(position), "", null,ChatMsgType.TEXT)
                             }
                         }
                         return true

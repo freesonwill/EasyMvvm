@@ -19,6 +19,7 @@ import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
 import arch.cayenne.lib.base.ui.fragment.BaseSideSheetDialogFragment
 import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.base.utils.ext.FragmentExt.setFragmentResult
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -75,7 +76,10 @@ class ChatUserInfoFragment :
     override fun initListener() {
 
         mBinding.apply {
-            tvAt.setOnClickListener{}
+            tvAt.setOnClickListener{
+                setFragmentResultListener()
+                dismiss()
+            }
             tvReport.setOnClickListener {
 
             }
@@ -284,5 +288,12 @@ class ChatUserInfoFragment :
             skipCollapsed = false
             isHideable = false
         }
+    }
+
+    private fun setFragmentResultListener(){
+        val bundle = Bundle().apply {
+            putParcelable(ChatPrivateUserFragment.CHAT_USER_RESULT,user)
+        }
+        childFragmentManager.setFragmentResult( ChatPersonalDialogFragment.CHAT_PERSONAL_REQUEST,bundle)
     }
 }
