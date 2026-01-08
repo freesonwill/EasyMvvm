@@ -222,7 +222,7 @@ class ChatATHelper(
     fun removeMentionSpan(editText: EditText, position: Int, count: Int) {
         try{
             var spannable = SpannableStringBuilder(editText.text)
-            val spans = spannable.getSpans(position, spannable.length, MentionSpan::class.java)
+            val spans = spannable.getSpans(position-1, spannable.length, MentionSpan::class.java)
             var flag = false
             spans.forEach {
                 val spanStart = spannable.getSpanStart(it)
@@ -350,7 +350,7 @@ class ChatATHelper(
                 val cursorPositionEnd = editText.selectionEnd
                 //被选中的字段进都需要自己删除没必要多检查
                 if (cursorPositionEnd != cursorPositionStart) {
-//                    "del1  cursorPositionStart $cursorPositionStart cursorPositionEnd $cursorPositionEnd".logd("aaa")
+                    "del1  cursorPositionStart $cursorPositionStart cursorPositionEnd $cursorPositionEnd".logd("aaa")
                     val spannable = SpannableStringBuilder(editText.text)
                     val spans = spannable.getSpans(
                         cursorPositionStart, cursorPositionEnd, MentionSpan::class.java
@@ -358,6 +358,18 @@ class ChatATHelper(
                     if (spans.size == 1) {//在一个at消息中多选删除时，先全选，如果是全选就直接删除
                         val spanStart = spannable.getSpanStart(spans[0])
                         val spanEnd = spannable.getSpanEnd(spans[0])
+
+                        if(cursorPositionStart < cursorPositionEnd){
+                            try {
+                                val lastChar = spannable.substring(cursorPositionStart, cursorPositionEnd)
+                                if(lastChar == " "){
+                                    return@setOnKeyListener false
+                                }
+                            }catch (e:Exception){
+                                e.printStackTrace()
+                            }
+                        }
+
                         //光标在at消息中间，选中整个at消息，如果光标全选at消息就直接删除
                         if ((spanStart <= cursorPositionStart && cursorPositionEnd <= spanEnd) && !(spanStart == cursorPositionStart && spanEnd == cursorPositionEnd)) {
                             editText.setSelection(spanStart, spanEnd)
@@ -366,7 +378,22 @@ class ChatATHelper(
                     }
                     if (spans.isNotEmpty()) {
                         spans.forEach {
-                            editText.text.removeSpan(it)
+                           try {
+                               val end = spannable.getSpanEnd(it)
+                               val start = spannable.getSpanStart(it)
+                               var strEnd = ""
+                               if(cursorPositionStart > start && cursorPositionStart <= end){
+                                   strEnd = spannable.substring(cursorPositionStart,end)
+                               }
+                               "del cursorPositionStart $cursorPositionStart start $start end $end strEnd $strEnd  ${it.tv}  ".logd("aaa")
+
+                               if(strEnd == " "){
+                               }else{
+                                   editText.text.removeSpan(it)
+                               }
+                           }catch (e:Exception){
+                               e.printStackTrace()
+                           }
                         }
                     }
 
