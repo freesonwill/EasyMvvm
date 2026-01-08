@@ -51,8 +51,12 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
             findNavController().navigateUp()
         }
         mBinding.tvSave.clickNoRepeat {
+            if (imageIndex == -1) {
+                showToast("请选择头像")
+                return@clickNoRepeat
+            }
             personalInfoAdapter.setIsUpAvatar(false)
-            saveBitmap()
+            updateAvatar()
         }
         var params: ViewGroup.LayoutParams = mBinding.ivUserAvatar.layoutParams
         params.height = params.width
@@ -152,7 +156,7 @@ class SystemAvatarFragment : BaseFragment<SystemAvatarViewModel, FragmentSystemA
         super.initData()
     }
 
-    private fun saveBitmap() {
+    private fun updateAvatar() {
         mBinding.tvSave.isSelected = false
         mBinding.tvSave.isClickable = false
         mBinding.tvSave.text = R.string.account_avatar_up.getString()

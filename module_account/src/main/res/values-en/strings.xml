@@ -1,4 +1,5 @@
 <resources>
     <string name="account_edit_name_toast_limit">You have reached the limit of changes for this month. Please try again next month.</string>
     <string name="system_avatar_save" translatable="false">Save Avatar</string>
+    <string name="account_avatar_select">Please select an avatar</string>
 </resources>
