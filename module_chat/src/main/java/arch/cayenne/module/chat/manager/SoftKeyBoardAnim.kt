@@ -386,7 +386,7 @@ object SoftKeyBoardAnim {
         val pathinterpolator = PathInterpolator(0.22f, 1f, 0.36f, 1f)
         val flashColor = ContextCompat.getColorStateList(
             targetView.context,
-            arch.cayenne.lib.common.R.color.color_FFFFFF
+            arch.cayenne.lib.common.R.color.color_C0C0C0
         )
         val originColor =if(msgType in arrayOf(ChatMsgType.BET_SPORT,ChatMsgType.BET_GAME))
             ContextCompat.getColorStateList(
