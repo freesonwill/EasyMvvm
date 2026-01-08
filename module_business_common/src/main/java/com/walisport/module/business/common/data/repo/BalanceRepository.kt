@@ -51,6 +51,10 @@ class BalanceRepository(
         manager.setKeyValue(UserDataKey.KEY_DEFAULT_FIAT, ccy)
     }
 
+    fun getSelectCurrency(): String {
+        return manager.getValue<String>(UserDataKey.KEY_DEFAULT_CURRENCY) ?: "USD"
+    }
+
     fun changeFiat(): UnPeekLiveData<Boolean> {
         val updateLiveData = UnPeekLiveData<Boolean>()
         scope.launch(Dispatchers.IO) {

@@ -72,7 +72,8 @@ class BetInfoDialogFragment : BasePositionDialogFragment<EmptyViewModel, Fragmen
                 mBinding.tvBetInfo.setPadding(16.dp2px,11.5.dp2px,17.dp2px,11.dp2px)
                 mBinding.tvBetInfo.minHeight = 60.dp2px
             } else {
-                mBinding.tvBetInfo.setPadding(12.dp2px,12.dp2px,12.dp2px,12.dp2px)
+                mBinding.tvBetInfo.setPadding(12.dp2px,10.dp2px,12.dp2px,10.dp2px)
+                mBinding.tvBetInfo.height = 41.5.dp2px
             }
             root.measure(
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
