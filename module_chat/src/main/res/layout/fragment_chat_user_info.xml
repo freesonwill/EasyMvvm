@@ -264,7 +264,7 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_report"
-                        android:layout_marginTop="@dimen/dp_8"
+                        android:layout_marginTop="@dimen/dp_6"
                         android:layout_width="74dp"
                         android:layout_height="48dp"
                         android:layout_marginStart="@dimen/dp_16"
@@ -276,11 +276,10 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_at"
-                        android:layout_width="0dp"
+                        android:layout_width="259dp"
                         android:layout_height="48dp"
-                        android:layout_marginTop="@dimen/dp_8"
+                        android:layout_marginTop="@dimen/dp_6"
                         android:layout_marginStart="@dimen/dp_10"
-                        android:layout_marginEnd="@dimen/dp_16"
                         android:layout_weight="1"
                         android:background="@drawable/shape_chat_info_auto_text_bg"
                         android:gravity="center"

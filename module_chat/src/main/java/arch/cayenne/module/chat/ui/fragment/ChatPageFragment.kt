@@ -94,7 +94,7 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                 if (bean.msgType == ChatMsgType.SYSTEM) {
                     return@ChatPageAdapter
                 }
-                homeViewModel.addAtMsgToChat(bean)
+                homeViewModel.addAtMsgToChat(ChatRefUser(bean.uid, bean.userName, bean.avatarId,bean.replaceUserName))
             }
         )
         mBinding.liveChatRecycler.layoutManager = layoutManger
@@ -205,15 +205,14 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                 //处理结果 0 title 1 @ta 2 复制评论 3 举报评论
                 if (result == 1) {
                     selectBean?.let {
-                        homeViewModel.addAtMsgToChat(it)
+                        homeViewModel.addAtMsgToChat(ChatRefUser(it.uid, it.userName, it.avatarId,it.replaceUserName))
                     }
                 }
             }
-            val result1 = bundle.getInt(ChatPrivateUserFragment.CHAT_USER_RESULT, -1)
-            if (result1 != -1) {
-                selectBean?.let {
-                    homeViewModel.addAtMsgToChat(it)
-                }
+            val result1 = bundle.getParcelable<ChatRefUser>(ChatPrivateUserFragment.CHAT_USER_RESULT)
+            "result1=$result1    $result".logd(TAG)
+            if (result1 != null) {
+                homeViewModel.addAtMsgToChat(result1)
             }
         }
     }

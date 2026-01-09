@@ -20,7 +20,7 @@ class ChatPrivateUserFragment :
         get() = FragmentPrivateUserLayoutBinding::class
     override val vmClass: KClass<ChatUserInfoViewModel>
         get() = ChatUserInfoViewModel::class
-    val user:ChatRefUser by lazy { requireArguments().getParcelable<ChatRefUser>("user")!! }
+    var user: ChatRefUser? = null
 
     companion object {
         val TAG = ChatPrivateUserFragment::class.java.simpleName
@@ -35,12 +35,10 @@ class ChatPrivateUserFragment :
             }
         }
 
-        fun show(fragment: Fragment,user:ChatRefUser) {
+        fun show(fragment: Fragment, user: ChatRefUser) {
             val f =
                 fragment.childFragmentManager.findFragmentByTag(TAG) as? ChatPrivateUserFragment
-            val bundle = Bundle()
-            bundle.putParcelable("user", user)
-            fragment.arguments = bundle
+            f?.setChatUser(user)
             f?.customShow()
         }
 
@@ -50,6 +48,10 @@ class ChatPrivateUserFragment :
     override fun initView(savedInstanceState: Bundle?) {
         ChatReportFragment.create(this)
 
+    }
+
+    fun setChatUser(chatRefUser: ChatRefUser) {
+        this.user = chatRefUser
     }
 
     override fun initListener() {
@@ -65,9 +67,12 @@ class ChatPrivateUserFragment :
 
     private fun setParamToParentFragment() {
         val bundle = Bundle().apply {
-            putInt(CHAT_USER_RESULT,1)
+            putParcelable(CHAT_USER_RESULT, user)
         }
-        parentFragmentManager.setFragmentResult( ChatPersonalDialogFragment.CHAT_PERSONAL_REQUEST,bundle)
+        parentFragmentManager.setFragmentResult(
+            ChatPersonalDialogFragment.CHAT_PERSONAL_REQUEST,
+            bundle
+        )
     }
 
 }

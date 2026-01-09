@@ -17,6 +17,7 @@ import arch.cayenne.module.chat.data.constants.CheckBetResultEnum
 import arch.cayenne.module.chat.data.constants.EmojiEnum
 import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.lib.common.data.constants.ChatMsgType
+import arch.cayenne.lib.websocket.chat.data.ChatRefUser
 import arch.cayenne.lib.websocket.chat.data.ChatType
 import arch.cayenne.lib.websocket.chat.data.MsgType
 import arch.cayenne.module.chat.R
@@ -55,7 +56,7 @@ class ChatHomeViewModel() : BaseViewModel() {
     private val _etDelLiveDta: MutableLiveData<Boolean> = MutableLiveData()
     private val _sendTextLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private val _currentKeyBoardType = MutableLiveData<KeyBoardType>(KeyBoardType.CHAT)
-    private val _atLiveData: MutableLiveData<ChatMsgPageBean> = MutableLiveData<ChatMsgPageBean>()
+    private val _atLiveData: MutableLiveData<ChatRefUser> = MutableLiveData<ChatRefUser>()
 
 
     var currentKeyBoardType: KeyBoardType = KeyBoardType.CHAT
@@ -82,7 +83,7 @@ class ChatHomeViewModel() : BaseViewModel() {
     val emojiFlow: SharedFlow<EmojiModel?> = _emojiFlow
     val etDelLiveData: LiveData<Boolean> = _etDelLiveDta
     val sendTextLiveData: LiveData<Boolean> = _sendTextLiveData
-    val atLiveData: LiveData<ChatMsgPageBean> = _atLiveData
+    val atLiveData: LiveData<ChatRefUser> = _atLiveData
 
     val languageManager: LanguageManager by inject { parametersOf(viewModelScope) }
     val userDataManager: UserDataManager by inject()
@@ -323,8 +324,8 @@ class ChatHomeViewModel() : BaseViewModel() {
     }
 
 
-    fun addAtMsgToChat(msg: ChatMsgPageBean) {
-        _atLiveData.value = msg
+    fun addAtMsgToChat(user: ChatRefUser) {
+        _atLiveData.value = user
     }
 
 

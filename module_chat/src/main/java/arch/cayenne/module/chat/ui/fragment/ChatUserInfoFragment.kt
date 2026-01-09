@@ -20,6 +20,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
 import arch.cayenne.lib.base.ui.fragment.BaseSideSheetDialogFragment
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.FragmentExt.setFragmentResult
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.CustomTabIndicatorUtils
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -46,9 +47,7 @@ class ChatUserInfoFragment :
 
         fun show(manager: FragmentManager, user: ChatRefUser) {
             val fragment = ChatUserInfoFragment()
-            val bundle = Bundle()
-            bundle.putParcelable("user", user)
-            fragment.arguments = bundle
+            fragment.setChatUser(user)
             fragment.show(manager, TAG)
         }
     }
@@ -58,12 +57,15 @@ class ChatUserInfoFragment :
         get() = FragmentChatUserInfoBinding::class
     override val vmClass: KClass<ChatUserInfoViewModel>
         get() = ChatUserInfoViewModel::class
-    val user:ChatRefUser by lazy { requireArguments().getParcelable<ChatRefUser>("user")!! }
+    var user:ChatRefUser? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         loadFragment()
     }
 
+    fun setChatUser(chatRefUser: ChatRefUser) {
+        this.user = chatRefUser
+    }
 
     private var isChatUserInfoAvatarLayoutDow: Boolean = false //按下的是否是资料区域
     val listFragment = listOf(
@@ -81,7 +83,7 @@ class ChatUserInfoFragment :
                 dismiss()
             }
             tvReport.setOnClickListener {
-
+                ChatReportFragment.show(this@ChatUserInfoFragment)
             }
         }
 
@@ -291,9 +293,10 @@ class ChatUserInfoFragment :
     }
 
     private fun setFragmentResultListener(){
+        "user == nul ${user}".logd("aaa")
         val bundle = Bundle().apply {
             putParcelable(ChatPrivateUserFragment.CHAT_USER_RESULT,user)
         }
-        childFragmentManager.setFragmentResult( ChatPersonalDialogFragment.CHAT_PERSONAL_REQUEST,bundle)
+        parentFragmentManager.setFragmentResult( ChatPersonalDialogFragment.CHAT_PERSONAL_REQUEST,bundle)
     }
 }

@@ -298,7 +298,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
             }
             chatAtHelper.addAtMentionSpan(
                 it.userName,
-                ChatRefUser(it.uid, it.userName, it.avatarId, it.replaceUserName)
+                ChatRefUser(it.uid, it.userName, it.avatarId, it.replaceRefUserName)
             )
 //            SoftKeyBoardAnim.etAnimWhenEtContentChange(
 //                mBinding,
