@@ -17,12 +17,12 @@ import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
+import arch.cayenne.lib.base.ui.animation.AnimationController
+import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
@@ -91,9 +91,14 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
             balanceView.init(childFragmentManager)
             balanceView.setBalanceViewModel(balanceViewModel, viewLifecycleOwner)
             initCurveBanner()
-            var barHeight = ViewUtils.getStatusBarHeight(requireContext())
             btnLogin.clickNoRepeat {
-
+                navigate(
+                    arch.cayenne.lib.res.R.string.nav_module_login_account_fragment.deeplink(),
+                    enterAnim = AnimationController[AnimType.routeEnterBT],
+                    exitAnim = AnimationController[AnimType.routeExitTB],
+                    popEnterAnim = AnimationController[AnimType.routeExitTB],
+                    popExitAnim = AnimationController[AnimType.routeExitBT]
+                )
             }
         }
         initPopupSlot()
@@ -151,7 +156,6 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
 
             ivRightLogo.setOnBannerListener { Int, position ->
                 val url = mViewModel.curveBannerLiveData.value?.get(position)?.targetUrl ?: ""
-                "aaaa---url:$url".logd(TAG)
                 navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment.deeplink("url" to url))
             }
 
@@ -358,8 +362,8 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
             mBinding.ivRightLogo.isVisible = adapter.itemCount != 0
         }
         mViewModel.isAccountLogin.observe(viewLifecycleOwner) { isLogin ->
-            //mBinding.btnLogin.isVisible = !isLogin
-            //mBinding.balanceView.isVisible = !isLogin
+            mBinding.btnLogin.isVisible = true       //isLogin 暂时设为登录按钮可见
+            mBinding.balanceView.isVisible = false   //!isLogin
         }
         mViewModel.gameCategory.observe(viewLifecycleOwner) { categoryList ->
             LogUtils.e("HallFragment--->gameCategory--->$categoryList")
