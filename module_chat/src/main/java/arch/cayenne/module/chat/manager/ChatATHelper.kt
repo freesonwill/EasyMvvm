@@ -66,7 +66,9 @@ class ChatATHelper(
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             isEditDelete = before > 0 && count == 0
-            removeMentionSpan(chatEtInput, start, count)
+            if (count > 0) {
+                removeMentionSpan(chatEtInput, start, count)
+            }
         }
 
         override fun afterTextChanged(s: Editable?) {
@@ -167,8 +169,8 @@ class ChatATHelper(
 //        }
 //    }
 
-    fun checkAtInEtInput(uid: String,myUid:String): Boolean {
-        if(uid == myUid){
+    fun checkAtInEtInput(uid: String, myUid: String): Boolean {
+        if (uid == myUid) {
             return false
         }
         val spannable = SpannableStringBuilder(chatEtInput.text)
@@ -218,36 +220,97 @@ class ChatATHelper(
 
     // 移除at消息背景
     fun removeMentionSpan(editText: EditText, position: Int, count: Int) {
-        var spannable = SpannableStringBuilder(editText.text)
-        val spans = spannable.getSpans(position, position + 1, MentionSpan::class.java)
-        "removeMentionSpan1 ${spans.size} $position".logd(TAG)
-        spans.forEach { mention ->
-            val spanStart = spannable.getSpanStart(mention)
-            val spanEnd = spannable.getSpanEnd(mention)
-            "removeMentionSpan position $position spanStart $spanStart spanEnd $spanEnd count $count ".logd(
-                TAG
-            )
+        try{
+            var spannable = SpannableStringBuilder(editText.text)
+            val spans = spannable.getSpans(position-1, spannable.length, MentionSpan::class.java)
+            var flag = false
+            spans.forEach {
+                val spanStart = spannable.getSpanStart(it)
+                val spanEnd = spannable.getSpanEnd(it)
+                val spanText = spannable.substring(spanStart, spanEnd)
 
-            //两个@中间，在后一个@前面插入
-            if (position in spanStart+1..<spanEnd) {
-                spannable.removeSpan(mention)
-                val checkLastIndex = position + count
-                if (checkLastIndex > spanEnd) {
-                    return
-                }
-                if (checkLastIndex == spanEnd || spannable[checkLastIndex] == ' ') {//checkLastIndex == spanEnd  多选时只包含了空格或者 检查是否在空字符串前面加的字符 如果是重新设置需要添加背景色
-                    val mentionSpan =
-                        MentionSpan(mention.msgType, mention.tv, mention.user, atClick)
-                    spannable.setSpan(
-                        mentionSpan, spanStart, position, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
+                "spanText $spanText  ${it.tv}   ${it.msgType} $position".logd("aaa")
+                if (it.msgType == ChatMsgType.AT) {
+                    val atFLag = spanText != "@${it.tv} " && spanText != "@${it.tv}"
+                    "atFlag $atFLag".logd("aaa")
+                    if (atFLag) {
+                        spannable.removeSpan(it)
+                        flag = true
+                    }
+                    "startNSapnText  spanStart $spanStart spanEnd $spanEnd position$position".logd("aaa")
+                    val nSpanText = if(position > spanStart) spannable.substring(spanStart, position) else ""
+                    val nSpanFlag = nSpanText == "@${it.tv} " || nSpanText == "@${it.tv}"
+                    "nSpanText $nSpanText nSpanFlag $nSpanFlag".logd("aaa")
+                    if (nSpanFlag) {
+                        val mentionSpan =
+                            MentionSpan(it.msgType, it.tv, it.user, atClick)
+                        spannable.setSpan(
+                            mentionSpan, spanStart, position, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+                        spannable.setSpan(
+                            mentionSpan, spanStart, position, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+                        flag = true
+                    }
 
+                } else if (it.msgType == ChatMsgType.BET_GAME || it.msgType == ChatMsgType.BET_SPORT) {
+                    if (spanText != it.tv) {
+                        spannable.removeSpan(it)
+                        flag = true
+                    }
                 }
+            }
+            " spans ${spans.size} falg $flag position $position  length ${spannable.length}".logd("aaa")
+            if (flag) {
                 editText.text = spannable
                 editText.setSelection(position)
             }
-
+        }catch (e:Exception){
+            e.printStackTrace()
         }
+//        val spans = spannable.getSpans(position, position + 1, MentionSpan::class.java)
+//        "removeMentionSpan1 ${spans.size} $position   length ${spannable.length}".logd(TAG)
+//        spans.forEach { mention ->
+//            val spanStart = spannable.getSpanStart(mention)
+//            val spanEnd = spannable.getSpanEnd(mention)
+//            "removeMentionSpan position $position spanStart $spanStart spanEnd $spanEnd count $count ".logd(
+//                TAG
+//            )
+//
+//            //两个@中间，在后一个@前面插入
+//            if (position in spanStart+1..<spanEnd) {
+//                spannable.removeSpan(mention)
+//                val checkLastIndex = position + count
+//                if (checkLastIndex > spanEnd) {
+//                    return
+//                }
+//                if (checkLastIndex == spanEnd || spannable[checkLastIndex] == ' ') {//checkLastIndex == spanEnd  多选时只包含了空格或者 检查是否在空字符串前面加的字符 如果是重新设置需要添加背景色
+//                    val mentionSpan =
+//                        MentionSpan(mention.msgType, mention.tv, mention.user, atClick)
+//                    spannable.setSpan(
+//                        mentionSpan, spanStart, position, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+//                    )
+//
+//                }
+//                editText.text = spannable
+//                editText.setSelection(position)
+//            }else {
+//               try{
+//                   if(spanStart >= 0){
+//                       val spanText = spannable.substring(spanStart, spanEnd)
+//                       "spanText $spanText ".logd(TAG)
+//                       if(!spanText.contains("@")){
+//                           spannable.removeSpan(mention)
+//                           editText.text = spannable
+//                           editText.setSelection(position)
+//                       }
+//                   }
+//               }catch (e:Exception){
+//                   e.printStackTrace()
+//               }
+//            }
+//
+//        }
     }
 
     //获取at消息在text中的位置
@@ -287,7 +350,7 @@ class ChatATHelper(
                 val cursorPositionEnd = editText.selectionEnd
                 //被选中的字段进都需要自己删除没必要多检查
                 if (cursorPositionEnd != cursorPositionStart) {
-//                    "del1  cursorPositionStart $cursorPositionStart cursorPositionEnd $cursorPositionEnd".logd("aaa")
+                    "del1  cursorPositionStart $cursorPositionStart cursorPositionEnd $cursorPositionEnd".logd("aaa")
                     val spannable = SpannableStringBuilder(editText.text)
                     val spans = spannable.getSpans(
                         cursorPositionStart, cursorPositionEnd, MentionSpan::class.java
@@ -295,15 +358,42 @@ class ChatATHelper(
                     if (spans.size == 1) {//在一个at消息中多选删除时，先全选，如果是全选就直接删除
                         val spanStart = spannable.getSpanStart(spans[0])
                         val spanEnd = spannable.getSpanEnd(spans[0])
+
+                        if(cursorPositionStart < cursorPositionEnd){
+                            try {
+                                val lastChar = spannable.substring(cursorPositionStart, cursorPositionEnd)
+                                if(lastChar == " "){
+                                    return@setOnKeyListener false
+                                }
+                            }catch (e:Exception){
+                                e.printStackTrace()
+                            }
+                        }
+
                         //光标在at消息中间，选中整个at消息，如果光标全选at消息就直接删除
                         if ((spanStart <= cursorPositionStart && cursorPositionEnd <= spanEnd) && !(spanStart == cursorPositionStart && spanEnd == cursorPositionEnd)) {
                             editText.setSelection(spanStart, spanEnd)
                             return@setOnKeyListener true
                         }
                     }
-                    if(spans.isNotEmpty()){
+                    if (spans.isNotEmpty()) {
                         spans.forEach {
-                            editText.text.removeSpan(it)
+                           try {
+                               val end = spannable.getSpanEnd(it)
+                               val start = spannable.getSpanStart(it)
+                               var strEnd = ""
+                               if(cursorPositionStart > start && cursorPositionStart <= end){
+                                   strEnd = spannable.substring(cursorPositionStart,end)
+                               }
+                               "del cursorPositionStart $cursorPositionStart start $start end $end strEnd $strEnd  ${it.tv}  ".logd("aaa")
+
+                               if(strEnd == " "){
+                               }else{
+                                   editText.text.removeSpan(it)
+                               }
+                           }catch (e:Exception){
+                               e.printStackTrace()
+                           }
                         }
                     }
 
