@@ -24,6 +24,17 @@
     <string name="account_edit_name_recommend" translatable="false">试试推荐昵称：</string>
     <string name="account_edit_name_refresh" translatable="false">换一批</string>
 
+    <string name="login_or_reg" translatable="false">登录/注册 platformName</string>
+    <string name="tip_login_reg" translatable="false">投注、现金游戏、领取奖金、聊天等</string>
+    <string name="tip_login_or" translatable="false">或</string>
+    <string name="login_by_google" translatable="false">使用Google账号</string>
+    <string name="login_by_facebook" translatable="false">使用Facebook账号</string>
+    <string name="login_by_x" translatable="false">使用X账号</string>
+    <string name="login_by_line" translatable="false">使用Line账号</string>
+    <string name="login_by_tel" translatable="false">使用Telegram账号</string>
+    <string name="login_by_key" translatable="false">使用通行密钥(仅登录)</string>
+    <string name="tip_agree" translatable="false">继续则表示你同意我们的服务条款和隐私政策</string>
+    <string name="btn_login_reg" translatable="false">使用手机号码或电子邮箱</string>
     <string name="account_avatar_confirm" translatable="false">保存头像</string>
     <string name="account_avatar_up" translatable="false">头像上传中</string>
     <string name="account_avatar_delete" translatable="false">删除头像</string>

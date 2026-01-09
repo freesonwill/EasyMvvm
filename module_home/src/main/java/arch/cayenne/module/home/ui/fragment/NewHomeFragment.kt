@@ -364,9 +364,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel , FragmentNewHomeBinding>() {
                 addScaleOnTouchAnimation()
             }
 
-            banner.setOnBannerListener { Int, position ->
+            banner.setOnBannerListener { _, position ->
                 val url = mViewModel.curveBannerLiveData.value?.get(position)?.targetUrl ?: ""
-                "aaaa---url:$url".logd(TAG)
                 navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment.deeplink("url" to url))
             }
         }

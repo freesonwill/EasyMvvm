@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.data.constants.DataState
-import arch.cayenne.lib.base.ui.animation.AnimationController
-import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
@@ -24,7 +21,6 @@ import com.walisport.module.hall.databinding.FragmentGameRecentBinding
 import com.walisport.module.hall.ui.viewmodel.GameRecentViewModel
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
 import com.walisport.module.live.data.EventClick
-import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 
 class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentBinding>() {
@@ -75,9 +71,9 @@ class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentB
 
     override fun initListener() {
         mBinding.rvGame.onScrolledOver(100f, 80f, {
-            hallViewModel.setScorll(true)
+            hallViewModel.setScroll(true)
         }, {
-            hallViewModel.setScorll(false)
+            hallViewModel.setScroll(false)
         })
 
         mBinding.rvGame.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
@@ -162,9 +158,9 @@ class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentB
         super.onResume()
         mBinding.rvGame.post {
             mBinding.rvGame.checkCurrentScrollState(100f, 80f, {
-                hallViewModel.setScorll(true)
+                hallViewModel.setScroll(true)
             }, {
-                hallViewModel.setScorll(false)
+                hallViewModel.setScroll(false)
             })
         }
     }
