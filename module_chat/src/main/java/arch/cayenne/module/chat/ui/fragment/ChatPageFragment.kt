@@ -63,11 +63,13 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                 when (clickType) {
                     ChatMsgType.BET_GAME -> {
 //                    val betType = if(clickSpane == "注单游戏") 0 else 1
-                        BetShareDialogFragment.show(this, 0)
+                        val height = mBinding.liveChatRecycler.height
+                        BetShareDialogFragment.show(this, 0,height)
                     }
 
                     ChatMsgType.BET_SPORT -> {
-                        BetShareDialogFragment.show(this, 1)
+                        val height = mBinding.liveChatRecycler.height
+                        BetShareDialogFragment.show(this, 1,height)
                     }
 
                     ChatMsgType.AT -> {

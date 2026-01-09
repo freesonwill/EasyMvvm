@@ -33,8 +33,8 @@ class BetShareDialogFragment :
         get() = BetShareViewModel::class
     private var betType: Int = 0 // 0 Game 1 Sport
     private var contentMaxHeight = 0
-    private val sportMinHeight = 345.dp2px
-    private val gameMinHeight = 425.dp2px
+    private val sportMinHeight = 333.dp2px
+    private val gameMinHeight = 400.dp2px
     private var heightAnim: ValueAnimator? = null
 
     companion object {
@@ -49,13 +49,18 @@ class BetShareDialogFragment :
             return f
         }
 
-        fun show(fragment: Fragment, betType: Int) {
+        fun show(fragment: Fragment, betType: Int,height:Int) {
             val betFragment =
                 fragment.childFragmentManager.findFragmentByTag(TAG) as? BetShareDialogFragment
                     ?: create(fragment)
             betFragment.changeBetType(betType)
+            betFragment?.setMaxHeightDp(height)
             betFragment.customShow()
         }
+    }
+
+    fun setMaxHeightDp(maxHeight: Int) {
+//        contentMaxHeight = maxHeight.dp2px
     }
 
 
@@ -83,10 +88,10 @@ class BetShareDialogFragment :
         mBinding.line.isVisible = betType == 1
         mBinding.clBottom.isVisible = betType == 1
         val lp = mBinding.fragmentContainer.layoutParams
-        lp.height = if (betType == 0) gameMinHeight else sportMinHeight
+        lp.height =  sportMinHeight
         mBinding.fragmentContainer.layoutParams = lp
-        contentMaxHeight =
-            if (betType == 0) gameMinHeight + 269.dp2px else sportMinHeight + 269.dp2px
+        contentMaxHeight = 602.dp2px
+//            if (betType == 0) gameMinHeight + 269.dp2px else sportMinHeight + 269.dp2px
     }
 
 
@@ -138,6 +143,7 @@ class BetShareDialogFragment :
         if (heightAnim?.isRunning == true) {
             heightAnim?.cancel()
         }
+        mBinding.fragmentContainer.layoutParams.height =  sportMinHeight
     }
 
 
