@@ -4,7 +4,7 @@
     <string name="tab_all">全部</string>
     <string name="tab_table">棋牌</string>
     <string name="tab_slot">老虎机</string>
-
+    <string name="btn_login">登录</string>
     <string name="tab_fishing">捕鱼</string>
     <string name="tab_real">真人</string>
     <string name="tab_original">原创</string>

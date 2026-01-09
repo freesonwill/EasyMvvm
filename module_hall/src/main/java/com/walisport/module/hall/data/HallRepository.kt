@@ -37,6 +37,9 @@ class HallRepository(
     private val _gameCategoryListLiveData = UnPeekLiveData<List<GameCategoryVo>>()
     val gameCategoryListLiveData: UnPeekLiveData<List<GameCategoryVo>> = _gameCategoryListLiveData
 
+    suspend fun checkIsLogin(): Boolean {
+        return database.infoDao().isLogin()?: false
+    }
 
     suspend fun queryGameList(
         page: Int,
