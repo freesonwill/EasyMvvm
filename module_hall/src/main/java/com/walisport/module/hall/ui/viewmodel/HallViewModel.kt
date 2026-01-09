@@ -10,6 +10,8 @@ import arch.cayenne.lib.http.data.Result
 import com.walisport.module.business.common.data.BannerActiveBean
 import com.walisport.module.business.common.utils.biz.BannerBiz
 import com.walisport.module.hall.data.HallRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
@@ -22,12 +24,15 @@ class HallViewModel : BaseViewModel() {
     private val _scroll = MutableLiveData<Boolean>()
     val scroll: LiveData<Boolean> = _scroll
 
+    private val _isLogin = MutableLiveData<Boolean>()
+    val isAccountLogin: LiveData<Boolean> = _isLogin
+
     //滚动状态变更通知
     private val _scrollStateChanged = UnPeekLiveData<Int>()
     val scrollStateChanged: LiveData<Int> = _scrollStateChanged
 
     private val _curveBannerLiveData = MutableLiveData<List<BannerActiveBean>>(emptyList())
-    val curveBannerLiveData:LiveData<List<BannerActiveBean>> = _curveBannerLiveData
+    val curveBannerLiveData: LiveData<List<BannerActiveBean>> = _curveBannerLiveData
 
     val gameCategory = repository.gameCategoryListLiveData //分类列表
     fun setScroll(bool:Boolean){
@@ -36,15 +41,21 @@ class HallViewModel : BaseViewModel() {
         }
     }
 
-    fun setScrollState(state:Int){
+    fun setScrollState(state: Int) {
         if (_scrollStateChanged.value != state) {
             _scrollStateChanged.value = state
         }
     }
 
-
     fun queryGameCommon() {
         repository.queryGameCommonList()
+    }
+
+    fun checkIsLogin() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val isLogin = repository.checkIsLogin()
+            _isLogin.postValue(isLogin)
+        }
     }
 
     suspend fun getBannerActive() {

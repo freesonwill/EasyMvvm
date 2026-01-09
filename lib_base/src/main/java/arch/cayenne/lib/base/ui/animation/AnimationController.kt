@@ -13,6 +13,7 @@ object AnimationController {
     enum class AnimType {
         routeEnter,routeExit,routePopEnter,routePopExit,
         routeEnterTB,routeExitTB,routePopEnterTB,routePopExitTB,
+        routeEnterBT,routeExitBT,
         popupEnter,popupExit,
         drawerEnter,
         scrollbar,
@@ -93,6 +94,26 @@ object AnimationController {
             Animation.RELATIVE_TO_SELF, 0f,
             Animation.RELATIVE_TO_SELF, 0f,
             Animation.RELATIVE_TO_SELF, -1f,
+            duration,
+            interpolator,
+        )
+
+        //从下往上弹窗口
+        this[AnimType.routeEnterBT] = TranslateAnimationOption(
+            Animation.RELATIVE_TO_SELF, 0f,
+            Animation.RELATIVE_TO_SELF, 0f,
+            Animation.RELATIVE_TO_SELF, 1f,
+            Animation.RELATIVE_TO_SELF, 0f,
+            duration,
+            interpolator,
+        )
+
+        //从上往下关窗口
+        this[AnimType.routeExitBT] = TranslateAnimationOption(
+            Animation.RELATIVE_TO_SELF, 0f,
+            Animation.RELATIVE_TO_SELF, 0f,
+            Animation.RELATIVE_TO_SELF, 0f,
+            Animation.RELATIVE_TO_SELF, 1f,
             duration,
             interpolator,
         )
