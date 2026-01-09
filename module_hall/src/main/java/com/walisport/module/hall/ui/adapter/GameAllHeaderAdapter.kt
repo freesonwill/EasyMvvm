@@ -4,13 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import com.walisport.module.business.common.ui.adapter.BannerImageMatchAdapter
 import com.walisport.module.hall.R
 import com.walisport.module.hall.databinding.ItemGameAllHeaderBinding
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.hall.ui.fragment.DailyMatchInfoFragment
+import com.walisport.module.business.common.utils.ext.setGlobalIndicator
+import com.walisport.module.business.common.utils.ext.setGlobalBasicConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -52,26 +52,12 @@ class GameAllHeaderViewHolder(
         scope.launch {
             with(binding) {
                 val mockBannerList = onItemClickListener.getBannerList()
-                proBanner.setTriggerListener {
-                    vpBanner.setLoopTime(3_000/10)
-                    vpBanner.isAutoLoop(true)
-                    vpBanner.start()
-                    vpBanner.postDelayed({
-                        vpBanner.stop()                    // 停止自动轮播
-                        vpBanner.isAutoLoop(false)         // 关闭自动轮播功能 // 可选：允许下次再次触发
-                    }, 50)
-                }
-
-
                 // 自定义适配器
                 val adapter = BannerImageMatchAdapter(mockBannerList)
                 vpBanner.setAdapter(adapter)
-                vpBanner.setBannerRound(9.dp2px.toFloat())
-                vpBanner.isAutoLoop(false)
-                // 设置滑动时长丝滑,不影响曲线,
-                vpBanner.setScrollTime(600)  // 0.5 秒
-                vpBanner.setPageTransformer(CustomCurveTransformer())
-                // 启动轮播
+                vpBanner.setGlobalBasicConfig()
+                vpBanner.setGlobalIndicator()
+                vpBanner.start()
 
                 ivInviteFriend.clickNoRepeat {
                     onItemClickListener.onInviteFriendItemClick()
@@ -85,14 +71,6 @@ class GameAllHeaderViewHolder(
         }
     }
 
-
-    fun restProBannerJob() {
-        binding.proBanner.resetTriggerJob()
-    }
-
-    fun stopProBannerJob() {
-        binding.proBanner.stopTriggerJob()
-    }
 
 
     interface OnHeaderItemClickListener {

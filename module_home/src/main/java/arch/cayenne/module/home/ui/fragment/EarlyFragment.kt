@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
-import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
@@ -60,6 +59,8 @@ import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.utils.scrollToPositionWithoutAnim
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
+import com.walisport.module.business.common.utils.ext.setGlobalIndicator
+import com.walisport.module.business.common.utils.ext.setGlobalBasicConfig
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlin.math.max
@@ -291,32 +292,12 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
     private suspend fun initSportBanner() {
         val mockBannerList = mViewModel.getBannerList()
         with(mBinding.includeSportBanner) {
-            pbSportBanner.setTriggerListener {
-                vpSportBanner.setLoopTime(50)
-                vpSportBanner.isAutoLoop(true)
-                vpSportBanner.start()
-                vpSportBanner.postDelayed({
-                    vpSportBanner.stop()                    // 停止自动轮播
-                    vpSportBanner.isAutoLoop(false)         // 关闭自动轮播功能 // 可选：允许下次再次触发
-                }, 50)
-            }
             val adapter = BannerImageMatchAdapter(mockBannerList)
             vpSportBanner.setAdapter(adapter)
-            vpSportBanner.setBannerRound(9.dp2px.toFloat())
-            vpSportBanner.isAutoLoop(false)
-            // 设置滑动时长丝滑,不影响曲线,
-            vpSportBanner.setScrollTime(600)  // 0.6 秒
-            vpSportBanner.setPageTransformer(CustomCurveTransformer())
+            vpSportBanner.setGlobalBasicConfig()
+            vpSportBanner.setGlobalIndicator()
+            vpSportBanner.start()
         }
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        if (hidden) {
-            mBinding.includeSportBanner.pbSportBanner.stopTriggerJob()
-        } else {
-            mBinding.includeSportBanner.pbSportBanner.resetTriggerJob()
-        }
-        super.onHiddenChanged(hidden)
     }
 
     // 更新 VIP 信息顯示
