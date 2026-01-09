@@ -21,7 +21,6 @@ import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
@@ -148,7 +147,6 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
 
             ivRightLogo.setOnBannerListener { Int, position ->
                 val url = mViewModel.curveBannerLiveData.value?.get(position)?.targetUrl ?: ""
-                "aaaa---url:$url".logd(TAG)
                 navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment.deeplink("url" to url))
             }
 
@@ -378,7 +376,7 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
         }
         unreadMessageViewModel.createObserver()
 
-        mViewModel.scorll.observe(viewLifecycleOwner) {
+        mViewModel.scroll.observe(viewLifecycleOwner) {
             if (it) { //收起
                 mBinding.homeBarIcon.marginEndAnim()
             } else { //展开
@@ -434,8 +432,5 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
             .add(R.id.fragment_hall_container_view , popupSlotFragment , PopupSlotFragment.TAG)
             .commit()
     }
-
-
-
 
 }

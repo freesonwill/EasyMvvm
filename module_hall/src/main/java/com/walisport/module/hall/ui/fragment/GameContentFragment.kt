@@ -148,9 +148,9 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
 
     override fun initListener() {
         mBinding.rvGame.onScrolledOver(100f, 80f, {
-            hallViewModel.setScorll(true)
+            hallViewModel.setScroll(true)
         }, {
-            hallViewModel.setScorll(false)
+            hallViewModel.setScroll(false)
         })
 
         mBinding.rvGame.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
@@ -594,9 +594,9 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
         super.onResume()
         mBinding.rvGame.post {
             mBinding.rvGame.checkCurrentScrollState(100f, 80f, {
-                hallViewModel.setScorll(true)
+                hallViewModel.setScroll(true)
             }, {
-                hallViewModel.setScorll(false)
+                hallViewModel.setScroll(false)
             })
         }
     }
