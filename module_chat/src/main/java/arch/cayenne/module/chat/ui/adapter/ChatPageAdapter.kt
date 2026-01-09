@@ -89,7 +89,7 @@ class ChatPageAdapter(
                             }
                             if (spans.isNotEmpty()) {
                                 spans.first().also {
-                                    specialClick.invoke(getItem(position), it.tv, it.msgType)
+                                    specialClick.invoke(getItem(position), it.tv.replace("\u2060",""), it.msgType)
                                 }
                                 return true
                             } else {
@@ -138,7 +138,7 @@ class ChatPageAdapter(
 
         holder.nBinding.tv.backgroundTintList = ContextCompat.getColorStateList(
             binding.tv.context,
-            if (item.msgType == ChatMsgType.BET_SPORT || item.msgType == ChatMsgType.BET_GAME) {
+            if (item.msgType == ChatMsgType.SYSTEM) {
                 arch.cayenne.lib.common.R.color.color_632433
             } else {
                 arch.cayenne.lib.common.R.color.color_0FFFFFFF
