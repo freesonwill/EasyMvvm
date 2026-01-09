@@ -11,7 +11,7 @@ import retrofit2.http.GET
  * @date: 2026/1/8 17:00
  * @description:
  */
-interface IHomeCommonApi:IApi {
+interface IBannerApi:IApi {
 
     @GET("api/banner/list")
     suspend fun getBannerList(): Response<HttpApiResponse<List<BannerListBean>>>
