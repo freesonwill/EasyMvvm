@@ -54,23 +54,23 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
         }
         val adapter = ChatPageAdapter(
             specialClick = { bean, clickSpane, clickType ->
-                "click bean.msgType=${bean.msgType},clickType=$clickType".logd(TAG)
+                "click bean.msgType=${bean.msgType},clickType=$clickType clickSpan $clickSpane".logd(TAG)
                 if (bean.msgType == ChatMsgType.SYSTEM) {
                     return@ChatPageAdapter
                 }
 
                 selectBean = bean
                 when (clickType) {
-                    ChatMsgType.BET_GAME -> {
-//                    val betType = if(clickSpane == "注单游戏") 0 else 1
+                    ChatMsgType.BET_GAME ,ChatMsgType.BET_SPORT-> {
+                    val betType = if(clickSpane.contains("游戏注单")) 0 else 1
                         val height = mBinding.liveChatRecycler.height
-                        BetShareDialogFragment.show(this, 0,height)
+                        BetShareDialogFragment.show(this, betType,height)
                     }
 
-                    ChatMsgType.BET_SPORT -> {
-                        val height = mBinding.liveChatRecycler.height
-                        BetShareDialogFragment.show(this, 1,height)
-                    }
+//                     -> {
+//                        val height = mBinding.liveChatRecycler.height
+//                        BetShareDialogFragment.show(this, 1,height)
+//                    }
 
                     ChatMsgType.AT -> {
                         ChatPrivateUserFragment.show(this)
