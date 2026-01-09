@@ -13,6 +13,7 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import com.walisport.module.business.common.data.Category
 import com.walisport.module.business.common.data.GamePageVo
 import com.walisport.module.business.common.data.toGameContentData
+import com.walisport.module.business.common.ui.viewmodel.BaseBannerViewModel
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.GameAllContentData
 import com.walisport.module.hall.data.HallRepository
@@ -25,7 +26,7 @@ import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-class GameAllViewModel : BaseViewModel() {
+class GameAllViewModel : BaseBannerViewModel() {
 
     private val repository: HallRepository by inject { parametersOf(viewModelScope) }
 

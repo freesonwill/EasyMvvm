@@ -54,8 +54,12 @@ class BalanceViewModel(
     }
 
     //切换法币币种后请求接口获取返回后监听
-    fun changeFiat(ccy: String) : UnPeekLiveData<Boolean>{
+    fun changeFiat(ccy: String): UnPeekLiveData<Boolean> {
         balanceRepository.setFiatCurrency(ccy)
         return balanceRepository.changeFiat()
+    }
+
+    fun getSelectCurrency(): String {
+        return balanceRepository.getSelectCurrency()
     }
 }

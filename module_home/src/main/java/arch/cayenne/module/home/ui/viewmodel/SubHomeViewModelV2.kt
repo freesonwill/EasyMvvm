@@ -20,6 +20,7 @@ import arch.cayenne.module.home.data.constants.MatchListSortType
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
 import arch.cayenne.module.home.data.repo.HomeRepository
+import com.walisport.module.business.common.ui.viewmodel.BaseBannerViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -33,7 +34,7 @@ import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-open class SubHomeViewModelV2 : BaseViewModel() {
+open class SubHomeViewModelV2 : BaseBannerViewModel() {
 
     val repository: HomeRepository by inject()
 

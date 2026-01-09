@@ -3,7 +3,6 @@ package arch.cayenne.module.home.ui.fragment
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -23,8 +22,9 @@ import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
-import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
+import com.walisport.module.business.common.ui.adapter.BannerImageMatchAdapter
 import arch.cayenne.lib.common.ui.view.CustomTabLayoutMediator
 import arch.cayenne.lib.common.ui.view.WLLinearGradientFontSpan
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -113,7 +113,7 @@ class SubHomeFragment : BaseFragment<SubHomeViewModelV2, FragmentSubHomeBinding>
 
     override fun initView(savedInstanceState: Bundle?) {
         initSportLayout()
-        initSportBanner()
+        launch { initSportBanner() }
         initTournamentLayout()
 
         // 初始化聯賽按鈕狀態
@@ -277,14 +277,8 @@ class SubHomeFragment : BaseFragment<SubHomeViewModelV2, FragmentSubHomeBinding>
 
     // init Sport Banner 輪播區塊
     @SuppressLint("ClickableViewAccessibility")
-    private fun initSportBanner() {
-        val mockBannerList = arrayListOf(
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-        )
+    private suspend fun initSportBanner() {
+        val mockBannerList = mViewModel.getBannerList()
 
         with(mBinding.includeSportBanner) {
             pbSportBanner.setTriggerListener {

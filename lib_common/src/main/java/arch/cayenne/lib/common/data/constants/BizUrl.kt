@@ -32,7 +32,7 @@ val BASE_URL
             }
 
             "release" -> {
-                "https://test.ra781.com"
+                "https://pre.ra781.com"
             }
 
             else -> {
