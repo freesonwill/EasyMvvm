@@ -263,7 +263,12 @@ class ChatATHelper(
             " spans ${spans.size} falg $flag position $position  length ${spannable.length}".logd("aaa")
             if (flag) {
                 editText.text = spannable
-                editText.setSelection(position)
+                val selection = position+count
+                if(selection > spannable.length){
+                    editText.setSelection(position)
+                }else{
+                    editText.setSelection(position+count)
+                }
             }
         }catch (e:Exception){
             e.printStackTrace()

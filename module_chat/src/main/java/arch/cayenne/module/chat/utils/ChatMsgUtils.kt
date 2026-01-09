@@ -63,30 +63,40 @@ object ChatMsgUtils {
      *     表情：/id=xx/
      *     大图：/bid=xx/
      * */
-    fun createContent(spannable: SpannableStringBuilder, spans: Array<MentionSpan>): String {
+    fun createContent(spannable: SpannableStringBuilder, spansnn: Array<MentionSpan>): String {
 
 //        var newStr = spannable.replace(Regex("@\\w+\\s?"), "[**]").replace("\u2060", "")
 
         // 创建一个可变的字符串构建器来处理替换
-        val result = StringBuilder(spannable.toString())
-
+        var result = StringBuilder(spannable.toString())
+        val spans =
+            spannable.getSpans(0, spannable.length, MentionSpan::class.java).distinctBy { span ->
+                Triple(
+                    spannable.getSpanStart(span), spannable.getSpanEnd(span), span.tv
+                )
+            }
         // 按起始位置从大到小排序，这样替换时不会影响后续索引
         val sortedSpans = spans.sortedByDescending { spannable.getSpanStart(it) }
 
         for (span in sortedSpans) {
             val start = spannable.getSpanStart(span)
             val end = spannable.getSpanEnd(span)
-
+//            "span start $start  end $end  tv ${span.tv}  msgType ${span.msgType}".logd(TAG)
             if (start >= 0 && end <= spannable.length) {
                 val spanText = spannable.substring(start, end)
+                val cleanText = spanText.replace("\u2060", "")
 
                 // 检查该段文本是否符合 @mention 的正则表达式
-                if (Regex("@\\w+\\s?").matches(spanText)) {
+                if (Regex("@\\w+\\s?").matches(cleanText)) {
                     // 替换这个范围的文本
+                    val replaceTv = spannable.substring(start, end)
+//                    "resplaceTv $replaceTv".logd(TAG)
                     result.replace(start, end, "[**]")
+                    "after replace $result".logd(TAG)
                 }
             }
         }
+        "result $result  ${spannable}  spans${spans.size}".logd(TAG)
         var newStr = result.toString().replace("\u2060", "")
         val sharSpan =
             spans.find { it.msgType == ChatMsgType.BET_SPORT || it.msgType == ChatMsgType.BET_GAME }
@@ -233,13 +243,15 @@ object ChatMsgUtils {
     }
 
     fun getLanguagePosition(locale: Locale): Int {
-        "getLanguagePosition locale $locale  ${Locale.SIMPLIFIED_CHINESE.language} ${ Locale.SIMPLIFIED_CHINESE.country}  ${Locale.TRADITIONAL_CHINESE.language}  ${Locale.TRADITIONAL_CHINESE.country}".logd(TAG)
+        "getLanguagePosition locale $locale  ${Locale.SIMPLIFIED_CHINESE.language} ${Locale.SIMPLIFIED_CHINESE.country}  ${Locale.TRADITIONAL_CHINESE.language}  ${Locale.TRADITIONAL_CHINESE.country}".logd(
+            TAG
+        )
         return when (locale.language) {
             // 英语
             Locale.ENGLISH.language -> 0 // 或 Locale("en", "US")
 
             // 简体中文
-            Locale.SIMPLIFIED_CHINESE.language -> if(locale.country == Locale.SIMPLIFIED_CHINESE.country) 1  else 2// 或 Locale("zh", "CN")
+            Locale.SIMPLIFIED_CHINESE.language -> if (locale.country == Locale.SIMPLIFIED_CHINESE.country) 1 else 2// 或 Locale("zh", "CN")
 
             // 繁体中文
 //            Locale.TRADITIONAL_CHINESE -> 2 // 或 Locale("zh", "TW")
@@ -257,7 +269,7 @@ object ChatMsgUtils {
             Locale("pt", "BR").language -> 6
 
             // 印地语
-            Locale("hi", "IN") .language-> 7
+            Locale("hi", "IN").language -> 7
 
             // 菲律宾语
             Locale("fil", "PH").language -> 8
