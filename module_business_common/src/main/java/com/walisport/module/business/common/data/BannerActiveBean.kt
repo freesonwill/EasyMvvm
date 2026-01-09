@@ -7,5 +7,7 @@ package com.walisport.module.business.common.data
 data class BannerActiveBean(
     val operateType: Int,
     val imagePath: String,
-    val targetUrl: String
-)
+    val operateParams: List<String>
+) {
+    val targetUrl get() = operateParams.getOrNull(0) ?: ""
+}

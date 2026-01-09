@@ -104,9 +104,13 @@ object ViewExt {
     /**
      * 协程版的post
      */
-    suspend fun View.suspendPost(){
+    suspend fun View.suspendPost(delayMillis: Long=0){
         return suspendCancellableCoroutine { continuation ->
-            this.post { continuation.resume(Unit) }
+            if(delayMillis > 0){
+                this.postDelayed({ continuation.resume(Unit) },delayMillis)
+            }else {
+                this.post { continuation.resume(Unit) }
+            }
         }
     }
 }

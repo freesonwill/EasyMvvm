@@ -100,9 +100,9 @@ class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>()
 
     override fun initListener() {
         mBinding.rvContent.onScrolledOver(100f, 80f, {
-            hallViewModel.setScorll(true)
+            hallViewModel.setScroll(true)
         }, {
-            hallViewModel.setScorll(false)
+            hallViewModel.setScroll(false)
         })
     }
 
@@ -146,9 +146,9 @@ class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>()
         super.onResume()
         mBinding.rvContent.post {
             mBinding.rvContent.checkCurrentScrollState(100f, 80f, {
-                hallViewModel.setScorll(true)
+                hallViewModel.setScroll(true)
             }, {
-                hallViewModel.setScorll(false)
+                hallViewModel.setScroll(false)
             })
         }
     }

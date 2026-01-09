@@ -392,7 +392,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
         }
         unreadMessageViewModel.createObserver()
 
-        mViewModel.scorll.observe(viewLifecycleOwner) {
+        mViewModel.scroll.observe(viewLifecycleOwner) {
             if (it) { //收起
                 mBinding.homeBarIcon.marginEndAnim()
             } else { //展开
