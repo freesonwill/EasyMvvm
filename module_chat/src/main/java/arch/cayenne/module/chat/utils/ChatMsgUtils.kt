@@ -87,7 +87,7 @@ object ChatMsgUtils {
                 }
             }
         }
-        var  newStr = result.toString().replace("\u2060", "")
+        var newStr = result.toString().replace("\u2060", "")
         val sharSpan =
             spans.find { it.msgType == ChatMsgType.BET_SPORT || it.msgType == ChatMsgType.BET_GAME }
         sharSpan?.let {
@@ -96,7 +96,6 @@ object ChatMsgUtils {
         }
         return newStr
     }
-
 
 
     /**
@@ -108,41 +107,46 @@ object ChatMsgUtils {
         bean: ChatMsgPageBean
     ): SpannableStringBuilder {
         var spannable = SpannableStringBuilder(bean.content)
-        //添加at消息
-        bean.refUid?.forEach { uid ->
-            val user = bean.refInfos?.get(uid)
-            val newChar = "@${user?.userName} "
-            val index = spannable.indexOf("[**]")
-            val endIndex = index + newChar.length
-            spannable = spannable.replace(index, index + 4, newChar)
-            val span =
-                MentionSpan(ChatMsgType.AT, bean.userName, bean.refInfos?.get(uid), click = {})
-            spannable.setSpan(
-                span,
-                index,
-                endIndex,
-                SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-//            "recoveryAtChar $newChar  ${Gson().toJson(bean)} ".logd(TAG)
-        }
-//        "recoveryAtChar ${Gson().toJson(bean)} ".logd(TAG)
-
-        if (bean.msgType == ChatMsgType.BET_GAME || bean.msgType == ChatMsgType.BET_SPORT) {
-            bean.extraData?.let {
-                val betShareBean = recoveryExtraDataBetShareBean(bean.extraData)
-                val index = spannable.indexOf("[***]")
-                val newChar = addNoDivideCharInBetShar(betShareBean?.content ?: "")
+        try {
+            //添加at消息
+            bean.refUid?.forEach { uid ->
+                val user = bean.refInfos?.get(uid)
+                val newChar = "@${user?.userName} "
+                val index = spannable.indexOf("[**]")
                 val endIndex = index + newChar.length
-                spannable = spannable.replace(index, index + 5, newChar)
-                val span = MentionSpan(bean.msgType, newChar, null, click = {})
+                spannable = spannable.replace(index, index + 4, newChar)
+                val span =
+                    MentionSpan(ChatMsgType.AT, bean.userName, bean.refInfos?.get(uid), click = {})
                 spannable.setSpan(
                     span,
                     index,
                     endIndex,
                     SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-//             "recoveryBetShar $newChar ".logd(TAG)
+//            "recoveryAtChar $newChar  ${Gson().toJson(bean)} ".logd(TAG)
             }
+//        "recoveryAtChar ${Gson().toJson(bean)} ".logd(TAG)
+
+            if (bean.msgType == ChatMsgType.BET_GAME || bean.msgType == ChatMsgType.BET_SPORT) {
+                bean.extraData?.let {
+                    val betShareBean = recoveryExtraDataBetShareBean(bean.extraData)
+                    val index = spannable.indexOf("[***]")
+                    val newChar = addNoDivideCharInBetShar(betShareBean?.content ?: "")
+                    val endIndex = index + newChar.length
+                    spannable = spannable.replace(index, index + 5, newChar)
+                    val span = MentionSpan(bean.msgType, newChar, null, click = {})
+                    spannable.setSpan(
+                        span,
+                        index,
+                        endIndex,
+                        SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+//             "recoveryBetShar $newChar ".logd(TAG)
+                }
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
         return spannable
 

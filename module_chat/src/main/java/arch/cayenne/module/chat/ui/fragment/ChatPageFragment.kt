@@ -11,6 +11,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.lib.common.data.constants.ChatMsgType
+import arch.cayenne.lib.websocket.chat.data.ChatRefUser
 import arch.cayenne.lib.websocket.chat.data.ChatType
 import arch.cayenne.lib.websocket.chat.data.MsgType
 import arch.cayenne.module.chat.data.model.ChatMsgPageBean
@@ -62,11 +63,13 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                 when (clickType) {
                     ChatMsgType.BET_GAME -> {
 //                    val betType = if(clickSpane == "注单游戏") 0 else 1
-                        BetShareDialogFragment.show(this, 0)
+                        val height = mBinding.liveChatRecycler.height
+                        BetShareDialogFragment.show(this, 0,height)
                     }
 
                     ChatMsgType.BET_SPORT -> {
-                        BetShareDialogFragment.show(this, 1)
+                        val height = mBinding.liveChatRecycler.height
+                        BetShareDialogFragment.show(this, 1,height)
                     }
 
                     ChatMsgType.AT -> {
@@ -135,7 +138,7 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                         mBinding.liveChatRecycler.scrollToPosition(0)
                         mBinding.liveChatRecycler.postDelayed({
                             itemFlash()
-                        },500)
+                        }, 500)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -198,13 +201,17 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
             this
         ) { key, bundle ->
             val result = bundle.getInt(ChatPersonalDialogFragment.CHAT_PERSONAL_RESULT, -1)
+            "sendReuslt $result".logd("aaa")
             if (result != -1) {
                 //处理结果 0 title 1 @ta 2 复制评论 3 举报评论
                 if (result == 1) {
                     selectBean?.let {
                         homeViewModel.addAtMsgToChat(it)
                     }
+                } else if (result == 2) {
+                sendOther()
                 }
+
             }
             val result1 = bundle.getInt(ChatPrivateUserFragment.CHAT_USER_RESULT, -1)
             if (result1 != -1) {
@@ -221,6 +228,29 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
         val adapter = mBinding.liveChatRecycler.adapter?.let { it as ChatPageAdapter }
         adapter?.submitList(emptyList())
         "clearChatList".logd(TAG)
+    }
+
+    val arraUsers = arrayOf(
+        ChatRefUser("6660042", "qatest2", 1),
+        ChatRefUser("6660043", "qatest3", 1),
+        ChatRefUser("6660044", "qatest4", 1),
+        ChatRefUser("6660045", "qatest5", 1),
+        ChatRefUser("6660046", "qatest6", 1)
+    )
+
+    fun sendOther() {
+        val user = arraUsers[(0..4).random()]
+        homeViewModel.sendMsgToChat(
+            homeViewModel.addOtherLocalMsg(
+                "测试数据",
+                ChatType.LOBBY,
+                MsgType.MSG_TYPE_TEXT,
+                user.uid,
+                user.userName,
+                user.avatarId
+            )
+        )
+
     }
 
     companion object {
