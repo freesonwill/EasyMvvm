@@ -34,7 +34,7 @@ class BetShareDialogFragment :
     private var betType: Int = 0 // 0 Game 1 Sport
     private var contentMaxHeight = 0
     private val sportMinHeight = 333.dp2px
-    private val gameMinHeight = 400.dp2px
+    private val gameMinHeight = 425.dp2px
     private var heightAnim: ValueAnimator? = null
 
     companion object {
@@ -88,10 +88,10 @@ class BetShareDialogFragment :
         mBinding.line.isVisible = betType == 1
         mBinding.clBottom.isVisible = betType == 1
         val lp = mBinding.fragmentContainer.layoutParams
-        lp.height =  sportMinHeight
+        lp.height = if (betType == 0) gameMinHeight  else sportMinHeight
         mBinding.fragmentContainer.layoutParams = lp
-        contentMaxHeight = 602.dp2px
-//            if (betType == 0) gameMinHeight + 269.dp2px else sportMinHeight + 269.dp2px
+        contentMaxHeight =
+            if (betType == 0) gameMinHeight + 269.dp2px else 602.dp2px
     }
 
 
