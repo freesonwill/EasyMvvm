@@ -3,10 +3,15 @@ package arch.cayenne.module.account.ui.fragment
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.widget.EditText
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.databinding.TitleBarSimpleBinding
+import arch.cayenne.lib.common.utils.EditTextUtils
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.module.account.R
 import arch.cayenne.module.account.databinding.FragmentSmsVerifyBinding
 import arch.cayenne.module.account.ui.viewmodel.SmsVerifyViewModel
@@ -34,6 +39,10 @@ class SmsVerifyFragment :
 
         titleBarBinding.apply {
             tvTitleName.text = ""
+            ivBack.addScaleOnTouchAnimation()
+            ivBack.clickNoRepeat {
+                findNavController().navigateUp()
+            }
         }
 
         val hint = R.string.sms_verify_hint.getString()
@@ -52,9 +61,8 @@ class SmsVerifyFragment :
         mBinding.tvPhoneNumber.text =
             "${smsVerifyFragmentArgs.countryCode} ${smsVerifyFragmentArgs.phoneNumber}"
 
-        mBinding.otpView.setOtpCompletionListener {
-
-        }
+        mBinding.etSmsCode.requestFocus()
+        EditTextUtils.showKeyboard(requireContext(), mBinding.etSmsCode)
     }
 
     override fun initData() {
