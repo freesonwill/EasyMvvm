@@ -21,7 +21,7 @@ import arch.cayenne.module.home.data.constants.getPlayTypeById
 import arch.cayenne.module.home.data.repo.HomeRepository
 import com.walisport.module.business.common.data.BannerActiveBean
 import com.walisport.module.business.common.data.repo.BalanceRepository
-import com.walisport.module.business.common.utils.biz.HomeCommonBiz
+import com.walisport.module.business.common.utils.biz.BannerBiz
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -30,7 +30,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
@@ -186,7 +185,7 @@ class HomeViewModel : BaseViewModel() {
     }
 
     suspend fun getBannerActive() {
-        val result = HomeCommonBiz.getBannerActive()
+        val result = BannerBiz.getBannerActive()
         if(result is Result.Success){
             _curveBannerLiveData.value = result.data.data
         } else {

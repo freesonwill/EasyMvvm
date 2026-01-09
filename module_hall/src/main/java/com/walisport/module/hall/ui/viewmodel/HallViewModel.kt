@@ -8,7 +8,7 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.http.data.Result
 import com.walisport.module.business.common.data.BannerActiveBean
-import com.walisport.module.business.common.utils.biz.HomeCommonBiz
+import com.walisport.module.business.common.utils.biz.BannerBiz
 import com.walisport.module.hall.data.HallRepository
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -19,8 +19,8 @@ class HallViewModel : BaseViewModel() {
     private val repository: HallRepository by inject { parametersOf(viewModelScope) }
 
     //分类列表触发广告位收起动画  true 为收起 false 为展开
-    private val _scorll = MutableLiveData<Boolean>()
-    val scorll: LiveData<Boolean> = _scorll
+    private val _scroll = MutableLiveData<Boolean>()
+    val scroll: LiveData<Boolean> = _scroll
 
     //滚动状态变更通知
     private val _scrollStateChanged = UnPeekLiveData<Int>()
@@ -30,9 +30,9 @@ class HallViewModel : BaseViewModel() {
     val curveBannerLiveData:LiveData<List<BannerActiveBean>> = _curveBannerLiveData
 
     val gameCategory = repository.gameCategoryListLiveData //分类列表
-    fun setScorll(bool:Boolean){
-        if (bool!=scorll.value) {
-            _scorll.value = bool
+    fun setScroll(bool:Boolean){
+        if (bool!=scroll.value) {
+            _scroll.value = bool
         }
     }
 
@@ -48,7 +48,7 @@ class HallViewModel : BaseViewModel() {
     }
 
     suspend fun getBannerActive() {
-        val result = HomeCommonBiz.getBannerActive()
+        val result = BannerBiz.getBannerActive()
         if(result is Result.Success){
             _curveBannerLiveData.value = result.data.data
         } else {
