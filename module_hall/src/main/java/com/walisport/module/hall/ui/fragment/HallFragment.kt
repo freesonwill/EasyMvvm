@@ -68,7 +68,7 @@ import kotlin.reflect.KClass
  * 游戏大厅界面
  */
 
-class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
+class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
 
     override val vbClass: KClass<FragmentHallBinding> = FragmentHallBinding::class
     override val vmClass: KClass<HallViewModel> = HallViewModel::class
@@ -102,13 +102,13 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
             }
         }
         initPopupSlot()
-        mViewModel.queryGameCommon()
     }
 
 
     override fun initData() {
         launch {
             mViewModel.checkIsLogin()
+            mViewModel.queryGameCommon()
             mViewModel.getBannerActive()
         }
     }
@@ -131,7 +131,6 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
         } else {
             //TODO 從api來
         }
-
         return tabBinding.root
     }
 
@@ -174,11 +173,10 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
         //循环把tabCategoryList装到HallGameTabDefault里面
         val tabList = tabCategoryList.map { vo ->
             var colorRes = vo.color
-            if (colorRes.isEmpty()) {
-                colorRes =
-                    String.format("#%06X", Category.entries.find { it.type == vo.category }?.color)
+            if (colorRes.isEmpty()){
+                colorRes = String.format("#%06X", Category.entries.find { it.type == vo.category }?.color)
             }
-            if (vo.category == Category.ALL.type) {
+            if(vo.category==Category.ALL.type){
                 HallGameTabDefault(
                     colorRes = colorRes,
                     icon = vo.icon,
@@ -186,7 +184,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
                     _title = vo.name,
                     _page = { GameAllFragment.newInstance() }
                 )
-            } else if (vo.category == Category.RECENT.type) {
+            } else if (vo.category==Category.RECENT.type){
                 HallGameTabDefault(
                     colorRes = vo.color,
                     icon = vo.icon,
@@ -194,7 +192,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
                     _title = vo.name,
                     _page = { GameRecentFragment.newInstance(vo.category) }
                 )
-            } else {
+            }else{
                 HallGameTabDefault(
                     colorRes = vo.color,
                     icon = vo.icon,
@@ -255,10 +253,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
                         )
                         typeface = Typeface.DEFAULT
                         setRoundedBackground(
-                            backgroundColor = String.format(
-                                "#%06X",
-                                0xFFFFFF and arch.cayenne.lib.common.R.color.title_bg
-                            ),
+                            backgroundColor =String.format("#%06X", 0xFFFFFF and arch.cayenne.lib.common.R.color.title_bg) ,
                             show = false
                         )
                     }
@@ -431,7 +426,7 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
     }
 
 
-    private fun initCurveBanner(images: List<String> = emptyList()) {
+    private fun initCurveBanner(images:List<String> = emptyList()) {
         // 自定义适配器
         val adapter = BannerImageAdapter(images)
         mBinding.ivRightLogo.setAdapter(adapter)
@@ -445,9 +440,8 @@ class HallFragment : BaseFragment<HallViewModel, FragmentHallBinding>() {
 
     private fun initPopupSlot() {
         childFragmentManager.beginTransaction()
-            .add(R.id.fragment_hall_container_view, popupSlotFragment, PopupSlotFragment.TAG)
+            .add(R.id.fragment_hall_container_view , popupSlotFragment , PopupSlotFragment.TAG)
             .commit()
     }
-
 
 }

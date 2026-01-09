@@ -8,7 +8,7 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.http.data.Result
 import com.walisport.module.business.common.data.BannerActiveBean
-import com.walisport.module.business.common.utils.biz.HomeCommonBiz
+import com.walisport.module.business.common.utils.biz.BannerBiz
 import com.walisport.module.hall.data.HallRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -59,8 +59,8 @@ class HallViewModel : BaseViewModel() {
     }
 
     suspend fun getBannerActive() {
-        val result = HomeCommonBiz.getBannerActive()
-        if (result is Result.Success) {
+        val result = BannerBiz.getBannerActive()
+        if(result is Result.Success){
             _curveBannerLiveData.value = result.data.data
         } else {
             "getBannerActive failed: $result".loge(TAG)
