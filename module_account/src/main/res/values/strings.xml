@@ -36,4 +36,7 @@
     <string name="account_phone_register" translatable="false">手机号码</string>
     <string name="account_email_register" translatable="false">电子邮箱</string>
     <string name="hint_phone_number">手机号码</string>
+    <string name="account_continue">继续</string>
+    <string name="sms_verify_hint">输入 6 位验证码</string>
+    <string name="sms_code_sent_to">验证码已发送到</string>
 </resources>

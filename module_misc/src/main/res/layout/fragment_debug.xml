@@ -151,6 +151,7 @@
             android:text="登录注册" />
 
         <TextView
+            android:id="@+id/jumpToSmsVerfiy"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_columnWeight="1"
@@ -158,7 +159,7 @@
             android:textAllCaps="false"
             android:textSize="@dimen/sp_12"
             android:background="@color/color_00E0E5"
-            android:text="Item 4" />
+            android:text="smsVerfiy" />
 
         <TextView
             android:layout_width="0dp"

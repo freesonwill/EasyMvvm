@@ -3,7 +3,7 @@ package arch.cayenne.module.account
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.module.account.data.repo.LoginOrRegisterRepository
+import arch.cayenne.module.account.data.repo.AccountLoginRepository
 import arch.cayenne.module.account.data.repo.PersonalInfoRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +40,7 @@ class AccountModuleInitializer : DefaultInitializer<Unit> {
         }
 
         factory {
-            LoginOrRegisterRepository(
+            AccountLoginRepository(
                 get(), get(), get(), get(),
                 get(named("3n1_http")),
             )

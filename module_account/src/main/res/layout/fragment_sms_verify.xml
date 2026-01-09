@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.common.ui.view.InterceptedLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_1E1E1E"
+    android:orientation="vertical"
+    app:interceptedDirection="RIGHT">
+
+    <arch.cayenne.lib.common.ui.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tv_sms_verify_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_12"
+        android:textColor="@color/white"
+        android:textFontWeight="500"
+        android:textSize="@dimen/sp_30" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_8"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sms_code_sent_to"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_13" />
+
+        <TextView
+            android:id="@+id/tv_phone_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_7"
+            android:fontFamily="@font/sf_pro"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_13" />
+    </LinearLayout>
+
+    <com.mukesh.OtpView
+        android:id="@+id/otp_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_32"
+        android:inputType="text"
+        android:textAllCaps="true"
+        android:textColor="@android:color/white"
+        app:OtpCursorColor="@color/color_FE3666"
+        app:OtpCursorWidth="@dimen/dp_2"
+        app:OtpHideLineWhenFilled="true"
+        app:OtpItemCount="6"
+        app:OtpItemHeight="@dimen/dp_44"
+        app:OtpItemRadius="@dimen/dp_5"
+        app:OtpItemSpacing="@dimen/dp_7"
+        app:OtpItemWidth="@dimen/dp_46"
+        app:OtpState_filled="true"
+        app:itemBackground="@color/color_272727" />
+
+
+</arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>

@@ -43,6 +43,7 @@ dependencies {
     implementation(project(":lib_common"))
     implementation(project(":lib_res"))
     implementation(project(":lib_websocket"))
+    implementation(libs.android.otpview.pinview)
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)

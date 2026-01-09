@@ -22,6 +22,9 @@ import arch.cayenne.module.account.ui.viewmodel.LoginOrRegisterViewModel
 import arch.cayenne.module.account.ui.viewmodel.SystemAvatarViewModel
 import kotlin.reflect.KClass
 
+/**
+ * 登录或注册
+ */
 class LoginOrRegisterFragment :
     BaseFragment<LoginOrRegisterViewModel, FragmentLoginOrRegisterBinding>() {
     override val vbClass: KClass<FragmentLoginOrRegisterBinding> =
