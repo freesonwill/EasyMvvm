@@ -16,6 +16,6 @@ interface IBannerApi:IApi {
     @GET("api/banner/list")
     suspend fun getBannerList(): Response<HttpApiResponse<List<BannerListBean>>>
 
-    @GET("api/banner/active")
+    @GET("api/activity/active")
     suspend fun getBannerActive(): Response<HttpApiResponse<List<BannerActiveBean>>>
 }
