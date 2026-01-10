@@ -1,7 +1,5 @@
 package com.walisport.module.hall.data
 
-import androidx.annotation.ColorRes
-import androidx.annotation.DrawableRes
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 

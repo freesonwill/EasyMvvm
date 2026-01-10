@@ -23,7 +23,7 @@ import kotlin.reflect.KClass
 /**
  *
  * @date: 2025/12/5 19:23
- * @description:
+ * @description: 领红包弹窗
  */
 class PopupSlotFragment :
     BaseFragment<PopUpSlotViewModel, FragmentPopupSlotBinding>() {

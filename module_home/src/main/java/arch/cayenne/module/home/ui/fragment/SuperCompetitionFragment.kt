@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
-import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import com.walisport.module.business.common.ui.adapter.BannerImageMatchAdapter
@@ -23,6 +22,7 @@ import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.VIPResourceHelper
 import arch.cayenne.module.home.R
@@ -35,7 +35,10 @@ import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.SuperCompetitionViewModel
 import arch.cayenne.module.home.utils.scrollToPositionWithoutAnim
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
+import com.walisport.module.business.common.ui.fragment.BaseBannerLinkFragment
+import com.walisport.module.business.common.ui.viewmodel.BaseBannerViewModel
 import com.walisport.module.business.common.utils.ext.setGlobalIndicator
 import com.walisport.module.business.common.utils.ext.setGlobalBasicConfig
 import kotlinx.coroutines.launch
@@ -47,7 +50,7 @@ import kotlin.reflect.KClass
  * 超级大赛
  */
 class SuperCompetitionFragment :
-    BaseFragment<SuperCompetitionViewModel, FragmentSuperCompetitionBinding>(),
+    BaseBannerLinkFragment<SuperCompetitionViewModel, FragmentSuperCompetitionBinding>(),
     ISubFragmentLifecycle {
 
     override val vbClass: KClass<FragmentSuperCompetitionBinding> =
@@ -59,13 +62,23 @@ class SuperCompetitionFragment :
         initMatchListFragment()
     }
 
+
     override fun initListener() {
+        super.initListener()
         with(mBinding) {
             clVipInfo.apply {
                 clickNoRepeatSingle { navigate(arch.cayenne.lib.res.R.string.nav_module_vip_fragment.deeplink()) }
                 addScaleOnTouchAnimation()
             }
         }
+    }
+
+    override fun provideBannerViewModel(): BaseBannerViewModel {
+        return sharedViewModel<HomeViewModel, NewHomeFragment>().value
+    }
+
+    override fun provideBannerAppBarLayout(): AppBarLayout {
+        return mBinding.aplHomeBanner
     }
 
     override suspend fun createObserver() {
@@ -169,7 +182,7 @@ class SuperCompetitionFragment :
             TabLayoutExt.OnTabSelectedListener2 {
             override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
                 playFadeAnimTriggerByDateTab {
-                    lifecycleScope.launch {
+                    launch {
                         mViewModel.selectedDate(
                             mViewModel.dateList.value?.find { it.dateStr == tab.tag }?.timestamp
                                 ?: return@launch
