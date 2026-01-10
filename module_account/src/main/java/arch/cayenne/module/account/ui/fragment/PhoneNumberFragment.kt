@@ -8,6 +8,7 @@ import androidx.core.widget.addTextChangedListener
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.lib.common.utils.EditTextUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -41,6 +42,9 @@ class PhoneNumberFragment :
             mBinding.llNextWrapper.alpha =
                 if (mBinding.llNextWrapper.isEnabled) 1.0f else 0.4f
         }
+
+        mBinding.editTextPhone.requestFocus()
+        EditTextUtils.showKeyboard(requireContext(), mBinding.editTextPhone)
     }
 
     override fun initData() {

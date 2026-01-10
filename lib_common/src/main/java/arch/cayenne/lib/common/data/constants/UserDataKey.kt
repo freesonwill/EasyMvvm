@@ -11,6 +11,7 @@ enum class UserDataKey(val key: String) {
     KEY_TOKEN("Token"),
     KEY_BETSLIP_DETAIL("BetSlipDetail"),
     KEY_RECORD("Record"), //搜索历史
+    KEY_CCY("Ccy"),          //默认币种
 
     KEY_DEFAULT_FIAT("DefaultFiat"),         //法币列表选中币种
     KEY_DEFAULT_CURRENCY("DefaultCurrency"), //余额列表选中币种
