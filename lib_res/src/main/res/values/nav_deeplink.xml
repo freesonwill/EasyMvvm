@@ -15,9 +15,8 @@
     <string name="nav_module_system_avatar_fragment" translatable="false">walisport://module_account/systemAvatarFragment</string>
     <string name="nav_module_login_or_register_fragment" translatable="false">walisport://module_account/loginOrRegisterFragment</string>
     <string name="nav_module_sms_verify_fragment" translatable="false">walisport://module_account/smsVerifyFragment?countryCode={countryCode}&amp;phoneNumber={phoneNumber}</string>
-    <string name="nav_module_login_account_fragment" translatable="false">walisport://module_account/loginFragment</string>
+    <string name="nav_module_login_fragment" translatable="false">walisport://module_account/loginFragment</string>
     <string name="nav_module_account_avatarFragment" translatable="false">walisport://module_account/AvatarFragment</string>
-    <string name="nav_module_login_fragment" translatable="false">walisport://module_login/loginFragment?userId={userId}</string>
     <string name="nav_module_betslip_fragment" translatable="false">walisport://module_betslip/betSlipFragment</string>
     <string name="nav_module_collectlist_fragment" translatable="false">walisport://module_home/collectListFragment</string>
     <string name="nav_module_champion_fragment" translatable="false">walisport://module_home/championFragment?matchId={matchId}&amp;name={name}&amp;icon={icon}</string>

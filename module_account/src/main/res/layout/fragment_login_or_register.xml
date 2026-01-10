@@ -20,16 +20,15 @@
 
         <arch.cayenne.lib.common.ui.view.CustomTabLayout
             android:id="@+id/tab_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_9"
-            android:layout_marginTop="@dimen/dp_4"
             android:background="@android:color/transparent"
             android:clipToPadding="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tabGravity="center"
+            app:tabMinWidth="187dp"
             app:tabIndicator="@drawable/shape_home_tab_indicator"
             app:tabIndicatorAnimationDuration="250"
             app:tabIndicatorAnimationMode="linear"
@@ -38,7 +37,7 @@
             app:tabIndicatorGravity="bottom"
             app:tabIndicatorHeight="2dp"
             app:tabMode="fixed"
-            app:tabPaddingBottom="@dimen/dp_6"
+            app:tabPaddingBottom="@dimen/dp_4"
             app:tabRippleColor="@null"
             app:tabSelectedTextColor="@color/account_tab_select_text"
             app:tabTextAppearance="@style/AccountTabLayoutTextAppearance"
@@ -62,6 +61,4 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>

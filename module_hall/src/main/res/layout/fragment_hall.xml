@@ -81,6 +81,7 @@
                 android:layout_width="@dimen/dp_72"
                 android:layout_height="@dimen/dp_36"
                 android:layout_marginEnd="@dimen/dp_129"
+                android:layout_marginTop="@dimen/dp_5"
                 android:background="@drawable/shape_account_login"
                 android:gravity="center"
                 android:text="@string/btn_login"

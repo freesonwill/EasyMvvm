@@ -5,8 +5,66 @@
     android:layout_height="match_parent"
     android:background="@color/color_1E1E1E"
     android:orientation="vertical"
-    android:paddingTop="@dimen/dp_30"
     app:interceptedDirection="RIGHT">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_45"
+        android:layout_marginStart="@dimen/dp_28"
+        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginEnd="@dimen/dp_28"
+        android:background="@drawable/shape_register_edittext"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
+        <arch.cayenne.lib.common.ui.view.ClearableEditText
+            android:id="@+id/edit_text_email"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="@string/account_email_register"
+            android:inputType="number"
+            android:maxLength="15"
+            android:paddingStart="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_0"
+            android:textColor="@color/white"
+            android:textColorHint="@color/account_register_hint_text_color"
+            android:textCursorDrawable="@drawable/shape_account_register_edittext_cursor"
+            android:textFontWeight="500"
+            android:textSize="@dimen/sp_15" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_next_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_45"
+        android:layout_marginStart="@dimen/dp_28"
+        android:layout_marginTop="@dimen/dp_266"
+        android:layout_marginEnd="@dimen/dp_28"
+        android:background="@drawable/shape_next_button"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/account_continue"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_14" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_loading"
+            android:layout_width="@dimen/dp_14"
+            android:layout_height="@dimen/dp_14"
+            android:visibility="gone"
+            app:srcCompat="@drawable/account_register_loading" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

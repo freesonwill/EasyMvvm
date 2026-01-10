@@ -31,11 +31,9 @@ class PhoneNumberFragment :
         with(mBinding) {
             tvCountryCode.text = "+86" //先做*86
         }
-
         //默认下一步按钮不可用
         mBinding.llNextWrapper.isEnabled = false
         mBinding.llNextWrapper.alpha = 0.4f
-
         mBinding.editTextPhone.addTextChangedListener {
             //手机号大于等于7时，下一步按钮可用
             mBinding.llNextWrapper.isEnabled =
@@ -43,7 +41,6 @@ class PhoneNumberFragment :
             mBinding.llNextWrapper.alpha =
                 if (mBinding.llNextWrapper.isEnabled) 1.0f else 0.4f
         }
-
     }
 
     override fun initData() {

@@ -86,6 +86,6 @@
             android:id="@+id/action_to_loginOrRegisterFragment"
             app:destination="@id/loginOrRegisterFragment" />
 
-        <deepLink app:uri="@string/nav_module_login_account_fragment" />
+        <deepLink app:uri="@string/nav_module_login_fragment" />
     </fragment>
 </navigation>
