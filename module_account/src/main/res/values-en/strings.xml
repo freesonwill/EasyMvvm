@@ -9,6 +9,10 @@
     <string name="account_continue">Continue</string>
     <string name="sms_verify_hint">Enter the 6-digit code</string>
     <string name="sms_code_sent_to">Verification code sent to</string>
+    <string name="account_skip">Skip</string>
+    <string name="account_create_nickname">Create Nickname</string>
+    <string name="account_nickname_hint">You can enter your preferred nickname, and you can change it later. If you skip this step, the system will assign a nickname for you automatically.</string>
+
 
 
 </resources>

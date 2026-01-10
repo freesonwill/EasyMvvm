@@ -98,7 +98,12 @@ class PhoneNumberFragment :
             when (it) {
                 SmsState.Success -> {
                     showToast("验证码已发送，请注意查收")
-                    navigate(arch.cayenne.lib.res.R.string.nav_module_sms_verify_fragment.deeplink())
+                    navigate(
+                        arch.cayenne.lib.res.R.string.nav_module_sms_verify_fragment.deeplink(
+                            "phoneNumber" to mBinding.editTextPhone.text.toString(),
+                            "countryCode" to mBinding.tvCountryCode.text.toString()
+                        )
+                    )
                 }
 
                 SmsState.Failure -> {

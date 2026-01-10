@@ -50,4 +50,7 @@
     <string name="account_continue">继续</string>
     <string name="sms_verify_hint">输入 6 位验证码</string>
     <string name="sms_code_sent_to">验证码已发送到</string>
+    <string name="account_skip">跳过</string>
+    <string name="account_create_nickname">创建昵称</string>
+    <string name="account_nickname_hint">你可以输入自己喜欢的昵称，之后可以再次更改。如果跳过此步骤，系统会自动为你分配昵称。</string>
 </resources>
