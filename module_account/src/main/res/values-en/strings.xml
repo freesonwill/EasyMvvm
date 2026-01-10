@@ -17,6 +17,8 @@
     <string name="account_resend_sms_code_count_down">Resend verification code %ds</string>
     <string name="account_nickname_initial_input_hint" translatable="false">Add Nickname</string>
     <string name="nickname_modify_failed">Failed to modify nickname, please try again later</string>
+    <string name="account_login_success">Login successful</string>
+    <string name="account_register_success">Registration successful</string>
 
 
 

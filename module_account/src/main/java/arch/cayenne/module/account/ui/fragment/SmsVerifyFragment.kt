@@ -125,10 +125,12 @@ class SmsVerifyFragment :
 
                 is SmsVerifyState.Success -> {
                     //登录成功，关闭当前activity
+                    showToast(getString(R.string.account_login_success))
                     requireActivity().finish()
                 }
 
                 is SmsVerifyState.ToNickName -> {
+                    showToast(getString(R.string.account_register_success))
                     //转到修改昵称界面
                     navigate(arch.cayenne.lib.res.R.string.nav_module_nickname_initial_fragment.deeplink())
                 }
