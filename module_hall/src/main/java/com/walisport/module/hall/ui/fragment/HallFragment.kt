@@ -397,11 +397,10 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
 
         mViewModel.scrollStateChanged.observe(viewLifecycleOwner) {
             if (it == RecyclerView.SCROLL_STATE_IDLE) {
-                lifecycleScope.launch {
+                launch {
                     delay(200)
                     popupSlotFragment.fadeAndIn()
                 }
-
             } else {
                 popupSlotFragment.fadeAndOut()
             }

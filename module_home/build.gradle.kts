@@ -45,7 +45,7 @@ dependencies {
     implementation(project(":module_account"))
     implementation(project(":module_message"))
     implementation(project(":module_popup_slot"))
-    implementation(project(":module_business_common"))
+    api(project(":module_business_common"))
     implementation(libs.tinyPinyin)
     implementation(libs.banner)
     testImplementation(libs.junit)

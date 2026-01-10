@@ -45,6 +45,8 @@ import arch.cayenne.module.home.ui.viewmodel.MatchListViewModelV2
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModelV2
 import arch.cayenne.module.home.utils.DateUtils
 import arch.cayenne.module.home.utils.setFavoriteIcon
+import com.walisport.module.business.common.ui.fragment.BaseBannerLinkFragment
+import com.walisport.module.business.common.ui.viewmodel.BaseBannerViewModel
 import com.walisport.module.message.ui.view.DeleteAnimator
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -52,7 +54,7 @@ import java.lang.ref.WeakReference
 import kotlin.reflect.KClass
 
 class MatchListPagerFragmentV2 :
-    BaseFragment<MatchListViewModelV2 , FragmentMatchListPagerV2Binding>() {
+    BaseBannerLinkFragment<MatchListViewModelV2 , FragmentMatchListPagerV2Binding>() {
     override val vbClass: KClass<FragmentMatchListPagerV2Binding> =
         FragmentMatchListPagerV2Binding::class
     override val vmClass: KClass<MatchListViewModelV2> = MatchListViewModelV2::class
@@ -195,8 +197,8 @@ class MatchListPagerFragmentV2 :
         }
     }
 
-
     override fun initListener() {
+        super.initListener()
         mBinding.rvHomeGameList.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: androidx.recyclerview.widget.RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -205,6 +207,14 @@ class MatchListPagerFragmentV2 :
                 homeViewModel.setScrollState(newState)
             }
         })
+    }
+
+    override fun provideBannerViewModel(): BaseBannerViewModel {
+        return sharedViewModel<HomeViewModel, NewHomeFragment>().value
+    }
+
+    override fun provideBannerRecyclerView(): RecyclerView? {
+        return mBinding.rvHomeGameList
     }
 
     val matchListObserver = Observer<List<MatchWithMarkets>> { matchList ->
