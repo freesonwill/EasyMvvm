@@ -15,7 +15,6 @@ import arch.cayenne.module.account.data.repo.AccountLoginRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
-import org.koin.java.KoinJavaComponent
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
@@ -79,15 +78,22 @@ class SmsVerifyViewModel : BaseViewModel() {
 
                         is ApiResponseState.Succeeded<*> -> {
                             val loginResponseVo = it.dataAs<LoginResponseVo>()
-                            loginResponseVo?.let { vo ->
-                                if (vo.status == 0) {
+
+                            if (loginResponseVo != null) {
+                                if (loginResponseVo.status == 0) {
                                     // 成功
-                                    if (vo.isReg) {
+                                    if (loginResponseVo.isReg) {
                                         //修改昵称
                                         setState(SmsVerifyState.ToNickName)
                                     } else {
-                                        manager.setKeyValue(UserDataKey.KEY_UID, vo.uid)
-                                        manager.setKeyValue(UserDataKey.KEY_TOKEN, vo.token)
+                                        manager.setKeyValue(
+                                            UserDataKey.KEY_UID,
+                                            loginResponseVo.uid
+                                        )
+                                        manager.setKeyValue(
+                                            UserDataKey.KEY_TOKEN,
+                                            loginResponseVo.token
+                                        )
                                         //直接登录成功
                                         setState(SmsVerifyState.Success)
                                     }
@@ -96,10 +102,11 @@ class SmsVerifyViewModel : BaseViewModel() {
                                     // 登录失败
                                     setState(SmsVerifyState.Failure)
                                 }
-                            }?.also {
+                            } else {
                                 // 防止 loginResponseVo 为 null 的情况
                                 setState(SmsVerifyState.Failure)
                             }
+
 
                         }
 
