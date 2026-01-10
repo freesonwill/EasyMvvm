@@ -88,4 +88,11 @@
 
         <deepLink app:uri="@string/nav_module_login_fragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/nickNameInitialFragment"
+        android:name="arch.cayenne.module.account.ui.fragment.NickNameInitialFragment"
+        android:label="nickNameInitialFragment">
+        <deepLink app:uri="@string/nav_module_nickname_initial_fragment" />
+    </fragment>
 </navigation>

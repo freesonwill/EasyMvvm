@@ -56,5 +56,8 @@
     <string name="account_sms_verify_failure">验证码不正确</string>
     <string name="account_resend_sms_code">重新发送验证码</string>
     <string name="account_resend_sms_code_count_down">重新发送验证码 %ds</string>
+    <string name="account_nickname_initial_input_hint" translatable="false">添加昵称</string>
+    <string name="nickname_modify_failed">昵称修改失败，请稍后重试</string>
+
 
 </resources>

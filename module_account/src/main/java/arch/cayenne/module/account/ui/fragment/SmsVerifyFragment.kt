@@ -10,7 +10,9 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.databinding.TitleBarSimpleBinding
 import arch.cayenne.lib.common.utils.EditTextUtils
+import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -129,7 +131,7 @@ class SmsVerifyFragment :
 
                 is SmsVerifyState.ToRegister -> {
                     //转到修改昵称界面
-
+                    navigate(arch.cayenne.lib.res.R.string.nav_module_nickname_initial_fragment.deeplink())
                 }
 
                 is SmsVerifyState.Failure -> {
