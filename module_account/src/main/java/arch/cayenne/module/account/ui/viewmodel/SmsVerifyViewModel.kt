@@ -7,18 +7,23 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.data.constants.UserDataKey
+import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.module.account.data.constants.SmsVerifyState
 import arch.cayenne.module.account.data.model.LoginResponseVo
 import arch.cayenne.module.account.data.repo.AccountLoginRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
+import org.koin.java.KoinJavaComponent
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
 class SmsVerifyViewModel : BaseViewModel() {
 
     private val repository: AccountLoginRepository by inject()
+    private val manager: UserDataManager by inject()
+
 
     private val countDownLiveData = MutableLiveData<Int>()
     fun getCountDownLiveData(): LiveData<Int> = countDownLiveData
@@ -79,8 +84,10 @@ class SmsVerifyViewModel : BaseViewModel() {
                                     // 成功
                                     if (vo.isReg) {
                                         //修改昵称
-                                        setState(SmsVerifyState.ToRegister)
+                                        setState(SmsVerifyState.ToNickName)
                                     } else {
+                                        manager.setKeyValue(UserDataKey.KEY_UID, vo.uid)
+                                        manager.setKeyValue(UserDataKey.KEY_TOKEN, vo.token)
                                         //直接登录成功
                                         setState(SmsVerifyState.Success)
                                     }

@@ -21,7 +21,6 @@ import arch.cayenne.module.account.R
 import arch.cayenne.module.account.data.constants.SmsVerifyState
 import arch.cayenne.module.account.databinding.FragmentSmsVerifyBinding
 import arch.cayenne.module.account.ui.viewmodel.SmsVerifyViewModel
-import com.maning.pswedittextlibrary.MNPasswordEditText.OnTextChangeListener
 import kotlin.reflect.KClass
 
 class SmsVerifyFragment :
@@ -126,10 +125,10 @@ class SmsVerifyFragment :
 
                 is SmsVerifyState.Success -> {
                     //登录成功，关闭当前activity
-                    findNavController().popBackStack()
+                    requireActivity().finish()
                 }
 
-                is SmsVerifyState.ToRegister -> {
+                is SmsVerifyState.ToNickName -> {
                     //转到修改昵称界面
                     navigate(arch.cayenne.lib.res.R.string.nav_module_nickname_initial_fragment.deeplink())
                 }

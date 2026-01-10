@@ -9,6 +9,6 @@ import arch.cayenne.lib.base.data.constants.DataState
  */
 sealed class SmsVerifyState : DataState {
     data object Success : SmsVerifyState()
-    data object ToRegister : SmsVerifyState()
+    data object ToNickName : SmsVerifyState()
     data object Failure : SmsVerifyState()
 }
