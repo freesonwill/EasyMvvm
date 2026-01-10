@@ -14,7 +14,14 @@ import com.bumptech.glide.Glide
 import com.youth.banner.adapter.BannerAdapter
 
 // 示例适配器
-class BannerImageMatchAdapter(private val images: List<ImageData>) : BannerAdapter<BannerImageMatchAdapter.ImageData, BannerImageMatchAdapter.Holder>(images) {
+class BannerImageMatchAdapter(
+    private val images: List<ImageData>,
+    private val onItemClick: ((v:View,data: ImageData) -> Unit)? = { v, data ->
+        val url = data.targetUrl
+        val navController = v.findFragment<Fragment>().findNavController()
+        navController.navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment.deeplink("url" to url))
+    }
+) : BannerAdapter<BannerImageMatchAdapter.ImageData, BannerImageMatchAdapter.Holder>(images) {
     data class ImageData(
         val imgUrl: String,
         val targetUrl: String,
@@ -39,9 +46,7 @@ class BannerImageMatchAdapter(private val images: List<ImageData>) : BannerAdapt
     override fun onBindView(holder: Holder, data: ImageData, position: Int, size: Int) {
         Glide.with(holder.imageView).load(data.imgUrl).into(holder.imageView)
         holder.itemView.clickNoRepeat {
-            val url = data.targetUrl
-            val navController = it.findFragment<Fragment>().findNavController()
-            navController.navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment.deeplink("url" to url))
+            onItemClick?.invoke(it,data)
         }
     }
 
