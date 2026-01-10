@@ -1,8 +1,11 @@
 package arch.cayenne.module.account.ui.fragment
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
+import android.view.animation.LinearInterpolator
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -16,6 +19,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.account.R
 import arch.cayenne.module.account.data.constants.SmsVerifyState
@@ -28,6 +32,8 @@ class SmsVerifyFragment :
     override val vbClass: KClass<FragmentSmsVerifyBinding> =
         FragmentSmsVerifyBinding::class
     override val vmClass: KClass<SmsVerifyViewModel> = SmsVerifyViewModel::class
+
+    private var loadingAnim: ObjectAnimator? = null
 
     private val smsVerifyFragmentArgs by navArgs<SmsVerifyFragmentArgs>()
 
@@ -121,22 +127,51 @@ class SmsVerifyFragment :
             when (it) {
                 is DataState.NetworkUnavailable -> {
                     showToast(getString(arch.cayenne.lib.common.R.string.error_net))
+
+                    mBinding.ivLoading.visibility = View.GONE
+                    loadingAnim?.cancel()
+                }
+
+                is DataState.Loading -> {
+                    mBinding.tvVerifyFailure.visibility = android.view.View.GONE
+                    //显示加载中
+                    mBinding.ivLoading.visibility = View.GONE
+                    loadingAnim?.cancel()
+                    loadingAnim = mBinding.ivLoading.startSafeObjectAnimator(
+                        "rotation",  // 属性名称
+                        0f, 360f // 从 0 度旋转到 360 度
+                    ).run {
+                        // 设置动画属性
+                        setDuration(1500) // 持续时间 1.5 秒
+                        repeatCount = ObjectAnimator.INFINITE // 无限循环
+                        interpolator = LinearInterpolator() // 匀速旋转
+
+                        // 启动动画
+                        start()
+                        this
+                    }
                 }
 
                 is SmsVerifyState.Success -> {
                     //登录成功，关闭当前activity
                     showToast(getString(R.string.account_login_success))
+                    mBinding.ivLoading.visibility = View.GONE
+                    loadingAnim?.cancel()
                     requireActivity().finish()
                 }
 
                 is SmsVerifyState.ToNickName -> {
                     showToast(getString(R.string.account_register_success))
+                    mBinding.ivLoading.visibility = View.GONE
+                    loadingAnim?.cancel()
                     //转到修改昵称界面
                     navigate(arch.cayenne.lib.res.R.string.nav_module_nickname_initial_fragment.deeplink())
                 }
 
                 is SmsVerifyState.Failure -> {
                     //显示验证码错误
+                    mBinding.ivLoading.visibility = View.GONE
+                    loadingAnim?.cancel()
                     mBinding.tvVerifyFailure.visibility = android.view.View.VISIBLE
                 }
 

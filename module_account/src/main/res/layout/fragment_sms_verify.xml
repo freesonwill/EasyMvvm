@@ -74,7 +74,7 @@
         app:psw_style="StyleOneself"
         app:psw_text_color="@color/white" />
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_32"
@@ -90,18 +90,32 @@
             android:textColor="@color/color_FE7536"
             android:textFontWeight="400"
             android:textSize="@dimen/sp_13"
-            android:visibility="gone" />
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_count_down"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/account_count_down_color_state"
             android:text=""
+            android:textColor="@color/account_count_down_color_state"
             android:textFontWeight="500"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_verify_failure" />
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_loading"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_2"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/account_verify_loading" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>
