@@ -173,6 +173,8 @@ class SmsVerifyFragment :
                     mBinding.ivLoading.visibility = View.GONE
                     loadingAnim?.cancel()
                     mBinding.tvVerifyFailure.visibility = android.view.View.VISIBLE
+                    //清空验证码输入框
+                    mBinding.etSmsCode.setText("")
                 }
 
             }
