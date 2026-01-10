@@ -53,7 +53,7 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-        <arch.cayenne.lib.skin.widget.SkinnableEditText
+        <arch.cayenne.lib.common.ui.view.ClearableEditText
             android:id="@+id/edit_text_phone"
             android:layout_width="0dp"
             android:layout_height="match_parent"

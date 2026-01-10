@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.View
 import android.view.animation.LinearInterpolator
+import androidx.core.widget.addTextChangedListener
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
@@ -29,6 +30,13 @@ class PhoneNumberFragment :
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             tvCountryCode.text = "+86" //先做*86
+        }
+
+        mBinding.llNextWrapper.isEnabled = false
+        mBinding.editTextPhone.addTextChangedListener {
+            //手机号大于等于7时，下一步按钮可用
+            mBinding.llNextWrapper.isEnabled =
+                (mBinding.editTextPhone.text?.length ?: 0) >= 7
         }
 
     }

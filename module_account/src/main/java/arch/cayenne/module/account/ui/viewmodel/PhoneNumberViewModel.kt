@@ -36,6 +36,7 @@ class PhoneNumberViewModel : BaseViewModel() {
         setState(DataState.Loading)
         viewModelScope.launch {
             delay(3_000) //模拟网络延迟
+            setState(DataState.LoadSuccess)
             _smsState.value = SmsState.Success
 
 //            callApi(
