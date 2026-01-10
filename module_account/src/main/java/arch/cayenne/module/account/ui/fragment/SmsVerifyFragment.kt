@@ -3,18 +3,20 @@ package arch.cayenne.module.account.ui.fragment
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.widget.EditText
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.databinding.TitleBarSimpleBinding
 import arch.cayenne.lib.common.utils.EditTextUtils
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.module.account.R
 import arch.cayenne.module.account.databinding.FragmentSmsVerifyBinding
 import arch.cayenne.module.account.ui.viewmodel.SmsVerifyViewModel
+import com.maning.pswedittextlibrary.MNPasswordEditText.OnTextChangeListener
 import kotlin.reflect.KClass
 
 class SmsVerifyFragment :
@@ -63,6 +65,25 @@ class SmsVerifyFragment :
 
         mBinding.etSmsCode.requestFocus()
         EditTextUtils.showKeyboard(requireContext(), mBinding.etSmsCode)
+
+        mBinding.etSmsCode.setOnTextChangeListener{ text, isComplete ->
+            if (isComplete) {
+                mViewModel.verifySmsCode(
+                    smsVerifyFragmentArgs.countryCode,
+                    smsVerifyFragmentArgs.phoneNumber,
+                    text.toString()
+                )
+            }
+        }
+
+        //左侧错误提示图标
+        val drawable =
+            ContextCompat.getDrawable(requireContext(), R.drawable.account_verify_failure_warning)
+        drawable?.setBounds(0, 0, 15.dp2px, 15.dp2px)
+        mBinding.tvVerifyFailure.setCompoundDrawables(drawable, null, null, null)
+
+        mBinding.tvCountDown.isEnabled = false
+        mViewModel.startCountDown()
     }
 
     override fun initData() {
@@ -70,11 +91,27 @@ class SmsVerifyFragment :
     }
 
     override fun initListener() {
-
-
+        mBinding.tvCountDown.clickNoRepeat {
+            //开始倒计时
+            mViewModel.requestSMSCode(
+                smsVerifyFragmentArgs.countryCode,
+                smsVerifyFragmentArgs.phoneNumber
+            )
+            mViewModel.startCountDown()
+        }
     }
 
     override suspend fun createObserver() {
+        mViewModel.getCountDownLiveData().observe(this) { seconds ->
+            if (seconds > 0) {
+                mBinding.tvCountDown.isEnabled = false
+                mBinding.tvCountDown.text =
+                    getString(R.string.account_resend_sms_code_count_down, seconds)
+            } else {
+                mBinding.tvCountDown.isEnabled = true
+                mBinding.tvCountDown.text = getString(R.string.account_resend_sms_code)
+            }
+        }
 
     }
 

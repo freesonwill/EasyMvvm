@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints" />
 
-    <TextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_sms_verify_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -73,6 +73,35 @@
         app:psw_show_cursor="true"
         app:psw_style="StyleOneself"
         app:psw_text_color="@color/white" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_16"
+        android:orientation="vertical">
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_verify_failure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_14"
+            android:text="@string/account_sms_verify_failure"
+            android:textColor="@color/color_FE7536"
+            android:textFontWeight="400"
+            android:textSize="@dimen/sp_13"
+            android:visibility="gone" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_count_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/account_count_down_color_state"
+            android:text=""
+            android:textFontWeight="500"
+            android:textSize="@dimen/sp_14" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 
 </arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>

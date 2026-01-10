@@ -77,40 +77,7 @@ class PhoneNumberViewModel : BaseViewModel() {
     }
 
 
-    /**
-     * 使用手机号和验证码登录
-     */
-    fun accountLogin(countryCode: String, phoneNumber: String, sms: String) {
-        setState(DataState.Loading)
-        viewModelScope.launch {
-            callApi(
-                {
-                    repository.accountLogin(
-                        countryCode = countryCode,
-                        phoneNumber = phoneNumber,
-                        sms = sms
-                    )
-                },
-                {
-                    when (it) {
-                        is ApiResponseState.Failed -> {
-                            setState(DataState.NetworkUnavailable)
-                        }
 
-                        is ApiResponseState.Succeeded<*> -> {
-                            setState(DataState.LoadSuccess)
-
-                            viewModelScope.launch(Dispatchers.IO) {
-                                val loginResponseVo = it.dataAs<LoginResponseVo>()
-                            }
-                        }
-
-                        else -> {}
-                    }
-                }, autoUpdateState = false
-            )
-        }
-    }
 
 }
 

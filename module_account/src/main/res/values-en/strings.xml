@@ -12,7 +12,9 @@
     <string name="account_skip">Skip</string>
     <string name="account_create_nickname">Create Nickname</string>
     <string name="account_nickname_hint">You can enter your preferred nickname, and you can change it later. If you skip this step, the system will assign a nickname for you automatically.</string>
-
+    <string name="account_sms_verify_failure">The verification code is incorrect</string>
+    <string name="account_resend_sms_code">Resend verification code</string>
+    <string name="account_resend_sms_code_count_down">Resend verification code %s</string>
 
 
 </resources>
