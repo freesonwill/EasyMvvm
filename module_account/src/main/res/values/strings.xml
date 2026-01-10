@@ -44,4 +44,13 @@
     <string name="account_edit_name_toast_limit">本月的修改次数已满，请下个月再来尝试</string>
     <string name="account_avatar_select">请选择头像</string>
     <string name="title_login_or_register" translatable="false">登录/注册</string>
+    <string name="account_phone_register" translatable="false">手机号码</string>
+    <string name="account_email_register" translatable="false">电子邮箱</string>
+    <string name="hint_phone_number">手机号码</string>
+    <string name="account_continue">继续</string>
+    <string name="sms_verify_hint">输入 6 位验证码</string>
+    <string name="sms_code_sent_to">验证码已发送到</string>
+    <string name="account_skip">跳过</string>
+    <string name="account_create_nickname">创建昵称</string>
+    <string name="account_nickname_hint">你可以输入自己喜欢的昵称，之后可以再次更改。如果跳过此步骤，系统会自动为你分配昵称。</string>
 </resources>

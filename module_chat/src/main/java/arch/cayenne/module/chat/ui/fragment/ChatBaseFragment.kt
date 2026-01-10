@@ -25,6 +25,7 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.ChatMsgType
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
+import arch.cayenne.lib.common.utils.EditTextUtils.editDelBtn
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
@@ -50,7 +51,6 @@ import arch.cayenne.module.chat.manager.ChatATHelper
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim
 import arch.cayenne.module.chat.manager.SoftKeyBoardAnim.getInputAnim
 import arch.cayenne.module.chat.utils.ChatMsgUtils
-import arch.cayenne.module.chat.utils.EditTextUtils.editDelBtn
 import arch.cayenne.module.order.data.model.BetShareBean
 import arch.cayenne.module.order.ui.fragment.ChatChooseBetFragment
 import kotlinx.coroutines.delay

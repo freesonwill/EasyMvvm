@@ -1,4 +1,4 @@
-package arch.cayenne.module.chat.utils
+package arch.cayenne.lib.common.utils
 
 import android.app.Activity
 import android.content.Context

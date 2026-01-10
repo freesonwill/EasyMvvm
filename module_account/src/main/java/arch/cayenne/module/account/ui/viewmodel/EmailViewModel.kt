@@ -6,7 +6,7 @@ import org.koin.core.component.inject
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-class LoginOrRegisterViewModel :  BaseViewModel() {
+class EmailViewModel :  BaseViewModel() {
 
     private val repository: AccountLoginRepository by inject()
 

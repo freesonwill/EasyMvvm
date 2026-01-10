@@ -6,10 +6,9 @@ import org.koin.core.component.inject
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-class LoginOrRegisterViewModel :  BaseViewModel() {
+class SmsVerifyViewModel :  BaseViewModel() {
 
     private val repository: AccountLoginRepository by inject()
-
 
     override fun initViewModel() {
         super.initViewModel()

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.common.ui.view.InterceptedLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_1E1E1E"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    app:interceptedDirection="RIGHT">
 
     <arch.cayenne.lib.common.ui.view.TitleBarView
         android:id="@+id/title_bar"
@@ -12,14 +14,54 @@
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints" />
 
-    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/color_1E1E1E"
-        android:orientation="vertical">
+        android:layout_height="@dimen/dp_44">
+
+        <arch.cayenne.lib.common.ui.view.CustomTabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_9"
+            android:layout_marginTop="@dimen/dp_4"
+            android:background="@android:color/transparent"
+            android:clipToPadding="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tabGravity="center"
+            app:tabIndicator="@drawable/shape_home_tab_indicator"
+            app:tabIndicatorAnimationDuration="250"
+            app:tabIndicatorAnimationMode="linear"
+            app:tabIndicatorColor="@color/color_00E0E5"
+            app:tabIndicatorFullWidth="true"
+            app:tabIndicatorGravity="bottom"
+            app:tabIndicatorHeight="2dp"
+            app:tabMode="fixed"
+            app:tabPaddingBottom="@dimen/dp_6"
+            app:tabRippleColor="@null"
+            app:tabSelectedTextColor="@color/account_tab_select_text"
+            app:tabTextAppearance="@style/AccountTabLayoutTextAppearance"
+            app:tabTextColor="@color/tab_text" />
+
+        <arch.cayenne.lib.common.ui.view.CustomTabIndicator
+            android:id="@+id/homeIndicator"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintEnd_toEndOf="@id/tab_layout"
+            app:layout_constraintStart_toStartOf="@id/tab_layout"
+            app:layout_constraintTop_toBottomOf="@id/tab_layout" />
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
-
-
-</androidx.appcompat.widget.LinearLayoutCompat>
+</arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>
