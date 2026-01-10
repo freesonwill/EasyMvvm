@@ -135,7 +135,7 @@ class SmsVerifyFragment :
                 is DataState.Loading -> {
                     mBinding.tvVerifyFailure.visibility = android.view.View.GONE
                     //显示加载中
-                    mBinding.ivLoading.visibility = View.GONE
+                    mBinding.ivLoading.visibility = View.VISIBLE
                     loadingAnim?.cancel()
                     loadingAnim = mBinding.ivLoading.startSafeObjectAnimator(
                         "rotation",  // 属性名称
