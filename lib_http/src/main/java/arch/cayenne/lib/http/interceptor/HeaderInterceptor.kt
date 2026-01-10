@@ -1,8 +1,10 @@
 package arch.cayenne.lib.http.interceptor
 
 
+import arch.cayenne.lib.base.BuildConfig
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
+import arch.cayenne.lib.http.HttpClient
 import okhttp3.Interceptor
 import okhttp3.Response
 
@@ -18,7 +20,8 @@ import okhttp3.Response
  * Channelshell -> 渠道标识 ios/android/web appstore-test-5000/android-test-5000/web-test-5000
  * */
 class HeaderInterceptor(
-    val manager: UserDataManager
+    val manager: UserDataManager,
+    private val versionCodes: Int
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
@@ -32,7 +35,7 @@ class HeaderInterceptor(
             .addHeader("Uuid", "1B3B3ED86CB54E20905AE441BD694A33")
             .addHeader("Base", "0.0.1")
             .addHeader("Version", "0.0.1")
-            .addHeader("Channelshell", "android")
+            .addHeader("Channelshell", "android-${BuildConfig.BUILD_TYPE}-${versionCodes}")
             .build()
 
         return chain.proceed(newRequest)

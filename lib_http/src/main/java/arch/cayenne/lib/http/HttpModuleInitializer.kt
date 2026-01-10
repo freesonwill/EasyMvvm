@@ -22,6 +22,7 @@ class HttpModuleInitializer : DefaultInitializer<String> {
     private val TAG = this.javaClass.simpleName
 
     override fun create(context: Context): String {
+        val versionCode = context.packageManager.getPackageInfo(context.packageName, 0).versionCode
 
         "$TAG create ....".logd(TAG)
         loadKoinModules(module {
@@ -29,8 +30,7 @@ class HttpModuleInitializer : DefaultInitializer<String> {
             single(named("sport_http")) {  HttpClient.Builder("$SPORT_SERVER_HTTP/",5000).build()  }
             single(named("3n1_http")) {
                 HttpClient.Builder("$BASE_URL/" ,5000)
-                    .addInterceptor(HeaderInterceptor(get()))
-                    .enableLog(BuildConfig.DEBUG)
+                    .addInterceptor(HeaderInterceptor(get(), versionCode))
                     .build()
             }
         })
