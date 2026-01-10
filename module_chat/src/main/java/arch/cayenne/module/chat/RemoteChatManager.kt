@@ -21,6 +21,8 @@ import arch.cayenne.lib.websocket.chat.data.GetChatHistoryRequest
 import arch.cayenne.lib.websocket.chat.data.GetChatHistoryResponse
 import arch.cayenne.lib.websocket.chat.data.MsgNotify
 import arch.cayenne.lib.websocket.chat.data.MsgType
+import arch.cayenne.lib.websocket.chat.data.ReportUserRequest
+import arch.cayenne.lib.websocket.chat.data.ReportUserResponse
 import arch.cayenne.lib.websocket.chat.extension.chatObserveMessage
 import arch.cayenne.lib.websocket.chat.extension.chatSendAndWaitProtoMessageResponse
 import arch.cayenne.lib.websocket.data.ApiCode
@@ -174,6 +176,20 @@ class RemoteChatManager(
 
         if (resp.error == null && resp.data != null) {
             return resp.data
+        }
+        return null
+    }
+
+    suspend fun reportUser(uid:String,chatType: ChatType,type:Int):ReportUserResponse? {
+        val resp = socketManager.chatSendAndWaitProtoMessageResponse<ReportUserResponse>(
+            ApiCode.CHAT_REPORT_USER,
+            responseCode = ChatResponseCode.REPORT_USER_RESP,
+        ) {
+            ReportUserRequest(uid,chatType.value,type)
+        }
+      "reportOther uid:$uid   result ${Gson().toJson(resp)}".logd(TAG)
+        if(resp.error == null && resp.data != null){
+            return resp.data//do nothing
         }
         return null
     }

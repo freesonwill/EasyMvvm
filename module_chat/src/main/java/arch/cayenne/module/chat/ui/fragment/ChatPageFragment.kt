@@ -73,16 +73,16 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                     ChatMsgType.AT -> {
 //                        ChatPrivateUserFragment.show(this)
                         atUser?.let {
-                            ChatUserInfoFragment.show(childFragmentManager, atUser)
+                            ChatUserInfoFragment.show(childFragmentManager, atUser,homeViewModel.chatType)
                         }
                     }
 
                     ChatMsgType.TEXT -> {
-                        ChatPersonalDialogFragment.show(this@ChatPageFragment)
+                        ChatPersonalDialogFragment.show(this@ChatPageFragment,bean,homeViewModel.chatType)
                     }
 
                     ChatMsgType.NAME ->{
-                        ChatUserInfoFragment.show(childFragmentManager,bean.toChatRefUsers())
+                        ChatUserInfoFragment.show(childFragmentManager,bean.toChatRefUsers(),homeViewModel.chatType)
                     }
 
                     else -> {}

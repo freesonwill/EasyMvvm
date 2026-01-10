@@ -14,6 +14,7 @@ import arch.cayenne.lib.websocket.chat.data.CheckBetAmountResponse
 import arch.cayenne.lib.websocket.chat.data.GetChatHistoryResponse
 import arch.cayenne.lib.websocket.chat.data.MsgNotify
 import arch.cayenne.lib.websocket.chat.data.MsgType
+import arch.cayenne.lib.websocket.chat.data.ReportUserResponse
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.data.repository.LiveChatRepository
@@ -129,6 +130,14 @@ class ChatManagerImpl(private val chatRepo: LiveChatRepository) :
 
     override suspend fun serverConnectFlow(): StateFlow<SocketConnectState> {
         return chatRepo.getConnectStateFlow()
+    }
+
+    override suspend fun reportUser(
+        uid: String,
+        chatType: ChatType,
+        type: Int
+    ): ReportUserResponse? {
+       return chatRepo.reportUser(uid, chatType, type)
     }
 
     fun getLoginFlow(): StateFlow<ChatLoginResponseData?> {

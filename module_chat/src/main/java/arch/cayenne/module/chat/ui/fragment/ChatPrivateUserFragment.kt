@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.lib.base.utils.ext.FragmentExt.setFragmentResult
 import arch.cayenne.lib.websocket.chat.data.ChatRefUser
+import arch.cayenne.lib.websocket.chat.data.ChatType
 import arch.cayenne.module.chat.databinding.FragmentPrivateUserLayoutBinding
 import arch.cayenne.module.chat.ui.viewmodel.ChatUserInfoViewModel
 import kotlin.reflect.KClass
@@ -21,6 +22,7 @@ class ChatPrivateUserFragment :
     override val vmClass: KClass<ChatUserInfoViewModel>
         get() = ChatUserInfoViewModel::class
     var user: ChatRefUser? = null
+    var chatTYpe: ChatType = ChatType.LOBBY
 
     companion object {
         val TAG = ChatPrivateUserFragment::class.java.simpleName
@@ -35,10 +37,10 @@ class ChatPrivateUserFragment :
             }
         }
 
-        fun show(fragment: Fragment, user: ChatRefUser) {
+        fun show(fragment: Fragment, user: ChatRefUser,chatType: ChatType) {
             val f =
                 fragment.childFragmentManager.findFragmentByTag(TAG) as? ChatPrivateUserFragment
-            f?.setChatUser(user)
+            f?.setUserArguments(user,chatType)
             f?.customShow()
         }
 
@@ -50,14 +52,15 @@ class ChatPrivateUserFragment :
 
     }
 
-    fun setChatUser(chatRefUser: ChatRefUser) {
+    fun setUserArguments(chatRefUser: ChatRefUser,chatType: ChatType) {
         this.user = chatRefUser
+        this.chatTYpe = chatType
     }
 
     override fun initListener() {
         mBinding.tvReport.setOnClickListener {
             dismiss()
-            ChatReportFragment.show(this@ChatPrivateUserFragment)
+            ChatReportFragment.show(this@ChatPrivateUserFragment,user,chatTYpe)
         }
         mBinding.tvAt.setOnClickListener {
             setParamToParentFragment()

@@ -10,6 +10,9 @@ import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.websocket.chat.data.ChatRefUser
+import arch.cayenne.lib.websocket.chat.data.ChatType
+import arch.cayenne.module.chat.data.model.ChatMsgPageBean
 import arch.cayenne.module.chat.data.model.ChatPersonalData
 import arch.cayenne.module.chat.databinding.FragmentChatPersonalLayoutBinding
 import arch.cayenne.module.chat.ui.adapter.ChatPersonalAdapter
@@ -25,7 +28,6 @@ class ChatPersonalDialogFragment :
     BasePreLoadBottomSheetFragment<ChatPersonalDialogViewModel, FragmentChatPersonalLayoutBinding>() {
 
 
-
     companion object {
         val TAG = ChatPersonalDialogFragment::class.java.simpleName
         val CHAT_PERSONAL_REQUEST = "chat_personal_request"
@@ -39,9 +41,10 @@ class ChatPersonalDialogFragment :
             }
         }
 
-        fun show(fragment: Fragment) {
+        fun show(fragment: Fragment, bean: ChatMsgPageBean,chatType: ChatType) {
             val f =
                 fragment.childFragmentManager.findFragmentByTag(TAG) as? ChatPersonalDialogFragment
+            f?.setChatArguments(bean,chatType)
             f?.customShow()
         }
 
@@ -51,6 +54,8 @@ class ChatPersonalDialogFragment :
         get() = FragmentChatPersonalLayoutBinding::class
     override val vmClass: KClass<ChatPersonalDialogViewModel>
         get() = ChatPersonalDialogViewModel::class
+    private var msgBean: ChatMsgPageBean? = null
+    private var chatTYpe: ChatType = ChatType.LOBBY
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
@@ -59,6 +64,11 @@ class ChatPersonalDialogFragment :
             setupFullScreen(dialog)
         }
         return dialog
+    }
+
+    fun setChatArguments(bean: ChatMsgPageBean, chatType: ChatType) {
+        this.msgBean = bean
+        this.chatTYpe = chatType
     }
 
     private fun setupFullScreen(dialog: Dialog) {
@@ -83,7 +93,11 @@ class ChatPersonalDialogFragment :
             override fun onItemClick(item: ChatPersonalData?, position: Int) {
                 setFragmentResult(position)
                 if (position == 3) {
-                    ChatReportFragment.show(this@ChatPersonalDialogFragment)
+                    ChatReportFragment.show(
+                        this@ChatPersonalDialogFragment,
+                        msgBean?.toChatRefUsers(),
+                        chatTYpe
+                    )
                     dismiss()
                 } else {
                     dismiss()

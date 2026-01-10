@@ -35,6 +35,7 @@ import com.google.android.material.tabs.TabLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.websocket.chat.data.ChatRefUser
+import arch.cayenne.lib.websocket.chat.data.ChatType
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 //上滚-弹窗-头像-名字-列表
@@ -45,9 +46,9 @@ class ChatUserInfoFragment :
     companion object {
         const val TAG = "ChatUserInfoFragment"
 
-        fun show(manager: FragmentManager, user: ChatRefUser) {
+        fun show(manager: FragmentManager, user: ChatRefUser,chatType: ChatType) {
             val fragment = ChatUserInfoFragment()
-            fragment.setChatUser(user)
+            fragment.setUserArguments(user,chatType)
             fragment.show(manager, TAG)
         }
     }
@@ -58,13 +59,15 @@ class ChatUserInfoFragment :
     override val vmClass: KClass<ChatUserInfoViewModel>
         get() = ChatUserInfoViewModel::class
     var user:ChatRefUser? = null
+    var chatTYpe:ChatType = ChatType.LOBBY
 
     override fun initView(savedInstanceState: Bundle?) {
         loadFragment()
     }
 
-    fun setChatUser(chatRefUser: ChatRefUser) {
+    fun setUserArguments(chatRefUser: ChatRefUser,chatType: ChatType) {
         this.user = chatRefUser
+        this.chatTYpe = chatType
     }
 
     private var isChatUserInfoAvatarLayoutDow: Boolean = false //按下的是否是资料区域
@@ -83,7 +86,8 @@ class ChatUserInfoFragment :
                 dismiss()
             }
             tvReport.setOnClickListener {
-                ChatReportFragment.show(this@ChatUserInfoFragment)
+                dismiss()
+                ChatReportFragment.show(this@ChatUserInfoFragment,user,chatTYpe)
             }
         }
 

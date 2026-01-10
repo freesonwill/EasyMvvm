@@ -257,9 +257,9 @@ data class CheckBetAmountResponse(
  * 举报请求
  * */
 data class ReportUserRequest(
-    val uid: Long,
+    val uid: String,
     val chatType: Int,
-    val type: String
+    val type: Int
 ) : ChatRequestData
 
 data class ReportUserResponse(override val code: Int) : IResponse, ChatResponseBase()

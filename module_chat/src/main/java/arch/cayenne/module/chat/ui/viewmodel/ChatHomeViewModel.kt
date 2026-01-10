@@ -41,6 +41,7 @@ import java.util.Locale
 
 class ChatHomeViewModel() : BaseViewModel() {
     var matchId: Long? = null
+    var chatType:ChatType = ChatType.LOBBY
 
     //    private val _currentSoftKeyboard = MutableStateFlow(KeyBoardType.CHAT)
     private val _updateKeyboardUiStatus = MutableLiveData(KeyBoardType.CHAT)
@@ -108,6 +109,7 @@ class ChatHomeViewModel() : BaseViewModel() {
     }
 
     fun setArguments(matchId: Long?, chatType: ChatType) {
+        this.chatType = chatType
         //直播间重新从联赛进入时，刷新matchId 重新进入聊天室
         if (this.matchId != null && this.matchId != matchId) {
             this.matchId = matchId
