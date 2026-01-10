@@ -3,33 +3,31 @@ package com.walisport.module.hall.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
-import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
-import arch.cayenne.lib.common.utils.ext.onScrolledOver
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
 import com.walisport.module.business.common.data.UniversalLoadMoreScrollListener
 import com.walisport.module.business.common.ui.adapter.GameContentAdapter
+import com.walisport.module.business.common.ui.fragment.BaseBannerLinkFragment
+import com.walisport.module.business.common.ui.viewmodel.BaseBannerViewModel
 import com.walisport.module.hall.databinding.FragmentGameRecentBinding
 import com.walisport.module.hall.ui.viewmodel.GameRecentViewModel
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
 import com.walisport.module.live.data.EventClick
 import kotlin.reflect.KClass
 
-class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentBinding>() {
+class GameRecentFragment : BaseBannerLinkFragment<GameRecentViewModel, FragmentGameRecentBinding>() {
 
     companion object {
         private const val ARG_CATEGORY_TYPE = "arg_category_type"
-        fun newInstance(
-            categoryType: Int,
-        ) = GameRecentFragment().apply {
+        fun newInstance(categoryType: Int) = GameRecentFragment().apply {
             arguments = Bundle().apply {
                 putInt(ARG_CATEGORY_TYPE, categoryType)
 
@@ -39,8 +37,8 @@ class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentB
 
     override val vbClass: KClass<FragmentGameRecentBinding> = FragmentGameRecentBinding::class
     override val vmClass: KClass<GameRecentViewModel> = GameRecentViewModel::class
-    private val hallViewModel: HallViewModel by sharedViewModel<HallViewModel, HallFragment>()
     private lateinit var adapter: GameContentAdapter
+
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             rvGame.layoutManager = GridLayoutManager(requireContext(), 3)
@@ -70,25 +68,21 @@ class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentB
     }
 
     override fun initListener() {
-        mBinding.rvGame.onScrolledOver(100f, 80f, {
-            hallViewModel.setScroll(true)
-        }, {
-            hallViewModel.setScroll(false)
-        })
+        super.initListener()
 
-        mBinding.rvGame.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: androidx.recyclerview.widget.RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                // 这里处理滚动状态变化
-                // newState: 0=IDLE, 1=DRAGGING, 2=SETTLING
-                hallViewModel.setScrollState(newState)
-            }
-        })
         mBinding.rvGame.addOnScrollListener(UniversalLoadMoreScrollListener(6) {
             if (mViewModel.apiStateListener.value == DataState.LoadSuccess) {
                 mViewModel.loadNextPage()
             }
         })
+    }
+
+    override fun provideBannerViewModel(): BaseBannerViewModel {
+        return sharedViewModel<HallViewModel, HallFragment>().value
+    }
+
+    override fun provideBannerRecyclerView(): RecyclerView? {
+        return mBinding.rvGame
     }
 
     override suspend fun createObserver() {
@@ -152,16 +146,5 @@ class GameRecentFragment : BaseFragment<GameRecentViewModel, FragmentGameRecentB
     override fun onStart() {
         mViewModel.getIsClickGame()
         super.onStart()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        mBinding.rvGame.post {
-            mBinding.rvGame.checkCurrentScrollState(100f, 80f, {
-                hallViewModel.setScroll(true)
-            }, {
-                hallViewModel.setScroll(false)
-            })
-        }
     }
 }

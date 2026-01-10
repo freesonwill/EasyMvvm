@@ -5,8 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.room.Transaction
 import arch.cayenne.lib.base.data.constants.DataState
-import arch.cayenne.lib.base.data.model.UnPeekLiveData
-import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
@@ -21,6 +19,7 @@ import arch.cayenne.module.home.data.constants.getPlayTypeById
 import arch.cayenne.module.home.data.repo.HomeRepository
 import com.walisport.module.business.common.data.BannerActiveBean
 import com.walisport.module.business.common.data.repo.BalanceRepository
+import com.walisport.module.business.common.ui.viewmodel.BaseBannerViewModel
 import com.walisport.module.business.common.utils.biz.BannerBiz
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -33,7 +32,7 @@ import org.koin.core.component.inject
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-class HomeViewModel : BaseViewModel() {
+class HomeViewModel : BaseBannerViewModel() {
     companion object {
         const val TOURNAMENT_ALL_ID = 0
         const val DEFAULT_DATE = -1L  //預設值，如果任何livedata收到這個預設值可以先略過要做的事情，主要拿來避免頁面生成時拿到舊的date
@@ -69,15 +68,6 @@ class HomeViewModel : BaseViewModel() {
     val notifySubHomeRefresh: LiveData<Event<Unit>> = _notifySubHomeRefresh
 
     val playTypeClickRecord = hashMapOf<Int, Long>()  //HashMap<PlayTypeId, RecordTime>
-
-    //分类列表触发广告位收起动画  true 为收起 false 为展开
-    private val _scroll = MutableLiveData<Boolean>()
-    val scroll: LiveData<Boolean> = _scroll
-
-
-    //滚动状态变更通知
-    private val _scrollStateChanged = UnPeekLiveData<Int>()
-    val scrollStateChanged: LiveData<Int> = _scrollStateChanged
 
     private val _curveBannerLiveData = MutableLiveData<List<BannerActiveBean>>(emptyList())
     val curveBannerLiveData:LiveData<List<BannerActiveBean>> = _curveBannerLiveData
@@ -160,18 +150,6 @@ class HomeViewModel : BaseViewModel() {
         "currentPlayTypeId = ${playTypeId}  isNeedRefresh = $isNeedRefresh  pageSelectedTimestamp = ${pageSelectedTimestamp}".logi()
         playTypeClickRecord[playTypeId] = System.currentTimeMillis()
         return isNeedRefresh
-    }
-
-    fun setScroll(bool: Boolean) {
-        if (bool != scroll.value) {
-            _scroll.value = bool
-        }
-    }
-
-    fun setScrollState(state:Int){
-        if (_scrollStateChanged.value != state) {
-            _scrollStateChanged.value = state
-        }
     }
 
     private fun stopTimer() {

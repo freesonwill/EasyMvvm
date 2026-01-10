@@ -54,6 +54,9 @@ import arch.cayenne.module.home.ui.viewmodel.ChampionSubViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
 import com.bumptech.glide.Glide
+import com.google.android.material.appbar.AppBarLayout
+import com.walisport.module.business.common.ui.fragment.BaseBannerLinkFragment
+import com.walisport.module.business.common.ui.viewmodel.BaseBannerViewModel
 import com.walisport.module.business.common.utils.ext.setGlobalIndicator
 import com.walisport.module.business.common.utils.ext.setGlobalBasicConfig
 import kotlinx.coroutines.Job
@@ -64,7 +67,7 @@ import kotlin.reflect.KClass
 /**
  * 冠军tab的Fragment, 用在体育首页的子页面中
  */
-class ChampionSubFragment : BaseFragment<ChampionSubViewModel, FragmentSubHomeBinding>(),
+class ChampionSubFragment : BaseBannerLinkFragment<ChampionSubViewModel, FragmentSubHomeBinding>(),
     ISubFragmentLifecycle {
     override val vbClass: KClass<FragmentSubHomeBinding> = FragmentSubHomeBinding::class
     override val vmClass: KClass<ChampionSubViewModel> = ChampionSubViewModel::class
@@ -119,7 +122,10 @@ class ChampionSubFragment : BaseFragment<ChampionSubViewModel, FragmentSubHomeBi
         updateTournamentButtonStyle(mViewModel.hasTournamentSelections())
     }
 
+
+
     override fun initListener() {
+        super.initListener()
         with(mBinding) {
             setTopMaskListener()
 
@@ -128,6 +134,18 @@ class ChampionSubFragment : BaseFragment<ChampionSubViewModel, FragmentSubHomeBi
                 addScaleOnTouchAnimation()
             }
         }
+    }
+
+    override fun provideBannerViewModel(): BaseBannerViewModel {
+        return sharedViewModel<HomeViewModel, NewHomeFragment>().value
+    }
+
+    override fun provideBannerAppBarLayout(): AppBarLayout? {
+        return mBinding.aplHomeBanner
+    }
+
+    override fun provideBannerRecyclerView(): RecyclerView? {
+        return mBinding.rvSportsList
     }
 
     private fun showTournamentListBottomSheet() {
