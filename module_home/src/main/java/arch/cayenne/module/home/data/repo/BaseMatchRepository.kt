@@ -228,5 +228,9 @@ abstract class BaseMatchRepository(
         provider = match.basicInfo.provider
     )
 
-    suspend fun observeLoginChange() = infoDao.observeIsLogin()
+    suspend fun observeLoginChange(): Flow<Boolean> {
+        return userDataManager.observe<String>(UserDataKey.KEY_TOKEN).transform {
+            emit(it.isNotEmpty())
+        }
+    }
 }

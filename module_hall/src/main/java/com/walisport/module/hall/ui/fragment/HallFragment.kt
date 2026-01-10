@@ -377,10 +377,9 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
         }
 
         launch {
-            mViewModel.observerUserToken().collect { userToken ->
-                val isLogin = userToken.isNotEmpty()
-                mBinding.btnLogin.isVisible = !isLogin
-                mBinding.balanceView.isVisible = isLogin
+            mViewModel.observeUserLogin().collect {
+                mBinding.btnLogin.isVisible = !it
+                mBinding.balanceView.isVisible = it
             }
         }
 

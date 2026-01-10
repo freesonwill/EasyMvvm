@@ -70,4 +70,9 @@ class UserDataManager {
         @Suppress("UNCHECKED_CAST")
         return flow as Flow<T>
     }
+
+    fun notifyToken() {
+        val flow = getFlow(UserDataKey.KEY_TOKEN)
+        flow.tryEmit(getValue(UserDataKey.KEY_TOKEN, ""))
+    }
 }

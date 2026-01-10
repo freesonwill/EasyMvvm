@@ -23,7 +23,9 @@ import arch.cayenne.module.home.data.constants.playTypeToShowType
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.withContext
 
 class HomeRepository(
@@ -43,7 +45,12 @@ class HomeRepository(
     fun observeTenTournaments() = tournamentDao.observeTournamentWithLimit()
     fun observeUserInfo() = database.userDataDao().observeUser()
     fun observeLanguageChange() = userDataManager.observe<String>(UserDataKey.KEY_LANGUAGE)
-    fun observeLoginChange() = infoDao.observeIsLogin()
+
+    fun observeLoginChange(): Flow<Boolean> {
+        return userDataManager.observe<String>(UserDataKey.KEY_TOKEN).transform {
+            emit(it.isNotEmpty())
+        }
+    }
     fun isPreloadSuccess() = preloadResultChange.value == PreloadEnum.SUCCESS
     fun observerUserToken() = userDataManager.observe<String>(UserDataKey.KEY_TOKEN)
 

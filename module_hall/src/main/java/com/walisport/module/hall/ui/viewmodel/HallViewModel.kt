@@ -28,7 +28,7 @@ class HallViewModel : BaseBannerViewModel() {
 
     val gameCategory = repository.gameCategoryListLiveData //分类列表
 
-    fun observerUserToken() = repository.observerUserToken()
+    fun observeUserLogin() = repository.observeUserLogin()
 
     fun queryGameCommon() {
         repository.queryGameCommonList()

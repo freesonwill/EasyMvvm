@@ -24,6 +24,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import arch.cayenne.lib.http.data.Result
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.withContext
 
 class HallRepository(
@@ -38,7 +40,11 @@ class HallRepository(
     private val _gameCategoryListLiveData = UnPeekLiveData<List<GameCategoryVo>>()
     val gameCategoryListLiveData: UnPeekLiveData<List<GameCategoryVo>> = _gameCategoryListLiveData
 
-    fun observerUserToken() = manager.observe<String>(UserDataKey.KEY_TOKEN)
+    fun observeUserLogin(): Flow<Boolean> {
+        return manager.observe<String>(UserDataKey.KEY_TOKEN).transform { token ->
+            emit(token.isNotEmpty())
+        }
+    }
 
 
     /**

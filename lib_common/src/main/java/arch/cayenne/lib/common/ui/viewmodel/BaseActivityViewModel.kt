@@ -55,7 +55,7 @@ abstract class BaseActivityViewModel : BaseViewModel() {
                         }
                         is ConnectState.ConnectFailure, ConnectState.NetworkUnavailable -> {
                             "Connection Failure -> $connectState".loge(TAG)
-                            commonRepository.setIsLogin(false)
+                            commonRepository.clearToken()
                         }
                         else -> Unit
                     }

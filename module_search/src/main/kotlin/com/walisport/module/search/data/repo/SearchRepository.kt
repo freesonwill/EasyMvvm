@@ -1,5 +1,6 @@
 package com.walisport.module.search.data.repo
 
+import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.UserDataKey
@@ -24,6 +25,9 @@ import com.walisport.module.search.data.transformer.SearchTransformer.toSearchRe
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
@@ -37,7 +41,11 @@ class SearchRepository(
     private val infoDao = database.infoDao()
 
     /** * 监听登录状态变化 */
-    fun observeLoginChange() = infoDao.observeIsLogin()
+    fun observeLoginChange(): Flow<Boolean> {
+        return userDataManager.observe<String>(UserDataKey.KEY_TOKEN).transform {
+            emit(it.isNotEmpty())
+        }
+    }
 
     /** * 删除一条搜索记录
      * @param keyword 要删除的关键字
