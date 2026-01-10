@@ -83,6 +83,14 @@ class SmsVerifyViewModel : BaseViewModel() {
                                 if (loginResponseVo.status == 0) {
                                     // 成功
                                     if (loginResponseVo.isReg) {
+                                        manager.setKeyValue(
+                                            UserDataKey.KEY_UID,
+                                            loginResponseVo.uid
+                                        )
+                                        manager.setKeyValue(
+                                            UserDataKey.KEY_TOKEN,
+                                            loginResponseVo.token
+                                        )
                                         //修改昵称
                                         setState(SmsVerifyState.ToNickName)
                                     } else {
