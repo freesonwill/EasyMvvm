@@ -35,7 +35,8 @@ class HeaderInterceptor(
             .addHeader("Uuid", "1B3B3ED86CB54E20905AE441BD694A33")
             .addHeader("Base", "0.0.1")
             .addHeader("Version", "0.0.1")
-            .addHeader("Channelshell", "android-${BuildConfig.BUILD_TYPE}-${versionCodes}")
+//            .addHeader("Channelshell", "android-${BuildConfig.BUILD_TYPE}-${versionCodes}")
+            .addHeader("Channelshell", "appstore-test-5000")
             .build()
 
         return chain.proceed(newRequest)

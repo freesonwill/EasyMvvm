@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.databinding.TitleBarSimpleBinding
 import arch.cayenne.lib.common.utils.EditTextUtils
@@ -13,7 +14,9 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.account.R
+import arch.cayenne.module.account.data.constants.SmsVerifyState
 import arch.cayenne.module.account.databinding.FragmentSmsVerifyBinding
 import arch.cayenne.module.account.ui.viewmodel.SmsVerifyViewModel
 import com.maning.pswedittextlibrary.MNPasswordEditText.OnTextChangeListener
@@ -66,7 +69,7 @@ class SmsVerifyFragment :
         mBinding.etSmsCode.requestFocus()
         EditTextUtils.showKeyboard(requireContext(), mBinding.etSmsCode)
 
-        mBinding.etSmsCode.setOnTextChangeListener{ text, isComplete ->
+        mBinding.etSmsCode.setOnTextChangeListener { text, isComplete ->
             if (isComplete) {
                 mViewModel.verifySmsCode(
                     smsVerifyFragmentArgs.countryCode,
@@ -110,6 +113,30 @@ class SmsVerifyFragment :
             } else {
                 mBinding.tvCountDown.isEnabled = true
                 mBinding.tvCountDown.text = getString(R.string.account_resend_sms_code)
+            }
+        }
+
+        mViewModel.apiStateListener.observe(viewLifecycleOwner) {
+            when (it) {
+                is DataState.NetworkUnavailable -> {
+                    showToast(getString(arch.cayenne.lib.common.R.string.error_net))
+                }
+
+                is SmsVerifyState.Success -> {
+                    //登录成功，关闭当前activity
+                    findNavController().popBackStack()
+                }
+
+                is SmsVerifyState.ToRegister -> {
+                    //转到修改昵称界面
+
+                }
+
+                is SmsVerifyState.Failure -> {
+                    //显示验证码错误
+                    mBinding.tvVerifyFailure.visibility = android.view.View.VISIBLE
+                }
+
             }
         }
 

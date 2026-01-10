@@ -7,9 +7,9 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.module.account.data.constants.SmsVerifyState
 import arch.cayenne.module.account.data.model.LoginResponseVo
 import arch.cayenne.module.account.data.repo.AccountLoginRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
@@ -73,12 +73,27 @@ class SmsVerifyViewModel : BaseViewModel() {
                         }
 
                         is ApiResponseState.Succeeded<*> -> {
-                            setState(DataState.LoadSuccess)
+                            val loginResponseVo = it.dataAs<LoginResponseVo>()
+                            loginResponseVo?.let { vo ->
+                                if (vo.status == 0) {
+                                    // 成功
+                                    if (vo.isReg) {
+                                        //修改昵称
+                                        setState(SmsVerifyState.ToRegister)
+                                    } else {
+                                        //直接登录成功
+                                        setState(SmsVerifyState.Success)
+                                    }
 
-                            viewModelScope.launch(Dispatchers.IO) {
-                                val loginResponseVo = it.dataAs<LoginResponseVo>()
-
+                                } else {
+                                    // 登录失败
+                                    setState(SmsVerifyState.Failure)
+                                }
+                            }?.also {
+                                // 防止 loginResponseVo 为 null 的情况
+                                setState(SmsVerifyState.Failure)
                             }
+
                         }
 
                         else -> {}
