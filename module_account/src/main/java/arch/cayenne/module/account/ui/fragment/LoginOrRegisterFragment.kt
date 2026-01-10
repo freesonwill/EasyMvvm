@@ -65,10 +65,6 @@ class LoginOrRegisterFragment :
                 layoutMediator.attach()
             }
         }
-
-        mBinding.tabLayout.post {
-            mBinding.tabLayout.getTabAt(1)?.view?.setPadding(21.dp2px, 0, 21.dp2px, 4.dp2px)
-        }
         customIndicator = mBinding.homeIndicator
         mBinding.viewPager.setupViewPagerScroll(
             mBinding.tabLayout,

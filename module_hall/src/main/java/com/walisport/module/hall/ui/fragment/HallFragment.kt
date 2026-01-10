@@ -93,7 +93,7 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
             initCurveBanner()
             btnLogin.clickNoRepeat {
                 navigate(
-                    arch.cayenne.lib.res.R.string.nav_module_login_account_fragment.deeplink(),
+                    arch.cayenne.lib.res.R.string.nav_module_login_fragment.deeplink(),
                     enterAnim = AnimationController[AnimType.routeEnterBT],
                     exitAnim = AnimationController[AnimType.routeExitTB],
                     popEnterAnim = AnimationController[AnimType.routeExitTB],
