@@ -32,7 +32,7 @@ class SmsVerifyViewModel : BaseViewModel() {
     }
 
     fun startCountDown() {
-        var seconds = 60
+        var seconds = 59
         countDownLiveData.value = seconds
         viewModelScope.launch {
             while (seconds > 0) {
