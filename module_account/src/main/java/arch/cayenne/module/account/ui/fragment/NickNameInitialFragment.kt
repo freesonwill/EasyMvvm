@@ -1,14 +1,19 @@
 package arch.cayenne.module.account.ui.fragment
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.navigation.fragment.findNavController
+import android.view.View
+import android.view.animation.LinearInterpolator
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.account.R
+import arch.cayenne.module.account.data.constants.NicknameInitialState
 import arch.cayenne.module.account.databinding.FragmentNicknameInitialBinding
 import arch.cayenne.module.account.ui.viewmodel.NickNameInitialViewModel
 import kotlin.reflect.KClass
@@ -20,6 +25,7 @@ class NickNameInitialFragment :
     override val vmClass: KClass<NickNameInitialViewModel> = NickNameInitialViewModel::class
 
     private var previousText = ""
+    private var loadingAnim: ObjectAnimator? = null
 
 
     @SuppressLint("SetTextI18n")
@@ -39,17 +45,14 @@ class NickNameInitialFragment :
 
     override fun initListener() {
 
+        mBinding.tvSkip.clickNoRepeat {
+            //跳过，finish activity
+            requireActivity().finish()
+        }
+
         mBinding.llNextWrapper.clickNoRepeat {
             //修改昵称
-            mViewModel.changeNickname(mBinding.etNickname.text.toString().trim()).observe(viewLifecycleOwner) { success ->
-                if (success) {
-                    mViewModel.getAccountInfo()
-                    findNavController().navigateUp()
-                }
-                else{
-                    showToast(getString(R.string.nickname_modify_failed))
-                }
-            }
+            mViewModel.changeNickname(mBinding.etNickname.text.toString().trim())
         }
 
         mBinding.etNickname.addTextChangedListener(object : TextWatcher {
@@ -119,7 +122,50 @@ class NickNameInitialFragment :
     }
 
     override suspend fun createObserver() {
+        mViewModel.apiStateListener.observe(viewLifecycleOwner) {
+            when (it) {
+                is DataState.NetworkUnavailable -> {
+                    showToast(getString(arch.cayenne.lib.common.R.string.error_net))
 
+
+                    mBinding.tvNext.visibility = View.VISIBLE
+                    mBinding.ivLoading.visibility = View.GONE
+                    loadingAnim?.cancel()
+                }
+
+                is NicknameInitialState.Success -> {
+                    //finish activity
+                    requireActivity().finish()
+                    loadingAnim?.cancel()
+                }
+
+                is NicknameInitialState.Failure -> {
+                    showToast(getString(R.string.nickname_modify_failed))
+                    loadingAnim?.cancel()
+                }
+
+                is DataState.Loading -> {
+                    mBinding.tvNext.visibility = View.GONE
+                    mBinding.ivLoading.visibility = View.VISIBLE
+
+                    loadingAnim?.cancel()
+                    loadingAnim = mBinding.ivLoading.startSafeObjectAnimator(
+                        "rotation",  // 属性名称
+                        0f, 360f // 从 0 度旋转到 360 度
+                    ).run {
+                        // 设置动画属性
+                        setDuration(1500) // 持续时间 1.5 秒
+                        repeatCount = ObjectAnimator.INFINITE // 无限循环
+                        interpolator = LinearInterpolator() // 匀速旋转
+
+                        // 启动动画
+                        start()
+                        this
+                    }
+
+                }
+            }
+        }
     }
 
 }
