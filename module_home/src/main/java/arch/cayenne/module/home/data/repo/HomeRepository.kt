@@ -45,6 +45,7 @@ class HomeRepository(
     fun observeLanguageChange() = userDataManager.observe<String>(UserDataKey.KEY_LANGUAGE)
     fun observeLoginChange() = infoDao.observeIsLogin()
     fun isPreloadSuccess() = preloadResultChange.value == PreloadEnum.SUCCESS
+    fun observerUserToken() = userDataManager.observe<String>(UserDataKey.KEY_TOKEN)
 
     suspend fun getTournament(playTypeId: Int, sportId: Int, tournamentId: Int): TournamentDataModel? = tournamentDao.queryTournament(playTypeId, sportId, tournamentId)
 

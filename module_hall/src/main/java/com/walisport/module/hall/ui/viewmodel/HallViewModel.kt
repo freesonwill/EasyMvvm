@@ -28,15 +28,14 @@ class HallViewModel : BaseBannerViewModel() {
 
     val gameCategory = repository.gameCategoryListLiveData //分类列表
 
+    fun observerUserToken() = repository.observerUserToken()
+
     fun queryGameCommon() {
         repository.queryGameCommonList()
     }
 
-    fun checkIsLogin() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val isLogin = repository.checkIsLogin()
-            _isLogin.postValue(isLogin)
-        }
+    fun checkIsLogin(): Boolean {
+        return repository.checkIsLogin()
     }
 
     suspend fun getBannerActive() {

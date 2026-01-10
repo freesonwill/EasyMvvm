@@ -1,10 +1,8 @@
 package arch.cayenne.lib.http.interceptor
 
 
-import arch.cayenne.lib.base.BuildConfig
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
-import arch.cayenne.lib.http.HttpClient
 import okhttp3.Interceptor
 import okhttp3.Response
 
@@ -21,23 +19,31 @@ import okhttp3.Response
  * */
 class HeaderInterceptor(
     val manager: UserDataManager,
-    private val versionCodes: Int
+    private val versionCodes: Int,
+    private val androidId: String
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
 
         // 構建新的 Request 並加入 Header
-        val newRequest = originalRequest.newBuilder()
-            .addHeader("Uid", "100")
-            .addHeader("Token", "MTAwXzE3NjU0Mzc1NTk1MDk6ZFBoc3dpelQwazRTaUJnbg")
+        val builder = originalRequest.newBuilder()
             .addHeader("Lang", "zh-CN")
             .addHeader("Ccy", manager.getValue(UserDataKey.KEY_DEFAULT_FIAT, "USD"))
-            .addHeader("Uuid", "1B3B3ED86CB54E20905AE441BD694A33")
+            .addHeader("Uuid", androidId)
             .addHeader("Base", "0.0.1")
             .addHeader("Version", "0.0.1")
 //            .addHeader("Channelshell", "android-${BuildConfig.BUILD_TYPE}-${versionCodes}")
             .addHeader("Channelshell", "appstore-test-5000")
-            .build()
+
+        manager.getValue(UserDataKey.KEY_UID, -1).takeIf { it != -1 }?.let {
+            builder.addHeader("Uid", it.toString())
+        }
+
+        manager.getValue<String>(UserDataKey.KEY_TOKEN, "").takeIf { it.isNotEmpty() }?.let {
+            builder.addHeader("Token", it)
+        }
+
+        val newRequest = builder.build()
 
         return chain.proceed(newRequest)
     }
