@@ -1,5 +1,6 @@
 package com.walisport.module.hall.ui.fragment
 
+import android.content.ComponentName
 import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
@@ -103,7 +104,10 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
 
                 //到LoginActivity
                 val intent = Intent()
-                intent.action = arch.cayenne.lib.res.R.string.nav_module_login_activity.deeplink()
+                intent.component = ComponentName(
+                    requireActivity().packageName,
+                    "arch.cayenne.module.account.ui.activity.LoginActivity"
+                )
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 requireActivity().navigate(intent)
             }

@@ -10,6 +10,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.module.account.R
 import arch.cayenne.module.account.databinding.FragmentLoginBinding
@@ -39,8 +40,9 @@ class LoginFragment : BaseFragment<EmptyViewModel, FragmentLoginBinding>() {
 
     override fun initListener() {
         mBinding.apply {
+            btnClose.addScaleOnTouchAnimation()
             btnClose.clickNoRepeat {
-                findNavController().navigateUp()
+                requireActivity().finish()
             }
             btnPhone.clickNoRepeat {
                 navigate(R.id.action_to_loginOrRegisterFragment)

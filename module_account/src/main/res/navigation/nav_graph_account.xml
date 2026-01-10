@@ -53,7 +53,11 @@
         <deepLink app:uri="@string/nav_module_avatar_preview_fragment" />
     </fragment>
 
-
+    <activity
+        android:id="@+id/loginActivity"
+        android:name="arch.cayenne.module.account.ui.activity.LoginActivity"
+        android:label="LoginActivity">
+    </activity>
 
 
 </navigation>

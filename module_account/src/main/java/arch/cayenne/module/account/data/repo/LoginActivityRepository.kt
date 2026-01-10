@@ -23,10 +23,6 @@ import kotlinx.coroutines.launch
 class LoginActivityRepository(
     override val scope: CoroutineScope,
     private val userDataManager: UserDataManager,
-    private val socketManager: WebSocketManager,
-    private val sportDao: SportDao,
-    private val msgDao: MessageDao,
-    private val infoDao: InfoDao,
 ) : BaseRepository() {
 
     //获取皮肤背景
