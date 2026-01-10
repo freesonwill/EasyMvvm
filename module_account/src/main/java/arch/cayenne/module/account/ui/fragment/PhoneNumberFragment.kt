@@ -32,11 +32,16 @@ class PhoneNumberFragment :
             tvCountryCode.text = "+86" //先做*86
         }
 
+        //默认下一步按钮不可用
         mBinding.llNextWrapper.isEnabled = false
+        mBinding.llNextWrapper.alpha = 0.4f
+
         mBinding.editTextPhone.addTextChangedListener {
             //手机号大于等于7时，下一步按钮可用
             mBinding.llNextWrapper.isEnabled =
                 (mBinding.editTextPhone.text?.length ?: 0) >= 7
+            mBinding.llNextWrapper.alpha =
+                if (mBinding.llNextWrapper.isEnabled) 1.0f else 0.4f
         }
 
     }
@@ -46,7 +51,7 @@ class PhoneNumberFragment :
     }
 
     override fun initListener() {
-        mBinding.llWrapper.clickNoRepeat {
+        mBinding.llCountryCodeWrapper.clickNoRepeat {
             "TODO: 选择国家和区号".logi(TAG)
         }
 

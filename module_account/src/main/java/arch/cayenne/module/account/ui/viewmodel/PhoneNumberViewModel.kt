@@ -35,7 +35,7 @@ class PhoneNumberViewModel : BaseViewModel() {
     fun requestSMSCode(countryCode: String, phoneNumber: String) {
         setState(DataState.Loading)
         viewModelScope.launch {
-            delay(3_000) //模拟网络延迟
+            delay(1_500) //模拟网络延迟
             setState(DataState.LoadSuccess)
             _smsState.value = SmsState.Success
 
