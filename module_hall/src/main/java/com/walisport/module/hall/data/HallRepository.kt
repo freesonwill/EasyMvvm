@@ -13,6 +13,7 @@ import arch.cayenne.lib.database.entity.GameSupplierDataModel
 import arch.cayenne.lib.database.entity.SystemAvatarBean
 import arch.cayenne.lib.http.HttpClient
 import arch.cayenne.lib.http.HttpException
+import arch.cayenne.lib.http.data.HttpApiResponse
 import arch.cayenne.lib.websocket.WebSocketManager
 import com.walisport.module.business.common.data.constants.GameSortType
 import kotlinx.coroutines.CoroutineScope
@@ -21,6 +22,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
+import arch.cayenne.lib.http.data.Result
+import kotlinx.coroutines.withContext
 
 class HallRepository(
     override val scope: CoroutineScope,
@@ -34,6 +37,9 @@ class HallRepository(
     private val _gameCategoryListLiveData = UnPeekLiveData<List<GameCategoryVo>>()
     val gameCategoryListLiveData: UnPeekLiveData<List<GameCategoryVo>> = _gameCategoryListLiveData
 
+    suspend fun checkIsLogin(): Boolean {
+        return database.infoDao().isLogin()?: false
+    }
 
     suspend fun queryGameList(
         page: Int,
@@ -206,13 +212,15 @@ class HallRepository(
         return list
     }
     private fun roomSystemAvatar(
-        avatarVo: List<SystemAvatarVo>,host:String
+        avatarVo: List<SysAvatarVo>,host:String
     ) {
         var list: MutableList<SystemAvatarBean> = mutableListOf()
         avatarVo.forEach { data ->//分类列表
             list.add(
                 SystemAvatarBean(
                     id = data.id ,
+                    groupId = data.groupId ,
+                    subId = data.subId ,
                     url = data.url ,
                     host = host
                 )
@@ -244,10 +252,9 @@ class HallRepository(
             database.supplierDao().clearSelectedByType(gameType)
         }
     }
+
     companion object {
         const val DEFAULT_GAME_SIZE = 10
         const val INITIAL_PAGE = 1
     }
-
-
 }

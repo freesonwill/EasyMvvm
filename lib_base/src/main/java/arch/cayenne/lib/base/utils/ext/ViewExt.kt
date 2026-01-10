@@ -9,6 +9,8 @@ import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 
 /**
  * @date: 2025/9/30 14:29
@@ -73,4 +75,42 @@ object ViewExt {
         } ?: let { "postDelayedSafely failed: $this has no lifecycleOwner".loge(TAG) }
     }
 
+    /**
+     *  获取View的真实尺寸，确保View已经完成测量和布局
+     * @return
+     */
+    suspend fun View.awaitViewSize(): Pair<Int, Int> {
+        return suspendCancellableCoroutine { continuation ->
+            val v = this
+            var w = this.width
+            var h = this.height
+            val r = object : Runnable {
+                val t = System.currentTimeMillis()
+                override fun run() {
+                    if (w == v.width && h == v.height) {
+                        continuation.resume(Pair(w, h))
+                    } else {
+                        w = v.width
+                        h = v.height
+                        v.post(this)
+                    }
+                    if((System.currentTimeMillis() -t) > 500) throw IllegalStateException("$this awaitViewSize timeout")
+                }
+            }
+            v.post(r)
+        }
+    }
+
+    /**
+     * 协程版的post
+     */
+    suspend fun View.suspendPost(delayMillis: Long=0){
+        return suspendCancellableCoroutine { continuation ->
+            if(delayMillis > 0){
+                this.postDelayed({ continuation.resume(Unit) },delayMillis)
+            }else {
+                this.post { continuation.resume(Unit) }
+            }
+        }
+    }
 }

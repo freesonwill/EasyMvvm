@@ -72,7 +72,6 @@ dependencies {
     implementation(project(":module_home"))
     implementation(project(":module_bet"))
     implementation(project(":module_betslip"))
-    implementation(project(":module_login"))
     implementation(project(":module_setting"))
     implementation(project(":module_live"))
     implementation(project(":module_handicap"))

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- 定義一個自訂狀態屬性，名為 state_error -->
-    <declare-styleable name="StatefulView">
-        <attr name="state_error" format="boolean" />
-    </declare-styleable>
-</resources>

@@ -2,6 +2,7 @@ package com.walisport.module.hall.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -12,6 +13,7 @@ import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
 import arch.cayenne.lib.common.utils.ext.onScrolledOver
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.NestedScrollViewBackToTopHelper
+import com.walisport.module.business.common.ui.adapter.BannerImageMatchAdapter
 import com.walisport.module.hall.data.GameAllContentData
 import com.walisport.module.hall.databinding.FragmentGameAllBinding
 import com.walisport.module.hall.ui.adapter.GameAllHeaderAdapter
@@ -32,12 +34,16 @@ class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>()
     var index: Int = 0
 
     private val headerAdapter by lazy {
-        GameAllHeaderAdapter(childFragmentManager,
+        GameAllHeaderAdapter(viewLifecycleOwner.lifecycleScope,childFragmentManager,
             object : GameAllHeaderViewHolder.OnHeaderItemClickListener {
-            override fun onInviteFriendItemClick() {
-                navigate(arch.cayenne.lib.res.R.string.nav_module_invite_friends_fragment.deeplink())
-            }
-        })
+                override fun onInviteFriendItemClick() {
+                    navigate(arch.cayenne.lib.res.R.string.nav_module_invite_friends_fragment.deeplink())
+                }
+
+                override suspend fun getBannerList(): List<BannerImageMatchAdapter.ImageData> {
+                    return mViewModel.getBannerList()
+                }
+            })
     }
 
     private val listAdapter by lazy {
@@ -94,9 +100,9 @@ class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>()
 
     override fun initListener() {
         mBinding.rvContent.onScrolledOver(100f, 80f, {
-            hallViewModel.setScorll(true)
+            hallViewModel.setScroll(true)
         }, {
-            hallViewModel.setScorll(false)
+            hallViewModel.setScroll(false)
         })
     }
 
@@ -140,9 +146,9 @@ class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>()
         super.onResume()
         mBinding.rvContent.post {
             mBinding.rvContent.checkCurrentScrollState(100f, 80f, {
-                hallViewModel.setScorll(true)
+                hallViewModel.setScroll(true)
             }, {
-                hallViewModel.setScorll(false)
+                hallViewModel.setScroll(false)
             })
         }
     }

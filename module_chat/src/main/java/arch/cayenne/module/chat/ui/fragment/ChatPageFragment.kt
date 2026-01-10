@@ -61,14 +61,16 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
 
                 selectBean = bean
                 when (clickType) {
-                    ChatMsgType.BET_GAME -> {
-//                    val betType = if(clickSpane == "注单游戏") 0 else 1
-                        BetShareDialogFragment.show(this, 0)
+                    ChatMsgType.BET_GAME ,ChatMsgType.BET_SPORT-> {
+                    val betType = if(clickSpane.contains("游戏注单")) 0 else 1
+                        val height = mBinding.liveChatRecycler.height
+                        BetShareDialogFragment.show(this, betType,height)
                     }
 
-                    ChatMsgType.BET_SPORT -> {
-                        BetShareDialogFragment.show(this, 1)
-                    }
+//                     -> {
+//                        val height = mBinding.liveChatRecycler.height
+//                        BetShareDialogFragment.show(this, 1,height)
+//                    }
 
                     ChatMsgType.AT -> {
 //                        ChatPrivateUserFragment.show(this)
@@ -201,13 +203,17 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
             this
         ) { key, bundle ->
             val result = bundle.getInt(ChatPersonalDialogFragment.CHAT_PERSONAL_RESULT, -1)
+            "sendReuslt $result".logd("aaa")
             if (result != -1) {
                 //处理结果 0 title 1 @ta 2 复制评论 3 举报评论
                 if (result == 1) {
                     selectBean?.let {
                         homeViewModel.addAtMsgToChat(ChatRefUser(it.uid, it.userName, it.avatarId,it.replaceUserName))
                     }
+                } else if (result == 2) {
+                sendOther()
                 }
+
             }
             val result1 = bundle.getParcelable<ChatRefUser>(ChatPrivateUserFragment.CHAT_USER_RESULT)
             "result1=$result1    $result".logd(TAG)
@@ -222,6 +228,29 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
         val adapter = mBinding.liveChatRecycler.adapter?.let { it as ChatPageAdapter }
         adapter?.submitList(emptyList())
         "clearChatList".logd(TAG)
+    }
+
+    val arraUsers = arrayOf(
+        ChatRefUser("6660042", "qatest2", 1),
+        ChatRefUser("6660043", "qatest3", 1),
+        ChatRefUser("6660044", "qatest4", 1),
+        ChatRefUser("6660045", "qatest5", 1),
+        ChatRefUser("6660046", "qatest6", 1)
+    )
+
+    fun sendOther() {
+        val user = arraUsers[(0..4).random()]
+        homeViewModel.sendMsgToChat(
+            homeViewModel.addOtherLocalMsg(
+                "测试数据",
+                ChatType.LOBBY,
+                MsgType.MSG_TYPE_TEXT,
+                user.uid,
+                user.userName,
+                user.avatarId
+            )
+        )
+
     }
 
     companion object {

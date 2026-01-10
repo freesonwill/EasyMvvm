@@ -192,7 +192,6 @@ class MatchListPagerFragmentV2 :
         } catch (e:Throwable){
             e.printStackTrace()
             "firstVisible:$firstVisible,lastVisible:$lastVisible,listCount:${matchAdapter.currentList.count()},itemCount:${matchAdapter.itemCount},currentList:${matchAdapter.currentList}".loge(TAG)
-            throw e
         }
     }
 

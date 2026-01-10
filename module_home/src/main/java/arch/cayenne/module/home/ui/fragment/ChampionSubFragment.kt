@@ -22,7 +22,7 @@ import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
-import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
+import com.walisport.module.business.common.ui.adapter.BannerImageMatchAdapter
 import arch.cayenne.lib.common.ui.view.CustomTabLayoutMediator
 import arch.cayenne.lib.common.ui.view.WLLinearGradientFontSpan
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -54,6 +54,8 @@ import arch.cayenne.module.home.ui.viewmodel.ChampionSubViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
 import com.bumptech.glide.Glide
+import com.walisport.module.business.common.utils.ext.setGlobalIndicator
+import com.walisport.module.business.common.utils.ext.setGlobalBasicConfig
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -111,7 +113,7 @@ class ChampionSubFragment : BaseFragment<ChampionSubViewModel, FragmentSubHomeBi
 
     override fun initView(savedInstanceState: Bundle?) {
         initSportLayout()
-        initSportBanner()
+        launch { initSportBanner() }
         initChampionTournamentLayout()
         // 初始化聯賽按鈕狀態
         updateTournamentButtonStyle(mViewModel.hasTournamentSelections())
@@ -292,43 +294,17 @@ class ChampionSubFragment : BaseFragment<ChampionSubViewModel, FragmentSubHomeBi
     }
 
     // init Sport Banner 輪播區塊
-    @SuppressLint("ClickableViewAccessibility")
-    private fun initSportBanner() {
-        val mockBannerList = arrayListOf(
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-        )
+    private suspend fun initSportBanner() {
+        val mockBannerList = mViewModel.getBannerList()
 
         with(mBinding.includeSportBanner) {
-            pbSportBanner.setTriggerListener {
-                vpSportBanner.setLoopTime(50)
-                vpSportBanner.isAutoLoop(true)
-                vpSportBanner.start()
-                vpSportBanner.postDelayed({
-                    vpSportBanner.stop()                    // 停止自动轮播
-                    vpSportBanner.isAutoLoop(false)         // 关闭自动轮播功能 // 可选：允许下次再次触发
-                }, 50)
-            }
             val adapter = BannerImageMatchAdapter(mockBannerList)
             vpSportBanner.setAdapter(adapter)
-            vpSportBanner.setBannerRound(9.dp2px.toFloat())
-            vpSportBanner.isAutoLoop(false)
-            // 设置滑动时长丝滑,不影响曲线,
-            vpSportBanner.setScrollTime(600)  // 0.6 秒
             vpSportBanner.setPageTransformer(CustomCurveTransformer())
+            vpSportBanner.setGlobalBasicConfig()
+            vpSportBanner.setGlobalIndicator()
+            vpSportBanner.start()
         }
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        if (hidden) {
-            mBinding.includeSportBanner.pbSportBanner.stopTriggerJob()
-        } else {
-            mBinding.includeSportBanner.pbSportBanner.resetTriggerJob()
-        }
-        super.onHiddenChanged(hidden)
     }
 
     // 更新 VIP 信息顯示

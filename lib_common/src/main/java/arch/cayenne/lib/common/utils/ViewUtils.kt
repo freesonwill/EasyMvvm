@@ -8,6 +8,7 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Rect
 import android.os.Build
+import android.view.ContextThemeWrapper
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
@@ -22,6 +23,7 @@ import androidx.core.animation.addListener
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.core.view.drawToBitmap
+import arch.cayenne.lib.base.utils.ext.getActivity
 
 object ViewUtils {
     private const val TAG = "ViewUtils"
@@ -40,8 +42,9 @@ object ViewUtils {
     }
 
     fun getStatusBarHeight(context: Context): Int {
+        val ctx = context.getActivity() //context可能不是Activity，要找到Activity, 否则获取到的高度会不正确
         val rect = Rect()
-        val window = (context as? Activity)?.window
+        val window = ctx?.window
         window?.decorView?.getWindowVisibleDisplayFrame(rect)
         return rect.top
     }

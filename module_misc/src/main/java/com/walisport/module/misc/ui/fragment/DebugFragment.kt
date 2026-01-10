@@ -12,12 +12,17 @@ import arch.cayenne.lib.base.utils.log.Utils
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.databinding.TitleBarSimpleBinding
+import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2dp
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.module.bet.ui.fragment.ComboDetailFragment
+import com.blankj.utilcode.util.GsonUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.gyf.immersionbar.ImmersionBar
 import com.walisport.module.misc.BuildConfig
@@ -128,6 +133,22 @@ class DebugFragment : BaseFragment<DebugViewModel, FragmentDebugBinding>() {
                         Utils.shareLogFile(requireContext())
                     }
             }
+
+            comboDetail.clickNoRepeat {
+                ComboDetailFragment.newInstance(
+                    GsonUtils.fromJson(
+                        ResourceExt.getAssets("mock_combo_detail_20@19@1.json"),
+                        //ResourceExt.getAssets("mock_combo_detail_4@15.json"),
+                        //ResourceExt.getAssets("mock_combo_detail_3@1.json"),
+                        ComboDetailFragment.Parameter::class.java
+                    )
+                ).show(parentFragmentManager, "ComboDetailFragment")
+            }
+
+            jumpToSmsVerfiy.clickNoRepeat {
+                navigate(arch.cayenne.lib.res.R.string.nav_module_sms_verify_fragment.deeplink("phoneNumber" to "13800138000", "countryCode" to  "+86"))
+            }
+
         }
     }
 

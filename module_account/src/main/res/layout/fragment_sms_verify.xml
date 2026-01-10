@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.common.ui.view.InterceptedLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_1E1E1E"
+    android:orientation="vertical"
+    app:interceptedDirection="RIGHT">
+
+    <arch.cayenne.lib.common.ui.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tv_sms_verify_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_12"
+        android:textColor="@color/white"
+        android:textFontWeight="500"
+        android:textSize="@dimen/sp_30" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_8"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sms_code_sent_to"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_13" />
+
+        <TextView
+            android:id="@+id/tv_phone_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_7"
+            android:fontFamily="@font/sf_pro"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_13" />
+    </LinearLayout>
+
+
+    <com.maning.pswedittextlibrary.MNPasswordEditText
+        android:id="@+id/et_sms_code"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_44"
+        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_32"
+        android:focusableInTouchMode="true"
+        android:fontFamily="@font/sf_pro"
+        android:inputType="number"
+        android:maxLength="6"
+        android:textFontWeight="500"
+        android:textSize="20sp"
+        app:psw_background_color="@color/color_272727"
+        app:psw_border_color="@color/color_272727"
+        app:psw_border_radius="@dimen/dp_5"
+        app:psw_border_selected_color="@color/color_272727"
+        app:psw_cursor_color="@color/color_FE3666"
+        app:psw_cursor_height="@dimen/dp_22"
+        app:psw_cursor_width="@dimen/dp_2"
+        app:psw_mode="OriginalText"
+        app:psw_show_cursor="true"
+        app:psw_style="StyleOneself"
+        app:psw_text_color="@color/white" />
+
+
+</arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>

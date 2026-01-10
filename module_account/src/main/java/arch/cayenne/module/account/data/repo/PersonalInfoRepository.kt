@@ -94,7 +94,7 @@ class PersonalInfoRepository(
     }
 
     //更新用户头像
-    fun updateAvatar(avatarUrl: String, type: String, avatarId: String) {
+    fun updateAvatar(avatarUrl: String, type: String, avatarId: Int) {
         scope.launch(Dispatchers.IO) {
             val api = httpClient.create(IAccount::class.java)
             httpClient.safeRequest(
@@ -103,9 +103,23 @@ class PersonalInfoRepository(
                 },
                 onSuccess = { resp ->
                     LogUtils.d("updateAvatar", "Response: $resp")
-                    if (resp.code == 0) _uploadAvatarResult.postValue(avatarUrl)
                     scope.launch {
-                        database.userDataDao().updateAvatarUrl(BASE_URL + avatarUrl)
+                        if (resp.code == 0) {
+                            if (type == "1") {
+                                //自定义头像
+                                _uploadAvatarResult.postValue(avatarUrl)
+                                database.userDataDao().updateAvatarUrl(BASE_URL + avatarUrl, 1)
+                            } else if (type == "0") {
+                                //系统头像
+                                val systemAvatarBean =
+                                    database.systemAvatarDao().querySystemAvatar()
+                                        .find { it.id == avatarId }
+                                systemAvatarBean?.let {
+                                    _uploadAvatarResult.postValue(it.url)
+                                    database.userDataDao().updateAvatarUrl(it.url, 0)
+                                }
+                            }
+                        }
                     }
                 },
                 onFailure = { code, msg, _ ->
@@ -172,7 +186,8 @@ class PersonalInfoRepository(
                 nickname = profileInfo.nickname,
                 avatar = AvatarEmbedded(
                     url = profileInfo.avatar.url,
-                    thumbhash = profileInfo.avatar.thumbhash
+                    thumbhash = profileInfo.avatar.thumbhash,
+                    type = profileInfo.avatar.type
                 ),
                 Uid = 100L,
                 registerTime = profileInfo.registerTime,

@@ -21,6 +21,7 @@ import arch.cayenne.module.home.data.constants.playTypeToShowType
 import arch.cayenne.module.home.data.repo.HomeRepository
 import arch.cayenne.module.home.utils.DateUtils
 import arch.cayenne.module.home.utils.DateUtils.isSameDay
+import com.walisport.module.business.common.ui.viewmodel.BaseBannerViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filter
@@ -33,7 +34,7 @@ import plugin.koin.KoinViewModel
 import java.util.Locale
 
 @KoinViewModel
-class SuperCompetitionViewModel : BaseViewModel() {
+class SuperCompetitionViewModel : BaseBannerViewModel() {
 
     val repository: HomeRepository by inject()
 
@@ -215,6 +216,8 @@ class SuperCompetitionViewModel : BaseViewModel() {
 
         return ""
     }
+
+
 
 }
 

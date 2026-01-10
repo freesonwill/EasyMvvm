@@ -16,6 +16,8 @@ class SystemAvatarViewModel :  BaseViewModel() {
 
     private val repository: PersonalInfoRepository by inject()
 
+    fun observeUserInfo() = repository.observeUserInfo()
+
     private val _systemAvatarList = MutableLiveData<List<SystemAvatarBean>>()
     val systemAvatarList: LiveData<List<SystemAvatarBean>> = _systemAvatarList
     override fun initViewModel() {
@@ -36,15 +38,21 @@ class SystemAvatarViewModel :  BaseViewModel() {
     val uploadResult: LiveData<String> = _uploadResult
 
     // 上传头像
-    fun uploadAvatar(filePath: String) {
-        repository.uploadAvatar(
-            "100",
-            "MTAwXzE3NjU0Mzc1NTk1MDk6ZFBoc3dpelQwazRTaUJnbg",
-            filePath
-        )
-        repository.uploadResult.observeForever { result ->
-            repository.updateAvatar(avatarUrl = result, type = "1", avatarId = "")
-        }
+//    fun uploadAvatar(filePath: String) {
+//        repository.uploadAvatar(
+//            "100",
+//            "MTAwXzE3NjU0Mzc1NTk1MDk6ZFBoc3dpelQwazRTaUJnbg",
+//            filePath
+//        )
+//        repository.uploadResult.observeForever { result ->
+//            repository.updateAvatar(avatarUrl = result, type = "1", avatarId = "")
+//        }
+//    }
+
+
+
+    fun uploadAvatarUrl(id:Int){
+        repository.updateAvatar(avatarUrl = "", type = "0", avatarId = id)
     }
 
 

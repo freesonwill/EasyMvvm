@@ -15,6 +15,7 @@ import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
+import arch.cayenne.lib.common.utils.EditTextUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.database.dao.ChatConfigDao
@@ -24,7 +25,6 @@ import arch.cayenne.module.chat.data.constants.CheckBetResultEnum
 import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.module.chat.data.constants.KeyboardActionType
 import arch.cayenne.module.chat.manager.interf.SoftKeyBoardMangerListener
-import arch.cayenne.module.chat.utils.EditTextUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -415,7 +415,7 @@ class SoftKeyboardManager(
         scope.launch {
             etInput?.let {
                 it.requestFocus()
-                it.setSelection(it.length())
+//                it.setSelection(it.length())
             }
         }
     }

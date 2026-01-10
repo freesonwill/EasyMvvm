@@ -17,6 +17,7 @@ import arch.cayenne.module.chat.data.constants.CheckBetResultEnum
 import arch.cayenne.module.chat.data.constants.EmojiEnum
 import arch.cayenne.module.chat.data.constants.KeyBoardType
 import arch.cayenne.lib.common.data.constants.ChatMsgType
+import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.websocket.chat.data.ChatRefUser
 import arch.cayenne.lib.websocket.chat.data.ChatType
 import arch.cayenne.lib.websocket.chat.data.MsgType
@@ -340,5 +341,33 @@ class ChatHomeViewModel() : BaseViewModel() {
         }
     }
 
+    fun addOtherLocalMsg(
+        content: String,
+        chatType: ChatType,
+        msgType: MsgType,
+        uid:String,
+        userName:String,
+        avatarId:Int,
+    ): ChatMsgPageBean {
+
+        val id = System.currentTimeMillis().toString()
+        val msg = ChatMsg(
+            uid = uid,
+            userName = userName,
+            avatarId = avatarId,
+            content = content,
+            msgId = id,
+            timestamp = id,
+            refUids = null,
+            refInfos = null,
+            onlyForSelf = 0,
+            replaceUserName = "",
+            msgType = msgType,
+            extraData = null,
+            chatType = chatType,
+        )
+//        "addLocalMsg msg=${Gson().toJson(msg)}".logd(TAG)
+        return ChatMsgPageBean.toChatPageBean(msg,myUid)
+    }
 
 }

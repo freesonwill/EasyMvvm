@@ -1,5 +1,6 @@
 package arch.cayenne.lib.common.ui.viewholder
 
+import android.text.TextUtils
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
@@ -22,31 +23,28 @@ class CurrencyContentViewHolder(
             }
             clRoot.isSelected = item.isSelected
             tvCurrencyName.text = item.currencyName
-            tvCurrencyAmount.text = "${item.unit}${item.amountStr}"
+            tvCurrencyExchange.text = item.exchangeAmount
             Glide.with(root.context)
                 .load(item.icon)
                 .placeholder(R.drawable.ic_wali_demo)
                 .error(R.drawable.ic_wali_demo)
                 .into(ivIcon)
-            var topMargin = 0
-            if (item.exchangeAmount == "") {
+            if (TextUtils.isEmpty(item.exchangeAmount)) {
+                tvCurrencyAmount.text = "${item.unit}${item.amountStr}"
                 tvCurrencyExchange.visibility = View.GONE
-                topMargin = 5
-                tvCurrencyAmount.setPadding(0,0,0, 0)
+                tvCurrencyAmount.setPadding(0, -5, 0, 0)
             } else {
+                tvCurrencyAmount.text = "${item.amountStr}"
                 tvCurrencyExchange.visibility = View.VISIBLE
-                tvCurrencyExchange.text = item.exchangeAmount
-                topMargin = 0
-                tvCurrencyAmount.setPadding(0,0,0, 5)
+                if (item.ccy != "USDT") {
+                    tvCurrencyAmount.setPadding(0, -5, 0, 0)
+                } else {
+                    tvCurrencyAmount.setPadding(0, 0, 0, 0)
+                }
             }
-            val params = tvCurrencyAmount.layoutParams as ConstraintLayout.LayoutParams
-            params.topMargin = topMargin
-            tvCurrencyAmount.layoutParams = params
-
             mBinding.root.clickNoRepeat {
                 listener?.invoke(item)
             }
-
         }
     }
 }
