@@ -54,45 +54,6 @@
     </fragment>
 
 
-    <fragment
-        android:id="@+id/loginOrRegisterFragment"
-        android:name="arch.cayenne.module.account.ui.fragment.LoginOrRegisterFragment"
-        android:label="loginOrRegisterFragment">
-        <deepLink app:uri="@string/nav_module_login_or_register_fragment" />
-    </fragment>
 
 
-    <fragment
-        android:id="@+id/smsVerifyFragment"
-        android:name="arch.cayenne.module.account.ui.fragment.SmsVerifyFragment"
-        android:label="smsVerifyFragment">
-        <argument
-            android:name="countryCode"
-            app:argType="string"
-            app:nullable="false" />
-        <argument
-            android:name="phoneNumber"
-            app:argType="string"
-            app:nullable="false" />
-        <deepLink app:uri="@string/nav_module_sms_verify_fragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="arch.cayenne.module.account.ui.fragment.LoginFragment"
-        android:label="loginFragment">
-
-        <action
-            android:id="@+id/action_to_loginOrRegisterFragment"
-            app:destination="@id/loginOrRegisterFragment" />
-
-        <deepLink app:uri="@string/nav_module_login_fragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/nickNameInitialFragment"
-        android:name="arch.cayenne.module.account.ui.fragment.NickNameInitialFragment"
-        android:label="nickNameInitialFragment">
-        <deepLink app:uri="@string/nav_module_nickname_initial_fragment" />
-    </fragment>
 </navigation>

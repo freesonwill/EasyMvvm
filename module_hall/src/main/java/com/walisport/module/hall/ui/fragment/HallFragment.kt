@@ -1,5 +1,6 @@
 package com.walisport.module.hall.ui.fragment
 
+import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -92,13 +93,19 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
             balanceView.setBalanceViewModel(balanceViewModel, viewLifecycleOwner)
             initCurveBanner()
             btnLogin.clickNoRepeat {
-                navigate(
-                    arch.cayenne.lib.res.R.string.nav_module_login_fragment.deeplink(),
-                    enterAnim = AnimationController[AnimType.routeEnterBT],
-                    exitAnim = AnimationController[AnimType.routeExitTB],
-                    popEnterAnim = AnimationController[AnimType.routeExitTB],
-                    popExitAnim = AnimationController[AnimType.routeExitBT]
-                )
+//                navigate(
+//                    arch.cayenne.lib.res.R.string.nav_module_login_fragment.deeplink(),
+//                    enterAnim = AnimationController[AnimType.routeEnterBT],
+//                    exitAnim = AnimationController[AnimType.routeExitTB],
+//                    popEnterAnim = AnimationController[AnimType.routeExitTB],
+//                    popExitAnim = AnimationController[AnimType.routeExitBT]
+//                )
+
+                //到LoginActivity
+                val intent = Intent()
+                intent.action = arch.cayenne.lib.res.R.string.nav_module_login_activity.deeplink()
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                requireActivity().navigate(intent)
             }
         }
         initPopupSlot()
