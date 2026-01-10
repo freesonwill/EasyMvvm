@@ -126,11 +126,10 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
 
 
     override fun initData() {
-        launch {
-            mViewModel.checkIsLogin()
-            mViewModel.queryGameCommon()
-            mViewModel.getBannerActive()
-        }
+        mViewModel.checkIsLogin()
+        mViewModel.queryGameCommon()
+
+        launch { mViewModel.getBannerActive() }
     }
 
     override fun onDestroyView() {
@@ -376,12 +375,15 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
             adapter.setDatas(images)
             mBinding.ivRightLogo.isVisible = adapter.itemCount != 0
         }
-        mViewModel.observerUserToken().collect { userToken ->
-            val isLogin = userToken.isNotEmpty()
-            mBinding.btnLogin.isVisible = !isLogin
-            mBinding.balanceView.isVisible = isLogin
 
+        launch {
+            mViewModel.observerUserToken().collect { userToken ->
+                val isLogin = userToken.isNotEmpty()
+                mBinding.btnLogin.isVisible = !isLogin
+                mBinding.balanceView.isVisible = isLogin
+            }
         }
+
         mViewModel.gameCategory.observe(viewLifecycleOwner) { categoryList ->
             LogUtils.e("HallFragment--->gameCategory--->$categoryList")
             //分类列表数据更新后处理
