@@ -55,6 +55,7 @@ import arch.cayenne.module.home.ui.view.PromoTab
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import com.google.android.material.tabs.TabLayout
 import com.walisport.module.business.common.ui.viewmodel.BalanceViewModel
+import com.walisport.module.business.common.utils.ext.setGlobalBasicConfig
 import com.walisport.module.popup.slot.ui.fragment.PopupSlotFragment
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -120,10 +121,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel , FragmentNewHomeBinding>() {
         // 自定义适配器
         val adapter = BannerImageAdapter(images)
         mBinding.banner.setAdapter(adapter)
-        mBinding.banner.setLoopTime(5000)
-        // 设置滑动时长丝滑,不影响曲线,
-        mBinding.banner.setScrollTime(500)
-        mBinding.banner.setPageTransformer(CustomCurveTransformer())
+        mBinding.banner.setGlobalBasicConfig()
         // 启动轮播
         mBinding.banner.start()
     }

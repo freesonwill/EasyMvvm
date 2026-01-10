@@ -2,6 +2,7 @@ package arch.cayenne.module.home.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import androidx.room.Transaction
 import arch.cayenne.lib.base.data.constants.DataState
@@ -69,8 +70,13 @@ class HomeViewModel : BaseBannerViewModel() {
 
     val playTypeClickRecord = hashMapOf<Int, Long>()  //HashMap<PlayTypeId, RecordTime>
 
-    private val _curveBannerLiveData = MutableLiveData<List<BannerActiveBean>>(emptyList())
-    val curveBannerLiveData:LiveData<List<BannerActiveBean>> = _curveBannerLiveData
+    private val _bannerActiveLiveData = MutableLiveData<List<BannerActiveBean>>(emptyList())
+    val curveBannerLiveData: LiveData<List<BannerActiveBean>> = _bannerActiveLiveData.map {
+        it.filter { banner -> banner.activityType == BannerActiveBean.ACTIVITY_TYPE_HOME_FIXED }
+    }
+    val inviteFriendBannerLiveData: LiveData<List<BannerActiveBean>> = _bannerActiveLiveData.map {
+        it.filter { banner -> banner.activityType == BannerActiveBean.ACTIVITY_TYPE_INVITE_FRIEND }
+    }
 
     init {
         viewModelScope.launch {
@@ -165,7 +171,7 @@ class HomeViewModel : BaseBannerViewModel() {
     suspend fun getBannerActive() {
         val result = BannerBiz.getBannerActive()
         if(result is Result.Success){
-            _curveBannerLiveData.value = result.data.data
+            _bannerActiveLiveData.value = result.data.data
         } else {
             "getBannerActive failed: $result".loge(TAG)
         }
