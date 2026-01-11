@@ -80,7 +80,7 @@ class ChatReportFragment :
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
             )
-            dialog.window?.attributes?.height = 432.dp2px
+            dialog.window?.attributes?.height = 398.dp2px
 //
 //            // 设置透明背景
 //            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -107,9 +107,9 @@ class ChatReportFragment :
             val nAdapter = ChatPersonalAdapter()
             nAdapter.setRecyclerItemListener(object : RecyclerItemListener<ChatPersonalData> {
                 override fun onItemClick(item: ChatPersonalData?, position: Int) {
-                    report(position)
-//                    showToast(R.string.chat_report_success.getString())
-//                    dismiss()
+//                    report(position)
+                    showToast(R.string.chat_report_success.getString())
+                    dismiss()
                 }
             })
             val list = arrayListOf(
