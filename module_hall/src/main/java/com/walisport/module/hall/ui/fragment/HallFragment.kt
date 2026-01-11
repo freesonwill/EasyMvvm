@@ -377,6 +377,10 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
             mViewModel.observeUserToken().collect {
                 mBinding.btnLogin.isVisible = !it
                 mBinding.balanceView.isVisible = it
+                //登录成功后需要请求下个人信息
+                if (it) {
+                    mViewModel.getAccountInfo()
+                }
             }
         }
 
