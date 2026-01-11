@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.InfoBean
+import arch.cayenne.lib.database.entity.UserDataBean
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.data.repo.DrawerContentRepository
 import com.walisport.module.business.common.data.repo.BalanceRepository
@@ -31,6 +32,9 @@ class DrawerContentViewModel: BaseViewModel() {
     val notificationBean: LiveData<Event<List<NotificationBean>>> = _notificationBean
     private val balanceRepository: BalanceRepository by inject()
     val currentBalanceChange by lazy { MutableLiveData<InfoBean?>() }
+
+    private var _onUserInfoListener = MutableLiveData<UserDataBean>()
+    val onUserInfoListener: LiveData<UserDataBean> get() = _onUserInfoListener
 
     override fun initViewModel() {
         super.initViewModel()
@@ -63,6 +67,12 @@ class DrawerContentViewModel: BaseViewModel() {
                 }
             }
         }
+
+        viewModelScope.launch {
+            repository.observeUserInfo().collect {
+                _onUserInfoListener.value = it
+            }
+        }
     }
     fun getDefaultResId(): Int {
         return repository.getDefaultResId()
@@ -80,4 +90,6 @@ class DrawerContentViewModel: BaseViewModel() {
             }
         }
     }
+
+    fun checkIsLogin() = repository.checkIsLogin()
 }

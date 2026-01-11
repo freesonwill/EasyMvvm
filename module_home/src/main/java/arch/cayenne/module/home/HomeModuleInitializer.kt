@@ -83,7 +83,7 @@ class HomeModuleInitializer: DefaultInitializer<Unit> {
                 get()
             )
         }
-        factory { DrawerContentRepository(get(), get(), get()) }
+        factory { DrawerContentRepository(get(), get(), get(), get()) }
     }
     private val moduleList: List<Module> = listOf(viewModules, daoModule, repoModules)
 }

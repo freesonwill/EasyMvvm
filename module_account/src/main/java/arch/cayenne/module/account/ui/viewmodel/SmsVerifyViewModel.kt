@@ -82,7 +82,7 @@ class SmsVerifyViewModel : BaseViewModel() {
                             if (loginResponseVo != null) {
                                 if (loginResponseVo.status == 0) {
                                     // 成功
-                                    if (loginResponseVo.isReg) {
+                                    if (loginResponseVo.reg) {
                                         manager.setKeyValue(
                                             UserDataKey.KEY_UID,
                                             loginResponseVo.uid

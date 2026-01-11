@@ -80,4 +80,5 @@
     <string name="vip_level_need">还需%s投注额</string>
     <string name="vip_level_format">VIP %d</string>
     <string name="notification_text">notification</string>
+    <string name="drawer_nickname_title">设置头像昵称</string>
 </resources>

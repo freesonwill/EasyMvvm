@@ -38,4 +38,5 @@
     <string name="custom_tab_new">New</string>
     <string name="custom_tab_hot_reward">Hot Reward</string>
     <string name="custom_tab_cold_reward">Cold Reward</string>
+    <string name="drawer_nickname_title">Change picture, name</string>
 </resources>

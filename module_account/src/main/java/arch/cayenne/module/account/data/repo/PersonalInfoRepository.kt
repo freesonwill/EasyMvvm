@@ -237,7 +237,7 @@ class PersonalInfoRepository(
                     thumbhash = profileInfo.avatar.thumbhash,
                     type = profileInfo.avatar.type
                 ),
-                Uid = 100L,
+                Uid = userDataManager.getValue(UserDataKey.KEY_UID, -1),
                 registerTime = profileInfo.registerTime,
                 vipLevel = profileInfo.vipLevel,
                 score = profileInfo.score,

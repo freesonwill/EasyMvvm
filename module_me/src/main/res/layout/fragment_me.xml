@@ -68,6 +68,7 @@
                             android:layout_marginStart="@dimen/dp_12"
                             android:layout_marginTop="@dimen/dp_4"
                             android:textColor="@color/white"
+                            android:text="@string/drawer_nickname_title"
                             android:textSize="@dimen/sp_16"
                             app:layout_constraintStart_toEndOf="@id/iv_avatar"
                             app:layout_constraintTop_toTopOf="parent"
