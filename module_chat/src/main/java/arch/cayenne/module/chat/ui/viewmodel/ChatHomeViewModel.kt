@@ -111,7 +111,7 @@ class ChatHomeViewModel() : BaseViewModel() {
 
     fun setArguments(matchId: Long?, chatType: ChatType) {
         this.chatType = chatType
-        //直播间重新从联赛进入时，刷新matchId 重新进入聊天室
+        //直播间重新从联赛进入时，刷新matchId r重新进入聊天室
         if (this.matchId != null && this.matchId != matchId) {
             this.matchId = matchId
             chatServer.enterRoom(matchId!!, chatType)

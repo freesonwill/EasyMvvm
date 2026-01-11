@@ -96,7 +96,7 @@ class ChatPageAdapter(
                             }
                             if (spans.isNotEmpty()) {
                                 spans.first().also {
-                                    specialClick.invoke(getItem(position), it.tv.replace("\u2060",""), it.msgType)
+                                    specialClick.invoke(getItem(position), it.tv.replace("\u2060",""), it.user,it.msgType)
                                 }
                                 return true
                             } else {

@@ -108,6 +108,8 @@ class ChatReportFragment :
             nAdapter.setRecyclerItemListener(object : RecyclerItemListener<ChatPersonalData> {
                 override fun onItemClick(item: ChatPersonalData?, position: Int) {
                     report(position)
+//                    showToast(R.string.chat_report_success.getString())
+//                    dismiss()
                 }
             })
             val list = arrayListOf(

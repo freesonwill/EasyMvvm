@@ -187,7 +187,7 @@ class RemoteChatManager(
         ) {
             ReportUserRequest(uid,chatType.value,type)
         }
-      "reportOther uid:$uid   result ${Gson().toJson(resp)}".logd(TAG)
+      "reportOther uid:$uid chatType $chatType type $type  result ${Gson().toJson(resp)}".logd(TAG)
         if(resp.error == null && resp.data != null){
             return resp.data//do nothing
         }

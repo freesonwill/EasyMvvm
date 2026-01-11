@@ -23,11 +23,13 @@ class ChatPrivateUserFragment :
         get() = ChatUserInfoViewModel::class
     var user: ChatRefUser? = null
     var chatTYpe: ChatType = ChatType.LOBBY
+    var clickType = 0 //0: report 1:at
 
     companion object {
         val TAG = ChatPrivateUserFragment::class.java.simpleName
 
         val CHAT_USER_RESULT = "chat_user_result"
+        val CHAT_USER_TYPE = "chat_user_type"
 
         fun create(fragment: Fragment) {
             val manager = fragment.childFragmentManager
@@ -43,7 +45,6 @@ class ChatPrivateUserFragment :
             f?.setUserArguments(user,chatType)
             f?.customShow()
         }
-
     }
 
 
@@ -59,10 +60,12 @@ class ChatPrivateUserFragment :
 
     override fun initListener() {
         mBinding.tvReport.setOnClickListener {
+            clickType = 0
+            setParamToParentFragment()
             dismiss()
-            ChatReportFragment.show(this@ChatPrivateUserFragment,user,chatTYpe)
         }
         mBinding.tvAt.setOnClickListener {
+            clickType = 1
             setParamToParentFragment()
             dismiss()
         }
@@ -71,6 +74,7 @@ class ChatPrivateUserFragment :
     private fun setParamToParentFragment() {
         val bundle = Bundle().apply {
             putParcelable(CHAT_USER_RESULT, user)
+            putInt(CHAT_USER_TYPE,clickType)
         }
         parentFragmentManager.setFragmentResult(
             ChatPersonalDialogFragment.CHAT_PERSONAL_REQUEST,

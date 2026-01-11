@@ -36,6 +36,8 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.websocket.chat.data.ChatRefUser
 import arch.cayenne.lib.websocket.chat.data.ChatType
+import arch.cayenne.module.chat.ui.fragment.ChatPrivateUserFragment.Companion.CHAT_USER_RESULT
+import arch.cayenne.module.chat.ui.fragment.ChatPrivateUserFragment.Companion.CHAT_USER_TYPE
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 //上滚-弹窗-头像-名字-列表
@@ -60,9 +62,14 @@ class ChatUserInfoFragment :
         get() = ChatUserInfoViewModel::class
     var user:ChatRefUser? = null
     var chatTYpe:ChatType = ChatType.LOBBY
+    var clickType = 0 //0: report 1:at
 
     override fun initView(savedInstanceState: Bundle?) {
         loadFragment()
+        mBinding.apply {
+            topName.text = user?.userName ?: ""
+            middleName.text = user?.userName ?: ""
+        }
     }
 
     fun setUserArguments(chatRefUser: ChatRefUser,chatType: ChatType) {
@@ -82,12 +89,15 @@ class ChatUserInfoFragment :
 
         mBinding.apply {
             tvAt.setOnClickListener{
+                clickType = 1
                 setFragmentResultListener()
                 dismiss()
             }
             tvReport.setOnClickListener {
+                clickType = 0
+
+                setFragmentResultListener()
                 dismiss()
-                ChatReportFragment.show(this@ChatUserInfoFragment,user,chatTYpe)
             }
         }
 
@@ -297,9 +307,10 @@ class ChatUserInfoFragment :
     }
 
     private fun setFragmentResultListener(){
-        "user == nul ${user}".logd("aaa")
         val bundle = Bundle().apply {
-            putParcelable(ChatPrivateUserFragment.CHAT_USER_RESULT,user)
+            putParcelable(CHAT_USER_RESULT,user)
+            putInt(CHAT_USER_TYPE,clickType)
+
         }
         parentFragmentManager.setFragmentResult( ChatPersonalDialogFragment.CHAT_PERSONAL_REQUEST,bundle)
     }

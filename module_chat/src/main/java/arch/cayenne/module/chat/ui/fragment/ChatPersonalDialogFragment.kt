@@ -41,10 +41,10 @@ class ChatPersonalDialogFragment :
             }
         }
 
-        fun show(fragment: Fragment, bean: ChatMsgPageBean,chatType: ChatType) {
+        fun show(fragment: Fragment, bean: ChatMsgPageBean, chatType: ChatType) {
             val f =
                 fragment.childFragmentManager.findFragmentByTag(TAG) as? ChatPersonalDialogFragment
-            f?.setChatArguments(bean,chatType)
+            f?.setChatArguments(bean, chatType)
             f?.customShow()
         }
 
@@ -87,21 +87,11 @@ class ChatPersonalDialogFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.root.minHeight = 320.dp2px
-        ChatReportFragment.create(this)
         val nAdapter = ChatPersonalAdapter()
         nAdapter.setRecyclerItemListener(object : RecyclerItemListener<ChatPersonalData> {
             override fun onItemClick(item: ChatPersonalData?, position: Int) {
                 setFragmentResult(position)
-                if (position == 3) {
-                    ChatReportFragment.show(
-                        this@ChatPersonalDialogFragment,
-                        msgBean?.toChatRefUsers(),
-                        chatTYpe
-                    )
-                    dismiss()
-                } else {
-                    dismiss()
-                }
+                dismiss()
             }
         })
         val list = arrayListOf(
@@ -121,6 +111,7 @@ class ChatPersonalDialogFragment :
     private fun setFragmentResult(data: Int) {
         val bundle = Bundle().apply {
             putInt(CHAT_PERSONAL_RESULT, data)
+
         }
         parentFragmentManager.setFragmentResult(CHAT_PERSONAL_REQUEST, bundle)
     }

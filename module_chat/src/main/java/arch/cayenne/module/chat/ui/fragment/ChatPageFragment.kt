@@ -41,6 +41,7 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
         ChatPersonalDialogFragment.create(this)
         BetShareDialogFragment.create(this)
         ChatPrivateUserFragment.create(this)
+        ChatReportFragment.create(this)
         initRecycler()
         listenFragmentResult()
     }
@@ -53,7 +54,7 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
             reverseLayout = true
         }
         val adapter = ChatPageAdapter(
-            specialClick = { bean, clickSpane, atUser,clickType ->
+            specialClick = { bean, clickSpane, atUser, clickType ->
                 "click bean.msgType=${bean.msgType},clickType=$clickType".logd(TAG)
                 if (bean.msgType == ChatMsgType.SYSTEM) {
                     return@ChatPageAdapter
@@ -61,10 +62,10 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
 
                 selectBean = bean
                 when (clickType) {
-                    ChatMsgType.BET_GAME ,ChatMsgType.BET_SPORT-> {
-                    val betType = if(clickSpane.contains("游戏注单")) 0 else 1
+                    ChatMsgType.BET_GAME, ChatMsgType.BET_SPORT -> {
+                        val betType = if (clickSpane.contains("游戏注单")) 0 else 1
                         val height = mBinding.liveChatRecycler.height
-                        BetShareDialogFragment.show(this, betType,height)
+                        BetShareDialogFragment.show(this, betType, height)
                     }
 
 //                     -> {
@@ -75,16 +76,28 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                     ChatMsgType.AT -> {
 //                        ChatPrivateUserFragment.show(this)
                         atUser?.let {
-                            ChatUserInfoFragment.show(childFragmentManager, atUser,homeViewModel.chatType)
+                            ChatUserInfoFragment.show(
+                                childFragmentManager,
+                                atUser,
+                                homeViewModel.chatType
+                            )
                         }
                     }
 
                     ChatMsgType.TEXT -> {
-                        ChatPersonalDialogFragment.show(this@ChatPageFragment,bean,homeViewModel.chatType)
+                        ChatPersonalDialogFragment.show(
+                            this@ChatPageFragment,
+                            bean,
+                            homeViewModel.chatType
+                        )
                     }
 
-                    ChatMsgType.NAME ->{
-                        ChatUserInfoFragment.show(childFragmentManager,bean.toChatRefUsers(),homeViewModel.chatType)
+                    ChatMsgType.NAME -> {
+                        ChatUserInfoFragment.show(
+                            childFragmentManager,
+                            bean.toChatRefUsers(),
+                            homeViewModel.chatType
+                        )
                     }
 
                     else -> {}
@@ -96,7 +109,14 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                 if (bean.msgType == ChatMsgType.SYSTEM) {
                     return@ChatPageAdapter
                 }
-                homeViewModel.addAtMsgToChat(ChatRefUser(bean.uid, bean.userName, bean.avatarId,bean.replaceUserName))
+                homeViewModel.addAtMsgToChat(
+                    ChatRefUser(
+                        bean.uid,
+                        bean.userName,
+                        bean.avatarId,
+                        bean.replaceUserName
+                    )
+                )
             }
         )
         mBinding.liveChatRecycler.layoutManager = layoutManger
@@ -140,11 +160,11 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
                 mBinding.liveChatRecycler.postDelayed({
                     try {
                         mBinding.liveChatRecycler.scrollToPosition(0)
-                       if(flagFlash){
-                           mBinding.liveChatRecycler.postDelayed({
-                               itemFlash()
-                           },500)
-                       }
+                        if (flagFlash) {
+                            mBinding.liveChatRecycler.postDelayed({
+                                itemFlash()
+                            }, 500)
+                        }
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -203,22 +223,60 @@ class ChatPageFragment : BaseFragment<ChatPageViewModel, FragementChatPageLayout
             this
         ) { key, bundle ->
             val result = bundle.getInt(ChatPersonalDialogFragment.CHAT_PERSONAL_RESULT, -1)
-            "sendReuslt $result".logd("aaa")
             if (result != -1) {
                 //处理结果 0 title 1 @ta 2 复制评论 3 举报评论
-                if (result == 1) {
-                    selectBean?.let {
-                        homeViewModel.addAtMsgToChat(ChatRefUser(it.uid, it.userName, it.avatarId,it.replaceUserName))
+
+                when (result) {
+                    1 -> {
+                        selectBean?.let {
+                            homeViewModel.addAtMsgToChat(
+                                ChatRefUser(
+                                    it.uid,
+                                    it.userName,
+                                    it.avatarId,
+                                    it.replaceUserName
+                                )
+                            )
+                        }
                     }
-                } else if (result == 2) {
-                sendOther()
+
+                    2 -> {
+                        sendOther()
+                    }
+
+                    3 -> {
+                        ChatReportFragment.show(
+                            this@ChatPageFragment,
+                            selectBean?.toChatRefUsers(),
+                            homeViewModel.chatType
+                        )
+                    }
+
+                    else -> {}
                 }
 
             }
-            val result1 = bundle.getParcelable<ChatRefUser>(ChatPrivateUserFragment.CHAT_USER_RESULT)
-            "result1=$result1    $result".logd(TAG)
-            if (result1 != null) {
-                homeViewModel.addAtMsgToChat(result1)
+
+            val result1 =
+                bundle.getParcelable<ChatRefUser>(ChatPrivateUserFragment.CHAT_USER_RESULT)
+            val clickType = bundle.getInt(ChatPrivateUserFragment.CHAT_USER_TYPE, -1) //用户资料卡返回
+            "clickType=$clickType,result1=$result1".logd("aaa")
+            if (clickType != -1 && result1 != null) {
+                when (clickType) {
+                    0 -> {
+                        ChatReportFragment.show(
+                            this@ChatPageFragment,
+                            result1,
+                            homeViewModel.chatType
+                        )
+                    }
+
+                    1 -> {
+                        homeViewModel.addAtMsgToChat(result1)
+                    }
+
+                    else -> {}
+                }
             }
         }
     }
