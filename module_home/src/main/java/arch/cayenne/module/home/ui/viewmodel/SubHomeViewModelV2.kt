@@ -419,9 +419,6 @@ open class SubHomeViewModelV2 : BaseBannerViewModel() {
      */
     fun clearTournamentsSelected() {
         //判断是否有变化，没有变化就不更新
-        if(_currentSelectedTournaments.value.isNullOrEmpty()){
-            return
-        }
         _currentSelectedTournaments.postValue(emptyList())
     }
 
