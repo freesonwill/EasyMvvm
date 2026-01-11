@@ -116,7 +116,7 @@ class LiveMainViewModel(
     private val _observeMainMatch = MutableLiveData<LiveMatchBean>()
     val observeMainMatch: LiveData<LiveMatchBean> = _observeMainMatch
     val currentBalanceChange by lazy { MutableLiveData<InfoBean?>() }
-    fun observeLoginChange(): Flow<Boolean> = repo.observeLoginChange()
+    fun observeLoginChange() = repo.observeLoginChange()
     private var observeMatchBeanJob: Job? = null
     //监听matchId和sportId，并设置1s的防抖
     @OptIn(FlowPreview::class)

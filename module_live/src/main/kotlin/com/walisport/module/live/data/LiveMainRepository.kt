@@ -34,11 +34,8 @@ class LiveMainRepository(
     fun observeInfo(): Flow<InfoBean?> = database.infoDao().observeInfo().flowOn(Dispatchers.IO)
     fun observeMatchBean(matchId: Long) = database.liveMatchDao().observeMatchById(matchId).flowOn(Dispatchers.IO)
 
-    fun observeLoginChange(): Flow<Boolean> {
-        return userManager.observe<String>(UserDataKey.KEY_TOKEN).transform {
-            emit(it.isNotEmpty())
-        }
-    }
+    fun observeLoginChange() = database.sportLoginInfoDao().observerLogin()
+
     // 500-1003: 获取比赛详情
     @SuppressLint("SuspiciousIndentation")
     suspend fun getMatchRes(matchId: Long):ApiResponseState = withContext(scope.coroutineContext)  {
