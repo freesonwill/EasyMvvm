@@ -45,18 +45,6 @@ class CommonRepository(
     fun getSoftConfigFlow():Flow<Boolean> = softConfigFlow
 
 
-    /**
-     * 检查用户是否已登录。
-     *
-     * 此方法通过检查用户数据管理器中存储的用户令牌（KEY_TOKEN）是否存在且非空，
-     * 来判断用户的登录状态。
-     *
-     * @return `true` 如果用户令牌存在且非空，表示用户已登录；
-     *         否则返回 `false`。
-     */
-    fun checkIsLogin(): Boolean {
-        return !userDataManager.getValue<String>(UserDataKey.KEY_TOKEN).isNullOrEmpty()
-    }
 
     suspend fun getMyCurrency(): String {
         return infoDao.getCurrency2() ?: "CNY"
