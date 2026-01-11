@@ -13,13 +13,16 @@ import com.youth.banner.indicator.CircleIndicator
  * @description: Banner 扩展
  */
 
-fun Banner<*, *>.setGlobalBasicConfig():Banner<*, *> {
+fun Banner<*, *>.setGlobalBasicConfig(
+    loopTime:Long=3000,
+    bannerRadius:Float=0f.dp2px
+):Banner<*, *> {
     val banner = this
-    banner.setBannerRound(9.dp2px.toFloat())
+    banner.setBannerRound(bannerRadius)
     banner.isAutoLoop(true)
     // 设置滑动时长丝滑,不影响曲线,
     banner.setScrollTime(600)  // 0.6 秒
-    banner.setLoopTime(5000)
+    banner.setLoopTime(loopTime)
     banner.setPageTransformer(CustomCurveTransformer())
     /*banner.setPageTransformer(CompositePageTransformer().apply {
         addTransformer(CustomCurveTransformer())

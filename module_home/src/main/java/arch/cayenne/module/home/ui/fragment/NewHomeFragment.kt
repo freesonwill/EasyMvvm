@@ -122,7 +122,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel , FragmentNewHomeBinding>() {
         // 自定义适配器
         val adapter = BannerImageAdapter(images)
         mBinding.banner.setAdapter(adapter)
-        mBinding.banner.setGlobalBasicConfig()
+        mBinding.banner.setGlobalBasicConfig(bannerRadius = 9f.dp2px)
         // 启动轮播
         mBinding.banner.start()
     }

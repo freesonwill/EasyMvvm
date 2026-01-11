@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.business.common.ui.adapter.BannerImageMatchAdapter
 import com.walisport.module.hall.R
 import com.walisport.module.hall.databinding.ItemGameAllHeaderBinding
@@ -55,7 +56,7 @@ class GameAllHeaderViewHolder(
                     // 自定义适配器
                     val adapter = BannerImageMatchAdapter(list)
                     vpBanner.setAdapter(adapter)
-                    vpBanner.setGlobalBasicConfig()
+                    vpBanner.setGlobalBasicConfig(bannerRadius = 9f.dp2px)
                     vpBanner.setGlobalIndicator()
                     vpBanner.start()
                  }
@@ -68,7 +69,7 @@ class GameAllHeaderViewHolder(
                 onItemClickListener.getInviteFriend().let {list->
                     val adapter = BannerImageMatchAdapter(list)
                     ivInviteFriend.setAdapter(adapter)
-                    ivInviteFriend.setGlobalBasicConfig()
+                    ivInviteFriend.setGlobalBasicConfig(bannerRadius = 0f)
                     ivInviteFriend.setGlobalIndicator()
                     ivInviteFriend.start()
                 }
