@@ -11,11 +11,8 @@ import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.java.KoinJavaComponent.inject
 
 class BetSheetRepository(
     override val scope: CoroutineScope,
@@ -28,7 +25,7 @@ class BetSheetRepository(
     val observerBetCount: Flow<Int> = betDao.observeCurrentCount()
 
     private var registerObserverJob: Job? = null
-    private var loginStatusObserverJob: Job? = null
+    private var tokenStatusObserverJob: Job? = null
 
     init {
         scope.launch {
@@ -100,9 +97,9 @@ class BetSheetRepository(
         }
     }
 
-    fun observeLoginStatus() {
-        loginStatusObserverJob?.cancel()
-        loginStatusObserverJob = scope.launch {
+    fun observeTokenStatus() {
+        tokenStatusObserverJob?.cancel()
+        tokenStatusObserverJob = scope.launch {
             userDataManager.observe<String>(UserDataKey.KEY_TOKEN).collect {
                 if (it.isNotEmpty()) {
                     register()
@@ -111,9 +108,9 @@ class BetSheetRepository(
         }
     }
 
-    fun stopObserveLoginStatus() {
-        loginStatusObserverJob?.cancel()
-        loginStatusObserverJob = null
+    fun stopObserveTokenStatus() {
+        tokenStatusObserverJob?.cancel()
+        tokenStatusObserverJob = null
     }
 
     suspend fun getBetType(): BetTypeEnum? = withContext(scope.coroutineContext) {

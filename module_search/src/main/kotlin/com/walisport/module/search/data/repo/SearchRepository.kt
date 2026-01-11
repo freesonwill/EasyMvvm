@@ -1,6 +1,5 @@
 package com.walisport.module.search.data.repo
 
-import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.UserDataKey
@@ -13,13 +12,6 @@ import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.walisport.module.search.data.model.RecordBean
-import com.walisport.module.search.data.model.SearchDailyMatchBean
-import com.walisport.module.search.data.model.SearchMatchBean
-import com.walisport.module.search.data.model.SearchResultBean
-import com.walisport.module.search.data.model.SearchResultPlayerBean
-import com.walisport.module.search.data.model.SearchResultTeamBean
-import com.walisport.module.search.data.model.SearchResultTournamentBean
-import com.walisport.module.search.data.constants.SearchResultTypeEnum
 import com.walisport.module.search.data.constants.SearchTypeEnum
 import com.walisport.module.search.data.transformer.SearchTransformer.toSearchResultBean
 import galaxy.client.proto.Client
@@ -27,7 +19,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transform
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
@@ -38,10 +29,15 @@ class SearchRepository(
     private val database: GameDatabase
 ) : BaseRepository() {
 
-    private val infoDao = database.infoDao()
-
-    /** * 监听登录状态变化 */
-    fun observeLoginChange(): Flow<Boolean> {
+    /**
+     * 监听用户令牌的变化。
+     *
+     * 此方法通过观察用户数据管理器中存储的用户令牌（KEY_TOKEN），
+     * 并将其转换为一个布尔值流，表示令牌是否存在且非空。
+     *
+     * @return 一个 `Flow<Boolean>`，当令牌存在且非空时发射 `true`，否则发射 `false`。
+     */
+    fun observeUserToken(): Flow<Boolean> {
         return userDataManager.observe<String>(UserDataKey.KEY_TOKEN).transform {
             emit(it.isNotEmpty())
         }

@@ -26,6 +26,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -44,6 +45,11 @@ class CommonRepository(
     fun getBetResultFlow(): Flow<List<BetResultLiteBean>> = betResultFlow
     fun getSoftConfigFlow():Flow<Boolean> = softConfigFlow
 
+    fun observeUserToken(): Flow<Boolean> {
+        return userDataManager.observe<String>(UserDataKey.KEY_TOKEN).transform { token ->
+            emit(token.isNotEmpty())
+        }
+    }
 
 
     suspend fun getMyCurrency(): String {

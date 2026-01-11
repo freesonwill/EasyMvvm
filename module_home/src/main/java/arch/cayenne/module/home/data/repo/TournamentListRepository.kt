@@ -87,7 +87,15 @@ class TournamentListRepository(
     suspend fun queryTournaments(playTypeId: Int, sportId: Int) = tournamentDao.queryTournaments(playTypeId, sportId)
     suspend fun queryChampionTournaments(sportId: Int) = tournamentDao.queryChampionTournaments(PlayType.CHAMPION.id, sportId)
 
-    suspend fun observeLoginChange(): Flow<Boolean> {
+    /**
+     * 观察用户令牌的变化。
+     *
+     * 此方法通过监听用户数据管理器中存储的用户令牌（KEY_TOKEN），
+     * 并将其转换为一个布尔值流，表示令牌是否存在且非空。
+     *
+     * @return 一个 `Flow<Boolean>`，当令牌存在且非空时发射 `true`，否则发射 `false`。
+     */
+    suspend fun observeUserToken(): Flow<Boolean> {
         return userDataManager.observe<String>(UserDataKey.KEY_TOKEN).transform {
             emit(it.isNotEmpty())
         }
