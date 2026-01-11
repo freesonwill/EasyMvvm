@@ -5,6 +5,10 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import androidx.annotation.AnimRes
 import androidx.annotation.IdRes
 import androidx.fragment.app.FragivityFragmentNavigator
 import androidx.fragment.app.Fragment
@@ -14,11 +18,17 @@ import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.ui.BaseActivity
+import arch.cayenne.lib.base.ui._interface.SimpleActivityLifecycleCallbacks
 import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.animation.IAnimationOption
 import arch.cayenne.lib.base.utils.ext.FragmentExt.isNavigationDebounced
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.R
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 
 /**
  * @author: zhangsan
@@ -31,8 +41,8 @@ object NavigationExt {
         NavOptions.Builder()
             //.setEnterAnim(R.anim.slide_in_right)  // 新页面进入动画 从右划入
             //.setExitAnim(R.anim.slide_out_left)   // 旧页面退出动画 <--
-            //.setPopEnterAnim(R.anim.slide_in_left) // 返回时，新页面进入动画
-            //.setPopExitAnim(R.anim.slide_out_right) // 返回时，当前页面退出动画
+            //.setPopEnterAnim(R.anim.slide_in_left) // 返回时，旧页面进入动画
+            //.setPopExitAnim(R.anim.slide_out_right) // 返回时，新页面退出动画
             .build()
     }
 
@@ -141,18 +151,78 @@ object NavigationExt {
         findNavController(viewId).navigate(resId, args, navOptions, navigatorExtras)
     }
 
+    /**
+     * TODO Activity的默认跳转
+     *
+     * @param intent
+     * @param toEnterResId      新页面的进入动画
+     * @param toExitResId       新页面的退出动画
+     * @param fromExitResId     旧页面的退出动画
+     * @param fromEnterResId    旧页面的进入动画
+     */
     fun Activity.navigate(
         intent: Intent,
-        enterResId: Int = R.anim.slide_in_right,
-        exitResId: Int = R.anim.slide_out_left,
+        @AnimRes toEnterResId: Int = R.anim.slide_in_right,
+        @AnimRes toExitResId: Int = R.anim.slide_out_right,
+        @AnimRes fromExitResId: Int = R.anim.slide_out_left,
+        @AnimRes fromEnterResId: Int = R.anim.slide_in_left,
     ) {
         if (isNavigationDebounced("$this,intent:$intent")) return
         val options = ActivityOptions.makeCustomAnimation(
             this,
-            enterResId,
-            exitResId,
+            toEnterResId,
+            fromExitResId,
         )
-        startActivity(intent, options.toBundle())
+        startActivity(intent,options.toBundle())
+
+        // 先解析目标（隐式 Intent 也能命中）
+        (intent.component ?: intent.resolveActivity(packageManager))?.let { target ->
+            val app = application
+            val created = kotlinx.coroutines.CompletableDeferred<Unit>()
+
+            val callbacks = object : SimpleActivityLifecycleCallbacks {
+                private val view = findViewById<View>(android.R.id.content)
+
+                private fun playFromExitAnim(activity: Activity){
+                    val fromExitAnim:Animation = AnimationUtils.loadAnimation(activity, fromExitResId)
+                    view.startAnimation(fromExitAnim)
+                }
+                private fun playFromEnterAnim(activity: Activity){
+                    val fromEnterAnim = AnimationUtils.loadAnimation(activity, fromEnterResId)
+                    view.startAnimation(fromEnterAnim)
+                }
+
+                override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+                    super.onActivityCreated(activity, savedInstanceState)
+                    val hit = activity.componentName == target
+                    if (hit) {
+                        "hit target activity: $target".logd(TAG)
+                        app.unregisterActivityLifecycleCallbacks(this)
+                        created.complete(Unit)
+                        if(activity is BaseActivity<*,*>){
+                            activity.setEnterAnim(fromEnterResId)
+                            activity.setExitAnim(toExitResId)
+
+                            playFromExitAnim(activity)
+                            activity.doOnFinished {
+                                playFromEnterAnim(activity)
+                            }
+                        }
+                    }
+                }
+            }.also {
+                MainScope().launch {
+                    try {
+                        withTimeout(1000) { created.await() }
+                    } catch (_: Exception) {
+                        // 超时或取消都注销，避免泄漏；不在协程里 throw 造成后台崩溃
+                        app.unregisterActivityLifecycleCallbacks(it)
+                        "navigate timeout: target not created, intent=$intent".logd(TAG)
+                    }
+                }
+            }
+            app.registerActivityLifecycleCallbacks(callbacks)
+        }
     }
 
     fun Activity.navigateUp(@IdRes viewId: Int = R.id.nav_host): Boolean {
