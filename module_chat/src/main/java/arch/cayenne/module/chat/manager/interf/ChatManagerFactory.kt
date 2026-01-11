@@ -11,6 +11,7 @@ import arch.cayenne.lib.websocket.chat.data.CheckBetAmountResponse
 import arch.cayenne.lib.websocket.chat.data.GetChatHistoryResponse
 import arch.cayenne.lib.websocket.chat.data.MsgNotify
 import arch.cayenne.lib.websocket.chat.data.MsgType
+import arch.cayenne.lib.websocket.chat.data.ReportUserResponse
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import kotlinx.coroutines.CoroutineScope
@@ -27,14 +28,14 @@ interface ChatManagerFactory {
     suspend fun disConnectChatServer(scope: CoroutineScope): Boolean
     suspend fun chatLogin(chatType: ChatType): ChatLoginResponseData?
     suspend fun checkBetAmount(): CheckBetAmountResponse?
-    suspend fun enterRoom(matchId: Long,chatType: ChatType): ChatEnterRoomResponse?
-    suspend fun leaveRoom(matchId: Long,chatType: ChatType): ChatLeaveRoomResponse?
+    suspend fun enterRoom(matchId: Long, chatType: ChatType): ChatEnterRoomResponse?
+    suspend fun leaveRoom(matchId: Long, chatType: ChatType): ChatLeaveRoomResponse?
     suspend fun sendMsgToServer(
         matchId: Long,
         content: String,
         chatType: ChatType,
         msgType: MsgType,
-        extraData: Map<String,String>?,
+        extraData: Map<String, String>?,
         refUid: List<String>?,
     ): ChatSendMsgResponse?
 
@@ -43,15 +44,23 @@ interface ChatManagerFactory {
         roomId: Long,
         page: Int,
         pageSize: Int,
-        requestId:String = ""
+        requestId: String = ""
     ): GetChatHistoryResponse?
 
-    suspend fun addLocalMsg(loginValue: ChatLoginResponseData, content: String,
-                            msgType: MsgType,
-                            extraData: Map<String,String>?,
-                            chatType: ChatType,
-                            refUid: List<String>? = null,
-                            refInfos: Map<String,ChatRefUser>? = null
+    suspend fun addLocalMsg(
+        loginValue: ChatLoginResponseData, content: String,
+        msgType: MsgType,
+        extraData: Map<String, String>?,
+        chatType: ChatType,
+        refUid: List<String>? = null,
+        refInfos: Map<String, ChatRefUser>? = null
     ): ChatMsg
+
     suspend fun serverConnectFlow(): StateFlow<SocketConnectState>
+
+    suspend fun reportUser(
+        uid: String,
+        chatType: ChatType,
+        type: Int
+    ): ReportUserResponse?
 }

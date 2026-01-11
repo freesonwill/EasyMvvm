@@ -11,6 +11,7 @@ import arch.cayenne.lib.websocket.chat.data.CheckBetAmountResponse
 import arch.cayenne.lib.websocket.chat.data.GetChatHistoryResponse
 import arch.cayenne.lib.websocket.chat.data.MsgNotify
 import arch.cayenne.lib.websocket.chat.data.MsgType
+import arch.cayenne.lib.websocket.chat.data.ReportUserResponse
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.RemoteChatManager
@@ -52,6 +53,12 @@ class LiveChatRepository(val remote: RemoteChatManager) : BaseRepository() {
     suspend fun registerNotifyMsg(): Flow<MsgNotify> = remote.msgNotify()
 
     suspend fun checkBetAmount(): CheckBetAmountResponse? = remote.checkBetAmount()
+
+    suspend fun reportUser(
+        uid: String,
+        chatType: ChatType,
+        type: Int
+    ): ReportUserResponse? = remote.reportUser(uid, chatType, type)
 
     suspend fun getChatHistory(
         roomId: Long,

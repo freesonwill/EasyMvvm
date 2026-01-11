@@ -62,6 +62,7 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     CHAT_SYNC_USER(500, 1013),//更新用户信息
     CHAT_CHECK_BETAMOUNT(500, 1015),//校验投注额
     CHAT_MSG_NOTIFY(500, 2001),//用户消息推送
+    CHAT_REPORT_USER(500, 1017),//举报用户
 
     SYSTEM_NOTIFY(600, 1013),//600-1013: 消息通知
     APP_NOTIFY(600, 1011),   //600-1011: APP内通知
