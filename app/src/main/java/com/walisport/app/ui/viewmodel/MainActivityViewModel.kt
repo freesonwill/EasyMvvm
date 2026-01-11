@@ -26,12 +26,12 @@ class MainActivityViewModel : BaseActivityViewModel() {
         userDataManager.notifyToken()
 
         viewModelScope.launch {
-            repository.observeUserToken()
-                .filter { it }
+            repository.observeLogin()
+                .filter { it == true }
                 .collect {
-                repository.loadSportList()
-                repository.observeSystemNotify()
-            }
+                    repository.loadSportList()
+                    repository.observeSystemNotify()
+                }
         }
 
     }
