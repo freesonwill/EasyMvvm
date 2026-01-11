@@ -34,6 +34,10 @@ class HallViewModel : BaseBannerViewModel() {
         repository.queryGameCommonList()
     }
 
+    fun getAccountInfo() {
+        repository.getAccountInfo()
+    }
+
     fun checkIsLogin(): Boolean {
         return repository.checkIsLogin()
     }
