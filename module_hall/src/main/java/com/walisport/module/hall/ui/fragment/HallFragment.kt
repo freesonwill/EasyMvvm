@@ -111,15 +111,6 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 requireActivity().navigate(intent)
             }
-
-            //根据登录状态显示隐藏登录按钮和余额视图
-            if (mViewModel.checkIsLogin()) {
-                btnLogin.visibility = View.GONE
-                balanceView.visibility = View.VISIBLE
-            } else {
-                btnLogin.visibility = View.VISIBLE
-                balanceView.visibility = View.GONE
-            }
         }
         initPopupSlot()
     }
