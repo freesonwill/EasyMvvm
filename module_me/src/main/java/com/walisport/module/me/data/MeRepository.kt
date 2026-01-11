@@ -2,6 +2,7 @@ package com.walisport.module.me.data
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
+import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.AvatarEmbedded
@@ -57,7 +58,7 @@ class MeRepository(
                     thumbhash = profileInfo.avatar.thumbhash,
                     type = profileInfo.avatar.type
                 ),
-                Uid = 100L,
+                Uid = manager.getValue(UserDataKey.KEY_UID, -1),
                 registerTime = profileInfo.registerTime,
                 vipLevel = profileInfo.vipLevel,
                 score = profileInfo.score,
@@ -72,5 +73,15 @@ class MeRepository(
         //更新余额信息
         database.infoDao().updateBalance(profileInfo.score)
     }
+
+    /**
+     * 检查用户是否已登录。
+     *
+     * @return `true` 如果用户的登录令牌不为空或非空字符串；否则返回 `false`。
+     */
+    fun checkIsLogin(): Boolean {
+        return !manager.getValue<String>(UserDataKey.KEY_TOKEN).isNullOrEmpty()
+    }
+
 
 }

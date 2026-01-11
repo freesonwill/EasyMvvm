@@ -89,7 +89,7 @@ class BalanceRepository(
                     thumbhash = profileInfo.avatar.thumbhash,
                     type = profileInfo.avatar.type
                 ),
-                Uid = 100L,
+                Uid = manager.getValue(UserDataKey.KEY_UID, -1),
                 registerTime = profileInfo.registerTime,
                 vipLevel = profileInfo.vipLevel,
                 score = profileInfo.score,

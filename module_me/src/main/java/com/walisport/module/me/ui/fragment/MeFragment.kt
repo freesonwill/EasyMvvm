@@ -1,6 +1,8 @@
 package com.walisport.module.me.ui.fragment
 
 import android.annotation.SuppressLint
+import android.content.ComponentName
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
@@ -202,7 +204,18 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_setting_fragment.deeplink())
             }
             ctUserInfo.clickNoRepeat {
-                navigate(arch.cayenne.lib.res.R.string.nav_module_personal_info_fragment.deeplink())
+                if(mViewModel.checkIsLogin()){
+                    navigate(arch.cayenne.lib.res.R.string.nav_module_personal_info_fragment.deeplink())
+                } else {
+                    //到LoginActivity
+                    val intent = Intent()
+                    intent.component = ComponentName(
+                        requireActivity().packageName,
+                        "arch.cayenne.module.account.ui.activity.LoginActivity"
+                    )
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    requireActivity().navigate(intent)
+                }
             }
         }
 

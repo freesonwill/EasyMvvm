@@ -78,4 +78,13 @@ class MeViewModel : BaseViewModel() {
             )
         }
     }
+
+    /**
+     * 检查用户是否已登录。
+     *
+     * @return `true` 如果用户已登录；否则返回 `false`。
+     */
+    fun checkIsLogin(): Boolean {
+        return repository.checkIsLogin()
+    }
 }
