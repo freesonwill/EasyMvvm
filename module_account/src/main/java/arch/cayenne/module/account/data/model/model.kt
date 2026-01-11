@@ -19,10 +19,10 @@ data class LoginVo(
 
 
 data class LoginResponseVo(
-    val uid: Long, // 玩家ID，登录成功才会返回
-    val status: Int, // 登录状态：0=成功，1=失败
-    val isReg: Boolean, // 是否进入注册流程
-    val needVerify: Boolean, // 是否需要验证
-    val token: String, // 登录Token
-    val reason: String // 登录失败信息
+    val uid: Long, // 玩家id, 登陆成功才会返回
+    val status: Int, // 登陆状态。0=success,1=fail
+    val needVerify: Boolean, // 需要验证。true=需要验证
+    val token: String, // 登陆token
+    val reason: String? = null, // 登陆失败信息
+    val reg: Boolean // 是否注册
 )
