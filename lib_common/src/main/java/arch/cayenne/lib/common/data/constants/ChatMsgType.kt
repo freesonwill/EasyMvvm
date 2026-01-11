@@ -14,7 +14,8 @@ enum class ChatMsgType(val value:Int) {
     EMOJI(5),
     AT(8),
     TEXT(1),
-    SYSTEM(0);
+    SYSTEM(0),
+    NAME(10);
 
     companion object {
 

@@ -29,6 +29,7 @@ import arch.cayenne.lib.common.utils.EditTextUtils.editDelBtn
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.websocket.chat.data.ChatRefUser
 import arch.cayenne.lib.websocket.chat.data.ChatType
@@ -241,6 +242,7 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
                     }
                 }
             }
+
             launch {//选择注单返回监听
                 observeResult<Bundle>(ChatChooseBetFragment.SHARE_BET_LISTEN) {
                     ChatMsgUtils.checkAndReplaceBetShareInEditable(mBinding.chatEtInput)
@@ -298,17 +300,8 @@ abstract class ChatBaseFragment : BaseFragment<ChatHomeViewModel, FragmentLiveCh
             }
             chatAtHelper.addAtMentionSpan(
                 it.userName,
-                ChatRefUser(it.uid, it.userName, it.avatarId, it.replaceUserName)
+                ChatRefUser(it.uid, it.userName, it.avatarId, it.replaceRefUserName)
             )
-//            SoftKeyBoardAnim.etAnimWhenEtContentChange(
-//                mBinding,
-//                mViewModel.currentKeyBoardType,
-//                onAnimStart = {
-//                    updateInputIcon(it)
-//                },
-//                onAnimEnd = {
-//                    updateInputIcon(it)
-//                })
            lifecycleScope.launch { //因为diaog关闭后会抢焦点，延时处理
                delay(500)
                keyboardChangeClick(KeyBoardType.SOFT_KEYBOARD, 9)

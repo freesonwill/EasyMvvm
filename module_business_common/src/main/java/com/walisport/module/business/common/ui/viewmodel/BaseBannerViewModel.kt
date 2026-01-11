@@ -6,6 +6,7 @@ import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.http.data.Result
+import com.walisport.module.business.common.data.BannerActiveBean.Companion.ACTIVITY_TYPE_INVITE_FRIEND
 import com.walisport.module.business.common.ui.adapter.BannerImageMatchAdapter
 import com.walisport.module.business.common.utils.biz.BannerBiz
 
@@ -32,6 +33,20 @@ abstract class BaseBannerViewModel:BaseViewModel() {
             }
         }else {
             "getBannerList failed:$result".loge()
+            emptyList()
+        }
+    }
+    suspend fun getInviteFriend(): List<BannerImageMatchAdapter.ImageData> {
+        val result =  BannerBiz.getBannerActive()
+        return if( result is Result.Success){
+            result.data.data.filter { it.activityType == ACTIVITY_TYPE_INVITE_FRIEND }.map {
+                BannerImageMatchAdapter.ImageData(
+                    imgUrl = it.imagePath,
+                    targetUrl = it.targetUrl
+                )
+            }
+        }else {
+            "getInviteFriend failed:$result".loge()
             emptyList()
         }
     }

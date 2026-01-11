@@ -97,7 +97,9 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.immersionbar)
-    debugImplementation(libs.leakcanary)
+    if(localProps.getProperty("switch.leakcanary","true").toBoolean()) {
+        debugImplementation(libs.leakcanary)
+    }
     if(localProps.getProperty("PERF_BLOCK_CANARY","false").toBoolean()) {
         debugImplementation(project(":external:blockcanary"))
     }

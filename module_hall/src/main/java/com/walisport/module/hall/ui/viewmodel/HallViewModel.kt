@@ -2,6 +2,8 @@ package com.walisport.module.hall.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.http.data.Result
@@ -17,9 +19,13 @@ import plugin.koin.KoinViewModel
 class HallViewModel : BaseBannerViewModel() {
     private val repository: HallRepository by inject { parametersOf(viewModelScope) }
 
-    private val _curveBannerLiveData = MutableLiveData<List<BannerActiveBean>>(emptyList())
-    val curveBannerLiveData: LiveData<List<BannerActiveBean>> = _curveBannerLiveData
-
+    private val _bannerActiveLiveData = MutableLiveData<List<BannerActiveBean>>(emptyList())
+    val curveBannerLiveData: LiveData<List<BannerActiveBean>> = _bannerActiveLiveData.map {
+        it.filter { banner -> banner.activityType == BannerActiveBean.ACTIVITY_TYPE_HOME_FIXED }
+    }
+    val inviteFriendBannerLiveData: LiveData<List<BannerActiveBean>> = _bannerActiveLiveData.map {
+        it.filter { banner -> banner.activityType == BannerActiveBean.ACTIVITY_TYPE_INVITE_FRIEND }
+    }
     val gameCategory = repository.gameCategoryListLiveData //分类列表
 
     fun observeUserToken() = repository.observeUserToken()
@@ -35,7 +41,7 @@ class HallViewModel : BaseBannerViewModel() {
     suspend fun getBannerActive() {
         val result = BannerBiz.getBannerActive()
         if(result is Result.Success){
-            _curveBannerLiveData.value = result.data.data
+            _bannerActiveLiveData.value = result.data.data
         } else {
             "getBannerActive failed: $result".loge(TAG)
         }

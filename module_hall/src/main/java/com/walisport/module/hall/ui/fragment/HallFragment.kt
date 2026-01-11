@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
@@ -169,7 +170,8 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
 
             ivRightLogo.setOnBannerListener { Int, position ->
                 val url = mViewModel.curveBannerLiveData.value?.get(position)?.targetUrl ?: ""
-                navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment.deeplink("url" to url))
+                //navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment.deeplink("url" to url))
+                loadWeb(url)
             }
 
             llSearchBar.apply {
@@ -461,4 +463,25 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
             .commit()
     }
 
+
+    private fun loadWeb(url: String) {
+        mBinding.webView.isVisible = true
+        val barHeight = ViewUtils.getStatusBarHeight(requireContext())
+        mBinding.webView.layoutParams = (mBinding.webView.layoutParams as MarginLayoutParams).apply {
+             topMargin = barHeight
+        }
+        mBinding.webView.loadUrl(url)
+    }
+
+    override fun onBackPressed(): Boolean {
+        if(mBinding.webView.isVisible) {
+            if (mBinding.webView.canGoBack()) {
+                mBinding.webView.goBack()
+            } else {
+                mBinding.webView.isVisible = false
+            }
+            return true
+        }
+        return super.onBackPressed()
+    }
 }

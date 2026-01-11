@@ -5,14 +5,23 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BasePreLoadBottomSheetFragment
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.websocket.chat.data.ChatRefUser
+import arch.cayenne.lib.websocket.chat.data.ChatType
+import arch.cayenne.module.chat.R
 import arch.cayenne.module.chat.data.model.ChatPersonalData
 import arch.cayenne.module.chat.databinding.FragmentChatReportLayoutBinding
 import arch.cayenne.module.chat.ui.adapter.ChatPersonalAdapter
+import arch.cayenne.module.chat.ui.viewmodel.ChatHomeViewModel
 import arch.cayenne.module.chat.ui.viewmodel.ChatReportViewModel
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 /**
@@ -34,8 +43,9 @@ class ChatReportFragment :
             }
         }
 
-        fun show(fragment: Fragment) {
+        fun show(fragment: Fragment,user:ChatRefUser?,chatType: ChatType) {
             val f = fragment.childFragmentManager.findFragmentByTag(TAG) as? ChatReportFragment
+            f?.setReportArgument(user,chatType)
             f?.customShow()
         }
     }
@@ -45,6 +55,9 @@ class ChatReportFragment :
     override val vmClass: KClass<ChatReportViewModel>
         get() = ChatReportViewModel::class
 
+    private var chatUser:ChatRefUser? = null
+    private var chatTYpe:ChatType = ChatType.LOBBY
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         val dialog = super.onCreateDialog(savedInstanceState)
@@ -53,6 +66,11 @@ class ChatReportFragment :
         }
 
         return dialog
+    }
+
+    fun setReportArgument(user:ChatRefUser?,chatType: ChatType){
+        chatUser = user
+        this.chatTYpe = chatType
     }
 
     private fun setupFullScreen(dialog: Dialog) {
@@ -69,13 +87,29 @@ class ChatReportFragment :
         }
     }
 
+    override suspend fun createObserver() {
+        super.createObserver()
+        lifecycleScope.launch {
+            mViewModel.reportUserFlow.collect{
+                if(it?.code == 0){
+                    showToast(R.string.chat_report_success.getString())
+                }else{
+                    showToast(R.string.chat_report_fail.getString())
+                }
+                dismiss()
+            }
+        }
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.root.minHeight = 432.dp2px
         mBinding.recycler.apply {
             val nAdapter = ChatPersonalAdapter()
             nAdapter.setRecyclerItemListener(object : RecyclerItemListener<ChatPersonalData> {
                 override fun onItemClick(item: ChatPersonalData?, position: Int) {
-                    dismiss()
+                    report(position)
+//                    showToast(R.string.chat_report_success.getString())
+//                    dismiss()
                 }
             })
             val list = arrayListOf(
@@ -92,6 +126,14 @@ class ChatReportFragment :
                 adapter = nAdapter
             }
 
+        }
+    }
+
+    private fun report(position:Int){
+        // 举报类型 1.色情低俗 2.非法广告 3.辱骂他人 4.违法违规 5.涉嫌诈骗 6.其他
+     val type = position + 1
+        chatUser?.let {
+            mViewModel.reportOther(it.uid,chatTYpe,type)
         }
     }
 

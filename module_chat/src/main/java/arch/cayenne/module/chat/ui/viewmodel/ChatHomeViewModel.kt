@@ -42,6 +42,7 @@ import java.util.Locale
 
 class ChatHomeViewModel() : BaseViewModel() {
     var matchId: Long? = null
+    var chatType:ChatType = ChatType.LOBBY
 
     //    private val _currentSoftKeyboard = MutableStateFlow(KeyBoardType.CHAT)
     private val _updateKeyboardUiStatus = MutableLiveData(KeyBoardType.CHAT)
@@ -57,7 +58,7 @@ class ChatHomeViewModel() : BaseViewModel() {
     private val _etDelLiveDta: MutableLiveData<Boolean> = MutableLiveData()
     private val _sendTextLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private val _currentKeyBoardType = MutableLiveData<KeyBoardType>(KeyBoardType.CHAT)
-    private val _atLiveData: MutableLiveData<ChatMsgPageBean> = MutableLiveData<ChatMsgPageBean>()
+    private val _atLiveData: MutableLiveData<ChatRefUser> = MutableLiveData<ChatRefUser>()
 
 
     var currentKeyBoardType: KeyBoardType = KeyBoardType.CHAT
@@ -84,7 +85,7 @@ class ChatHomeViewModel() : BaseViewModel() {
     val emojiFlow: SharedFlow<EmojiModel?> = _emojiFlow
     val etDelLiveData: LiveData<Boolean> = _etDelLiveDta
     val sendTextLiveData: LiveData<Boolean> = _sendTextLiveData
-    val atLiveData: LiveData<ChatMsgPageBean> = _atLiveData
+    val atLiveData: LiveData<ChatRefUser> = _atLiveData
 
     val languageManager: LanguageManager by inject { parametersOf(viewModelScope) }
     val userDataManager: UserDataManager by inject()
@@ -109,7 +110,8 @@ class ChatHomeViewModel() : BaseViewModel() {
     }
 
     fun setArguments(matchId: Long?, chatType: ChatType) {
-        //直播间重新从联赛进入时，刷新matchId 重新进入聊天室
+        this.chatType = chatType
+        //直播间重新从联赛进入时，刷新matchId r重新进入聊天室
         if (this.matchId != null && this.matchId != matchId) {
             this.matchId = matchId
             chatServer.enterRoom(matchId!!, chatType)
@@ -325,8 +327,8 @@ class ChatHomeViewModel() : BaseViewModel() {
     }
 
 
-    fun addAtMsgToChat(msg: ChatMsgPageBean) {
-        _atLiveData.value = msg
+    fun addAtMsgToChat(user: ChatRefUser) {
+        _atLiveData.value = user
     }
 
 
