@@ -62,8 +62,9 @@ abstract class BaseActivityViewModel : BaseViewModel() {
                 }
             }
             launch {
-                commonRepository.observeUserToken().collect { hasToken ->
-                    if (hasToken && shouldBeAutoLogin) {
+                // 监听Token变化，自动登录
+                commonRepository.observeToken().collect { token ->
+                    if (token.isNotEmpty() && shouldBeAutoLogin) {
                         login()
                     }
                 }

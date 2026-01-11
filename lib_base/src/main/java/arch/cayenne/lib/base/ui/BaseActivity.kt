@@ -2,12 +2,14 @@ package arch.cayenne.lib.base.ui
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.annotation.AnimRes
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -22,7 +24,6 @@ import arch.cayenne.lib.base.ui._interface.IStatusBar
 import arch.cayenne.lib.base.ui._interface.IView
 import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
-import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -73,6 +74,10 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
 
     //设置颜色，默认根据主题颜色设定
     private val statusBar: IStatusBar by lazy { StatusBarDelegate(this) }
+
+    private var enterAnim: Int? = null
+    private var exitAnim: Int? = null
+    private var onFinished = mutableListOf<(activity:BaseActivity<*,*>) -> Unit>()
 
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -174,6 +179,43 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         }
         "onBackPressed consumed by activity: $this".logd(TAG)
         super.onBackPressed()
+    }
+
+    fun setEnterAnim(enterAnim: Int) {
+        this.enterAnim = enterAnim
+    }
+
+    fun setExitAnim(exitAnim: Int) {
+        this.exitAnim = exitAnim
+    }
+
+    @CallSuper
+    override fun finish() {
+        super.finish()
+        enterAnim?.let { exitAnim?.let { it1 -> applyCloseTransition(it, it1) } }
+        onFinished.forEach { it.invoke(this) }
+        onFinished.clear()
+    }
+
+    fun doOnFinished(action: (activity:BaseActivity<*,*>) -> Unit) {
+        if(isFinishing) {
+            action.invoke(this)
+        }else {
+            this.onFinished.add(action)
+        }
+    }
+
+    fun applyCloseTransition(@AnimRes enterAnim: Int, @AnimRes exitAnim: Int) {
+        if (Build.VERSION.SDK_INT >= 34) {
+            overrideActivityTransition(
+                OVERRIDE_TRANSITION_CLOSE,
+                enterAnim,
+                exitAnim
+            )
+        } else {
+            @Suppress("DEPRECATION")
+            overridePendingTransition(enterAnim, exitAnim)
+        }
     }
 }
 /**

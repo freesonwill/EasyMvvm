@@ -3,9 +3,9 @@ package arch.cayenne.module.home.data.repo
 import androidx.room.Transaction
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
-import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.InfoDao
+import arch.cayenne.lib.database.dao.SportLoginInfoDao
 import arch.cayenne.lib.database.dao.TournamentDao
 import arch.cayenne.lib.database.entity.SportTournamentCrossRef
 import arch.cayenne.lib.database.entity.TournamentBean
@@ -16,14 +16,13 @@ import arch.cayenne.module.home.data.constants.PlayType
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.transform
 
 class TournamentListRepository(
     override val scope: CoroutineScope,
     private val socketManager: WebSocketManager,
     private val tournamentDao: TournamentDao,
     private val infoDao: InfoDao,
+    private val sportLoginInfoDao: SportLoginInfoDao,
     private val userDataManager: UserDataManager,
 ) : BaseRepository() {
 
@@ -87,17 +86,6 @@ class TournamentListRepository(
     suspend fun queryTournaments(playTypeId: Int, sportId: Int) = tournamentDao.queryTournaments(playTypeId, sportId)
     suspend fun queryChampionTournaments(sportId: Int) = tournamentDao.queryChampionTournaments(PlayType.CHAMPION.id, sportId)
 
-    /**
-     * 观察用户令牌的变化。
-     *
-     * 此方法通过监听用户数据管理器中存储的用户令牌（KEY_TOKEN），
-     * 并将其转换为一个布尔值流，表示令牌是否存在且非空。
-     *
-     * @return 一个 `Flow<Boolean>`，当令牌存在且非空时发射 `true`，否则发射 `false`。
-     */
-    suspend fun observeUserToken(): Flow<Boolean> {
-        return userDataManager.observe<String>(UserDataKey.KEY_TOKEN).transform {
-            emit(it.isNotEmpty())
-        }
-    }
+
+    fun observeUserLogin() = sportLoginInfoDao.observerLogin()
 }

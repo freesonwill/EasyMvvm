@@ -42,8 +42,8 @@ class TournamentListViewModel : BaseViewModel() {
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            repo.observeUserToken()
-                .filter { it && apiStateListener.value == DataState.NetworkUnavailable }
+            repo.observeUserLogin()
+                .filter { it == true && apiStateListener.value == DataState.NetworkUnavailable }
                 .collect {
                     launch(Dispatchers.Main) {
                         getTournaments()

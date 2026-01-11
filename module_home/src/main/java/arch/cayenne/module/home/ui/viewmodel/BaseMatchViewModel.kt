@@ -62,8 +62,8 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
             }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            repository.observeUserToken()
-                .filter { it }
+            repository.observerUserLogin()
+                .filter { it == true }
                 .collect {
                     getMatchListData(LoadMatchType.RETRY)
                     launch(Dispatchers.Main) {

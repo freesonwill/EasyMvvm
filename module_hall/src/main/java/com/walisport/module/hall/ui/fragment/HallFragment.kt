@@ -108,6 +108,14 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 requireActivity().navigate(intent)
             }
+
+            if (mViewModel.checkIsLogin()) {
+                btnLogin.isVisible = false
+                balanceView.isVisible = true
+            } else {
+                btnLogin.isVisible = true
+                balanceView.isVisible = false
+            }
         }
         initPopupSlot()
     }
@@ -366,9 +374,13 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
         }
 
         launch {
-            mViewModel.observeUserLogin().collect {
+            mViewModel.observeUserToken().collect {
                 mBinding.btnLogin.isVisible = !it
                 mBinding.balanceView.isVisible = it
+                //登录成功后需要请求下个人信息
+                if (it) {
+                    mViewModel.getAccountInfo()
+                }
             }
         }
 

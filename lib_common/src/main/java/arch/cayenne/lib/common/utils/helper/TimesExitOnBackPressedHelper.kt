@@ -29,7 +29,7 @@ class TimesExitOnBackPressedHelper(
                 exitCountIndex:$remain
             """.trimIndent().logd(TAG)*/
             if (!activity.isTaskRoot) {
-                activity.onBackPressedDispatcher.onBackPressed()
+                activity.finish()
                 return
             }
             val now = System.currentTimeMillis()

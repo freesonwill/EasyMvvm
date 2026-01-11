@@ -9,11 +9,13 @@ import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.SportStringExt.balanceStringToLong
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
+import arch.cayenne.lib.database.dao.SportLoginInfoDao
 import arch.cayenne.lib.database.entity.BetResultLiteBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
 import arch.cayenne.lib.database.entity.ComboBetResultBean
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.SingleBetResultBean
+import arch.cayenne.lib.database.entity.SportLoginInfoBean
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.data.InvalidLoginError
@@ -26,7 +28,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -35,7 +36,8 @@ class CommonRepository(
     private val socketManager: WebSocketManager,
     private val userDataManager: UserDataManager,
     private val infoDao: InfoDao,
-    private val betDao: BetDao
+    private val betDao: BetDao,
+    private val sportLoginInfoDao: SportLoginInfoDao,
 ) : BaseRepository() {
 
     private val betResultFlow = MutableSharedFlow<List<BetResultLiteBean>>()
@@ -45,12 +47,7 @@ class CommonRepository(
     fun getBetResultFlow(): Flow<List<BetResultLiteBean>> = betResultFlow
     fun getSoftConfigFlow():Flow<Boolean> = softConfigFlow
 
-    fun observeUserToken(): Flow<Boolean> {
-        return userDataManager.observe<String>(UserDataKey.KEY_TOKEN).transform { token ->
-            emit(token.isNotEmpty())
-        }
-    }
-
+    fun observeToken() = userDataManager.observe<String>(UserDataKey.KEY_TOKEN)
 
     suspend fun getMyCurrency(): String {
         return infoDao.getCurrency2() ?: "CNY"
@@ -79,6 +76,8 @@ class CommonRepository(
         }
         socketManager.isLogin = true
         if (loginResp.data != null && loginResp.data!!.success) {
+            sportLoginInfoDao.insert(SportLoginInfoBean(index = 0, isLogin = true))
+
             val balanceBean = getBalance()
             infoDao.insert(
                 InfoBean(

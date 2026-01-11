@@ -333,7 +333,7 @@ class SearchResultDirectMatchFragment :
 
                 launch {
                     observeLoginChange()
-                        .filter { it && apiStateListener.value == DataState.NetworkUnavailable }
+                        .filter { it == true && apiStateListener.value == DataState.NetworkUnavailable }
                         .collect { doSearch() }
                 }
             }

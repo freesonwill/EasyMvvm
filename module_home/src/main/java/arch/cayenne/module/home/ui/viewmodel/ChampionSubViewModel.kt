@@ -216,9 +216,9 @@ open class ChampionSubViewModel : BaseBannerViewModel() {
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            repository.observeUserToken()
+            repository.observeUserLogin()
                 .filter {
-                    it && (!repository.isPreloadSuccess()
+                    it == true && (!repository.isPreloadSuccess()
                             || apiStateListener.value == DataState.NetworkUnavailable
                             || apiStateListener.value == HomeState.Sport.LoadFailure
                             || apiStateListener.value == HomeState.Tournament.LoadFailure)

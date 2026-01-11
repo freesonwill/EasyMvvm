@@ -29,6 +29,7 @@ fun Banner<*, *>.setGlobalBasicConfig():Banner<*, *> {
 }
 
 fun Banner<*, *>.setGlobalIndicator():Banner<*, *> {
+    if(getItemCount() < 2) return this
     val banner = this
     val width = 5.dp2px
     banner.setIndicator(CircleIndicator(banner.context)

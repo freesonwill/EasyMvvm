@@ -109,7 +109,7 @@ class MainActivity : BaseNavActivity<MainActivityViewModel>() {
                     //TODO 跳到登入頁
                 }
                 is LoginEnum.API_FAILURE -> {
-                    showToast(login.error)
+//                    showToast(login.error)
                 }
             }
         }

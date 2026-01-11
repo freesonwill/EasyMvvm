@@ -5,6 +5,7 @@ import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.MatchDao
+import arch.cayenne.lib.database.dao.SportLoginInfoDao
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
@@ -21,8 +22,17 @@ class ChampionRepository(
     private val matchDao: MatchDao,
     private val betDao: BetDao,
     private val infoDao: InfoDao,
+    private val sportLoginInfoDao: SportLoginInfoDao,
     private val userDataManager: UserDataManager,
-) : BaseMatchRepository(scope, socketManager, betDao, matchDao, infoDao, userDataManager) {
+) : BaseMatchRepository(
+    scope,
+    socketManager,
+    betDao,
+    matchDao,
+    infoDao,
+    sportLoginInfoDao,
+    userDataManager
+) {
     @Transaction
     suspend fun getChampionDetail(matchId: Long) : MatchWithMarkets? {
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.GetMatchResp>(

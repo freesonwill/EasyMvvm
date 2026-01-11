@@ -83,7 +83,7 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
         get() = _raceDateMap
 
     /** 監聽登入狀態變化 */
-    fun observeLoginChange() = repository.observeUserToken()
+    fun observeLoginChange() = repository.observeUserLogin()
 
     /** 取得精準搜尋結果 */
     fun getSearchResult(data: SearchResultBean) {
