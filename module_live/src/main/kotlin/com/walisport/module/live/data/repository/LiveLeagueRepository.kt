@@ -24,11 +24,7 @@ class LiveLeagueRepository(
     ) : BaseRepository() {
 
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-    fun observeLoginChange(): Flow<Boolean> {
-        return userManager.observe<String>(UserDataKey.KEY_TOKEN).transform {
-            emit(it.isNotEmpty())
-        }
-    }
+    fun observeLoginChange() = database.sportLoginInfoDao().observerLogin()
 
     //获取联赛日程列表数据
     suspend fun getMatchLeagueList(

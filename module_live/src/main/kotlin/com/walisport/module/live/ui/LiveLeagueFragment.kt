@@ -134,9 +134,9 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
         //网络断开重连后重新获取接口
         launch(Lifecycle.State.RESUMED) {
             mViewModel.observeLoginChange()
-                .filter { it && mViewModel.apiStateListener.value == DataState.NetworkUnavailable }
+                .filter { it == true && mViewModel.apiStateListener.value == DataState.NetworkUnavailable }
                 .collect {
-                    if (it) {
+                    if (it == true) {
                         setGradientBackground(leagueColor)
                         mViewModel.getMatchLeagueList(leagueID)
                     }
