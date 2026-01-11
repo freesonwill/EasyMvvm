@@ -30,7 +30,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.R
-import arch.cayenne.lib.base.ui._interface.IFragmentArguments
+import arch.cayenne.lib.base.ui._interface.IFragment
 import arch.cayenne.lib.base.ui._interface.IStatusBar
 import arch.cayenne.lib.base.ui._interface.IView
 import arch.cayenne.lib.base.ui.animation.AnimationController
@@ -52,7 +52,7 @@ import kotlin.reflect.KClass
 
 
 abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
-    BottomSheetDialogFragment(), IView, DimInterface, IFragmentArguments {
+    BottomSheetDialogFragment(), IView, DimInterface, IFragment {
 
     protected val TAG by lazy { this::class.java.simpleName }
     protected var backgroundView: View? = null
@@ -683,5 +683,4 @@ open class ScrollBottomSheetBehavior<V : View>(context: Context, attrs: Attribut
         }
         return super.onInterceptTouchEvent(parent, child, event)
     }
-
 }
