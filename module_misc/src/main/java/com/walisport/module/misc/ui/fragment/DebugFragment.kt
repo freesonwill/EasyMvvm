@@ -144,11 +144,6 @@ class DebugFragment : BaseFragment<DebugViewModel, FragmentDebugBinding>() {
                     )
                 ).show(parentFragmentManager, "ComboDetailFragment")
             }
-
-            jumpToSmsVerfiy.clickNoRepeat {
-                navigate(arch.cayenne.lib.res.R.string.nav_module_sms_verify_fragment.deeplink("phoneNumber" to "13800138000", "countryCode" to  "+86"))
-            }
-
         }
     }
 

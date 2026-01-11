@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
@@ -15,10 +16,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
-import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_INIT
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
@@ -55,6 +54,9 @@ import arch.cayenne.module.home.ui.view.PromoTab
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import com.google.android.material.tabs.TabLayout
 import com.walisport.module.business.common.ui.viewmodel.BalanceViewModel
+import com.walisport.module.business.common.utils.ext.setGlobalBasicConfig
+import com.walisport.module.misc.ui.fragment.WebFragment
+import com.walisport.module.misc.ui.fragment.WebFragmentArgs
 import com.walisport.module.popup.slot.ui.fragment.PopupSlotFragment
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -120,10 +122,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel , FragmentNewHomeBinding>() {
         // 自定义适配器
         val adapter = BannerImageAdapter(images)
         mBinding.banner.setAdapter(adapter)
-        mBinding.banner.setLoopTime(5000)
-        // 设置滑动时长丝滑,不影响曲线,
-        mBinding.banner.setScrollTime(500)
-        mBinding.banner.setPageTransformer(CustomCurveTransformer())
+        mBinding.banner.setGlobalBasicConfig()
         // 启动轮播
         mBinding.banner.start()
     }
@@ -366,7 +365,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel , FragmentNewHomeBinding>() {
 
             banner.setOnBannerListener { _, position ->
                 val url = mViewModel.curveBannerLiveData.value?.get(position)?.targetUrl ?: ""
-                navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment.deeplink("url" to url))
+                //navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment.deeplink("url" to url))
+                loadWeb(url)
             }
         }
     }
@@ -482,6 +482,25 @@ class NewHomeFragment : BaseFragment<HomeViewModel , FragmentNewHomeBinding>() {
         super.onDestroyView()
     }
 
+    private fun loadWeb(url: String) {
+        mBinding.webView.isVisible = true
+        val barHeight = ViewUtils.getStatusBarHeight(requireContext())
+        mBinding.webView.layoutParams = (mBinding.webView.layoutParams as MarginLayoutParams).apply {
+            topMargin = barHeight
+        }
+        mBinding.webView.loadUrl(url)
+    }
 
+    override fun onBackPressed(): Boolean {
+        if(mBinding.webView.isVisible) {
+            if (mBinding.webView.canGoBack()) {
+                mBinding.webView.goBack()
+            } else {
+                mBinding.webView.isVisible = false
+            }
+            return true
+        }
+        return super.onBackPressed()
+    }
 
 }

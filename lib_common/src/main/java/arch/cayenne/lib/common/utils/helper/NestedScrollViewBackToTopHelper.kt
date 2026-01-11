@@ -3,6 +3,7 @@ package arch.cayenne.lib.common.utils.helper
 
 
 
+import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
@@ -15,15 +16,21 @@ import kotlin.math.abs
 /**
  * 回到頂部按鈕輔助類（適用於 NestedScrollView）
  */
+
+@SuppressLint("ClickableViewAccessibility")
 class NestedScrollViewBackToTopHelper(
     val nestedScrollView: NestedScrollView,
-    val button: AppCompatImageView,
+    val backToTop: View,
     val onBackToTop: (() -> Unit)? = null,
-    val scrollStateListener: ((Int)-> Unit)? = null
+    val scrollStateListener: ((Int)-> Unit)? = null,
+    thresholdTop:Int,
+    thresholdDown:Int,
+    onDownScrolling: () -> Unit = {},
+    onTopScrolling: () -> Unit = {}
 ) {
     private var totalDy = 0
     private val alphaRunnable = Runnable {
-        button.alpha = 1f
+        backToTop.alpha = 1f
     }
 
     private var touched = false
@@ -38,7 +45,6 @@ class NestedScrollViewBackToTopHelper(
             scrollStateListener?.invoke(RecyclerView.SCROLL_STATE_IDLE)
         }
     }
-
     init {
         nestedScrollView.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
@@ -48,40 +54,45 @@ class NestedScrollViewBackToTopHelper(
             }
             false
         }
-            nestedScrollView.setOnScrollChangeListener { v, _, scrollY, _, _ ->
-                val height = v.height
 
-                if (abs(totalDy - scrollY) > TOUCH_SLOP) {
-                    scrollStateListener?.invoke(RecyclerView.SCROLL_STATE_DRAGGING)
-                    v.removeCallbacks(scrollRunnable)
-                    v.postDelayed(scrollRunnable, 150)
-                }
-
-                totalDy = scrollY
-                if (totalDy > height) {
-                    if (!button.isVisible) {
-                        button.visibility = View.VISIBLE
-                    }
-                    // 滚动中透明度
-                    button.alpha = 0.3f
-                    // 停止滚动后恢复透明度
-                    v.removeCallbacks(alphaRunnable)
-                    v.postDelayed(alphaRunnable, 150)
-                } else {
-                    if (button.isVisible) {
-                        button.visibility = View.GONE
-                    }
-                }
-
-
+        nestedScrollView.setOnScrollChangeListener { v, _, scrollY, _, oldScrollY ->
+            val height = v.height
+            val dy = abs(totalDy - scrollY)
+            val deltaY = scrollY - oldScrollY
+            if(deltaY > 0 && Math.abs(scrollY) > thresholdTop) {
+                onDownScrolling()
+            } else if (deltaY < 0 && Math.abs(scrollY) < thresholdDown) {
+                onTopScrolling()
+            }
+            if (dy > TOUCH_SLOP) {
+                scrollStateListener?.invoke(RecyclerView.SCROLL_STATE_DRAGGING)
+                v.removeCallbacks(scrollRunnable)
+                v.postDelayed(scrollRunnable, 150)
             }
 
-        button.clickNoRepeat {
+            totalDy = scrollY
+            if (totalDy > height) {
+                if (!backToTop.isVisible) {
+                    backToTop.visibility = View.VISIBLE
+                }
+                // 滚动中透明度
+                backToTop.alpha = 0.3f
+                // 停止滚动后恢复透明度
+                v.removeCallbacks(alphaRunnable)
+                v.postDelayed(alphaRunnable, 150)
+            } else {
+                if (backToTop.isVisible) {
+                    backToTop.visibility = View.GONE
+                }
+            }
+        }
+
+        backToTop.clickNoRepeat {
             nestedScrollView.smoothScrollTo(0, 0)
             onBackToTop?.invoke()
-            button.visibility = View.GONE
+            backToTop.visibility = View.GONE
         }
-        }
+    }
 
     fun reset() {
         totalDy = 0

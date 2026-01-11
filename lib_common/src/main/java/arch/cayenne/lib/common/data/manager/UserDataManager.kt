@@ -70,4 +70,15 @@ class UserDataManager {
         @Suppress("UNCHECKED_CAST")
         return flow as Flow<T>
     }
+
+    /**
+     * 通知令牌的变化。
+     *
+     * 此方法获取与用户令牌（KEY_TOKEN）相关联的流，并尝试向该流发射当前存储的令牌值。
+     * 如果发射失败，将不会抛出异常。
+     */
+    fun notifyToken() {
+        val flow = getFlow(UserDataKey.KEY_TOKEN)
+        flow.tryEmit(getValue(UserDataKey.KEY_TOKEN, ""))
+    }
 }

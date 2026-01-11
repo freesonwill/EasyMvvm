@@ -55,9 +55,16 @@ abstract class BaseActivityViewModel : BaseViewModel() {
                         }
                         is ConnectState.ConnectFailure, ConnectState.NetworkUnavailable -> {
                             "Connection Failure -> $connectState".loge(TAG)
-                            commonRepository.setIsLogin(false)
+                            commonRepository.clearToken()
                         }
                         else -> Unit
+                    }
+                }
+            }
+            launch {
+                commonRepository.observeUserToken().collect { hasToken ->
+                    if (hasToken && shouldBeAutoLogin) {
+                        login()
                     }
                 }
             }
@@ -101,8 +108,7 @@ abstract class BaseActivityViewModel : BaseViewModel() {
 
     //當連線成功時，自動地去做補登入
     private suspend fun login() {
-        if (commonRepository.checkIsLogin()) {
-            _loginResult.value = LoginEnum.SUCCESSFUL
+        if (_loginResult.value == LoginEnum.SUCCESSFUL) {
             return
         }
         callApi({

@@ -1,5 +1,7 @@
 package com.walisport.module.hall.ui.fragment
 
+import android.content.ComponentName
+import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -7,18 +9,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
-import arch.cayenne.lib.base.ui.animation.AnimationController
-import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
@@ -60,7 +60,6 @@ import com.walisport.module.hall.ui.view.ScrollableTabIndicatorHelper
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
 import com.walisport.module.popup.slot.ui.fragment.PopupSlotFragment
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
@@ -92,13 +91,22 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
             balanceView.setBalanceViewModel(balanceViewModel, viewLifecycleOwner)
             initCurveBanner()
             btnLogin.clickNoRepeat {
-                navigate(
-                    arch.cayenne.lib.res.R.string.nav_module_login_fragment.deeplink(),
-                    enterAnim = AnimationController[AnimType.routeEnterBT],
-                    exitAnim = AnimationController[AnimType.routeExitTB],
-                    popEnterAnim = AnimationController[AnimType.routeExitTB],
-                    popExitAnim = AnimationController[AnimType.routeExitBT]
+//                navigate(
+//                    arch.cayenne.lib.res.R.string.nav_module_login_fragment.deeplink(),
+//                    enterAnim = AnimationController[AnimType.routeEnterBT],
+//                    exitAnim = AnimationController[AnimType.routeExitTB],
+//                    popEnterAnim = AnimationController[AnimType.routeExitTB],
+//                    popExitAnim = AnimationController[AnimType.routeExitBT]
+//                )
+
+                //到LoginActivity
+                val intent = Intent()
+                intent.component = ComponentName(
+                    requireActivity().packageName,
+                    "arch.cayenne.module.account.ui.activity.LoginActivity"
                 )
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                requireActivity().navigate(intent)
             }
         }
         initPopupSlot()
@@ -106,11 +114,10 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
 
 
     override fun initData() {
-        launch {
-            mViewModel.checkIsLogin()
-            mViewModel.queryGameCommon()
-            mViewModel.getBannerActive()
-        }
+        mViewModel.checkIsLogin()
+        mViewModel.queryGameCommon()
+
+        launch { mViewModel.getBannerActive() }
     }
 
     override fun onDestroyView() {
@@ -155,7 +162,8 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
 
             ivRightLogo.setOnBannerListener { Int, position ->
                 val url = mViewModel.curveBannerLiveData.value?.get(position)?.targetUrl ?: ""
-                navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment.deeplink("url" to url))
+                //navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment.deeplink("url" to url))
+                loadWeb(url)
             }
 
             llSearchBar.apply {
@@ -356,10 +364,14 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
             adapter.setDatas(images)
             mBinding.ivRightLogo.isVisible = adapter.itemCount != 0
         }
-        mViewModel.isAccountLogin.observe(viewLifecycleOwner) { isLogin ->
-            mBinding.btnLogin.isVisible = true       //isLogin 暂时设为登录按钮可见
-            mBinding.balanceView.isVisible = false   //!isLogin
+
+        launch {
+            mViewModel.observeUserLogin().collect {
+                mBinding.btnLogin.isVisible = !it
+                mBinding.balanceView.isVisible = it
+            }
         }
+
         mViewModel.gameCategory.observe(viewLifecycleOwner) { categoryList ->
             LogUtils.e("HallFragment--->gameCategory--->$categoryList")
             //分类列表数据更新后处理
@@ -397,11 +409,10 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
 
         mViewModel.scrollStateChanged.observe(viewLifecycleOwner) {
             if (it == RecyclerView.SCROLL_STATE_IDLE) {
-                lifecycleScope.launch {
+                launch {
                     delay(200)
                     popupSlotFragment.fadeAndIn()
                 }
-
             } else {
                 popupSlotFragment.fadeAndOut()
             }
@@ -444,4 +455,25 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
             .commit()
     }
 
+
+    private fun loadWeb(url: String) {
+        mBinding.webView.isVisible = true
+        val barHeight = ViewUtils.getStatusBarHeight(requireContext())
+        mBinding.webView.layoutParams = (mBinding.webView.layoutParams as MarginLayoutParams).apply {
+             topMargin = barHeight
+        }
+        mBinding.webView.loadUrl(url)
+    }
+
+    override fun onBackPressed(): Boolean {
+        if(mBinding.webView.isVisible) {
+            if (mBinding.webView.canGoBack()) {
+                mBinding.webView.goBack()
+            } else {
+                mBinding.webView.isVisible = false
+            }
+            return true
+        }
+        return super.onBackPressed()
+    }
 }

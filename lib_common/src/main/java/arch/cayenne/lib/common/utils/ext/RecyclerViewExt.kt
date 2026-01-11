@@ -2,7 +2,6 @@ package arch.cayenne.lib.common.utils.ext
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 
 fun RecyclerView.scrollToBottomWithLoadMore(
     minScrollCount: Int = 4,
@@ -69,15 +68,32 @@ fun RecyclerView.listenAtTop(onTopChanged: (Boolean) -> Unit) {
     })
 }
 
-fun RecyclerView.onScrolledOver(
-    thresholdDowDp: Float = 100f,     // 向下滚多远触发（隐藏）
-    thresholdTopDp: Float = 80f,      // 回到顶部多近触发（显示）
+/**
+ * 检查当前滚动状态，并触发相应的回调
+ *
+ * @param thresholdDown
+ * @param thresholdTop
+ * @param onDowScrolling
+ * @param onTopScrolling
+ */
+fun RecyclerView.addScrollThresholdListener(
+    thresholdDown: Int,     // 向下滚多远触发（隐藏）
+    thresholdTop: Int,      // 回到顶部多近触发（显示）
     onDowScrolling: () -> Unit,
     onTopScrolling: () -> Unit
 ) {
-    var totalScrolledPx = 0f
-    val thresholdDownPx = thresholdDowDp * resources.displayMetrics.density
-    val thresholdTopPx = thresholdTopDp * resources.displayMetrics.density
+    var totalScrolledPx = computeVerticalScrollOffset().toFloat()
+    when {
+        // 向下滚动：距离顶部超过 thresholdDowDp → 触发隐藏
+        totalScrolledPx >= thresholdDown -> {
+            onDowScrolling.invoke()
+        }
+
+        // 向上滚动：回到顶部附近（小于 thresholdTopDp）→ 触发显示
+        totalScrolledPx <= thresholdTop -> {
+            onTopScrolling.invoke()
+        }
+    }
 
     addOnScrollListener(object : RecyclerView.OnScrollListener() {
         override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
@@ -86,12 +102,12 @@ fun RecyclerView.onScrolledOver(
 
             when {
                 // 向下滚动：距离顶部超过 thresholdDowDp → 触发隐藏
-                totalScrolledPx >= thresholdDownPx -> {
+                totalScrolledPx >= thresholdDown -> {
                     onDowScrolling.invoke()
                 }
 
                 // 向上滚动：回到顶部附近（小于 thresholdTopDp）→ 触发显示
-                totalScrolledPx <= thresholdTopPx -> {
+                totalScrolledPx <= thresholdTop -> {
                     onTopScrolling.invoke()
                 }
             }
@@ -99,13 +115,21 @@ fun RecyclerView.onScrolledOver(
     })
 }
 
- fun RecyclerView.checkCurrentScrollState(
+/**
+ * 检查当前滚动状态，并触发相应的回调
+ *
+ * @param thresholdDowDp
+ * @param thresholdTopDp
+ * @param onDowScrolling
+ * @param onTopScrolling
+ */
+ private fun RecyclerView.checkCurrentScrollState(
     thresholdDowDp: Float = 100f,     // 向下滚多远触发（隐藏）
     thresholdTopDp: Float = 80f,      // 回到顶部多近触发（显示）
     onDowScrolling: () -> Unit,
     onTopScrolling: () -> Unit
 ) {
-    var totalScrolledPx = computeVerticalScrollOffset().toFloat()
+    val totalScrolledPx = computeVerticalScrollOffset().toFloat()
     val thresholdDownPx = thresholdDowDp * resources.displayMetrics.density
     val thresholdTopPx = thresholdTopDp * resources.displayMetrics.density
     // 计算当前已经滚动的距离（从顶部开始累计）

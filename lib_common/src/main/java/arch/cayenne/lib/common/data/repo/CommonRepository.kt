@@ -26,6 +26,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -44,9 +45,12 @@ class CommonRepository(
     fun getBetResultFlow(): Flow<List<BetResultLiteBean>> = betResultFlow
     fun getSoftConfigFlow():Flow<Boolean> = softConfigFlow
 
-    suspend fun checkIsLogin(): Boolean {
-        return infoDao.isLogin()?: false
+    fun observeUserToken(): Flow<Boolean> {
+        return userDataManager.observe<String>(UserDataKey.KEY_TOKEN).transform { token ->
+            emit(token.isNotEmpty())
+        }
     }
+
 
     suspend fun getMyCurrency(): String {
         return infoDao.getCurrency2() ?: "CNY"
@@ -81,7 +85,6 @@ class CommonRepository(
                     uid,
                     balanceBean.balance,
                     balanceBean.currency,
-                    loginResp.data!!.success
                 )
             )
             return ApiResponseState.Succeeded(loginResp.data!!.success)
@@ -121,7 +124,6 @@ class CommonRepository(
                             this.uid,
                             it.data!!.balance.balanceStringToLong(),
                             this.currency,//账号余额通知中没有币种字段
-                            this.login
                         )
                     )
                 }
@@ -178,7 +180,7 @@ class CommonRepository(
 
     suspend fun reset() {
         socketManager.reset()
-        setIsLogin(false)
+        clearToken()
     }
 
     fun reconnectNow() {
@@ -280,10 +282,16 @@ class CommonRepository(
     fun observeAppNotifyChange() =
         socketManager.observeProtoMessage<Client.AppNoticeNotify>(ApiCode.APP_NOTIFY)
 
-    suspend fun setIsLogin(b: Boolean) {
+    /** 清除用户令牌。
+     *
+     * 该方法首先从用户数据管理器中获取用户ID（KEY_UID）。
+     * 如果用户ID为-1，表示无效用户，方法将直接返回，不进行任何操作。
+     * 否则，方法将用户令牌（KEY_TOKEN）设置为空字符串，从而清除用户的登录状态。
+     */
+    fun clearToken() {
         val uid = userDataManager.getValue(UserDataKey.KEY_UID, -1)
         if (uid == -1) return
-        infoDao.setLogin(uid, b)
+        userDataManager.setKeyValue(UserDataKey.KEY_TOKEN, "")
     }
 
     fun observeAberrantNotify() = socketManager.observeProtoMessage<Client.AberrantNotify>(ApiCode.ABERRANT_NOTIFY)

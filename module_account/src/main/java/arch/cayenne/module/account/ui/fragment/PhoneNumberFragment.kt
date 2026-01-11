@@ -8,14 +8,15 @@ import androidx.core.widget.addTextChangedListener
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.lib.common.utils.EditTextUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.module.account.data.constants.SmsRequestState
 import arch.cayenne.module.account.databinding.FragmentPhoneBinding
 import arch.cayenne.module.account.ui.viewmodel.PhoneNumberViewModel
-import arch.cayenne.module.account.ui.viewmodel.SmsState
 import kotlin.reflect.KClass
 
 class PhoneNumberFragment :
@@ -41,6 +42,9 @@ class PhoneNumberFragment :
             mBinding.llNextWrapper.alpha =
                 if (mBinding.llNextWrapper.isEnabled) 1.0f else 0.4f
         }
+
+        mBinding.editTextPhone.requestFocus()
+        EditTextUtils.showKeyboard(requireContext(), mBinding.editTextPhone)
     }
 
     override fun initData() {
@@ -106,7 +110,7 @@ class PhoneNumberFragment :
 
         mViewModel.smsState.observe(viewLifecycleOwner) {
             when (it) {
-                SmsState.Success -> {
+                SmsRequestState.Success -> {
                     showToast("验证码已发送，请注意查收")
                     navigate(
                         arch.cayenne.lib.res.R.string.nav_module_sms_verify_fragment.deeplink(
@@ -116,7 +120,7 @@ class PhoneNumberFragment :
                     )
                 }
 
-                SmsState.Failure -> {
+                SmsRequestState.Failure -> {
                     showToast("获取验证码失败，请重试")
                 }
             }

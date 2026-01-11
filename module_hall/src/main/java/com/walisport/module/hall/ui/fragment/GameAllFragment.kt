@@ -2,18 +2,17 @@ package com.walisport.module.hall.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
-import arch.cayenne.lib.common.utils.ext.onScrolledOver
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import arch.cayenne.lib.common.utils.helper.NestedScrollViewBackToTopHelper
 import com.walisport.module.business.common.ui.adapter.BannerImageMatchAdapter
+import com.walisport.module.business.common.ui.fragment.BaseBannerLinkFragment
+import com.walisport.module.business.common.ui.viewmodel.BaseBannerViewModel
 import com.walisport.module.hall.data.GameAllContentData
 import com.walisport.module.hall.databinding.FragmentGameAllBinding
 import com.walisport.module.hall.ui.adapter.GameAllHeaderAdapter
@@ -26,22 +25,21 @@ import com.walisport.module.hall.ui.viewmodel.HallViewModel
 import com.walisport.module.live.data.EventClick
 import kotlin.reflect.KClass
 
-class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>() {
+class GameAllFragment : BaseBannerLinkFragment<GameAllViewModel, FragmentGameAllBinding>() {
     companion object {
         fun newInstance() = GameAllFragment()
     }
-
-    var index: Int = 0
+    private var index: Int = 0
 
     private val headerAdapter by lazy {
         GameAllHeaderAdapter(viewLifecycleOwner.lifecycleScope,childFragmentManager,
             object : GameAllHeaderViewHolder.OnHeaderItemClickListener {
-                override fun onInviteFriendItemClick() {
-                    navigate(arch.cayenne.lib.res.R.string.nav_module_invite_friends_fragment.deeplink())
-                }
-
                 override suspend fun getBannerList(): List<BannerImageMatchAdapter.ImageData> {
                     return mViewModel.getBannerList()
+                }
+
+                override suspend fun getInviteFriend(): List<BannerImageMatchAdapter.ImageData> {
+                    return mViewModel.getInviteFriend()
                 }
             })
     }
@@ -68,14 +66,12 @@ class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>()
             //更新rvContent指定position
             // 更新 rvContent 指定 position
           //  mBinding.rvContent.adapter?.notifyItemChanged(headerAdapter.itemCount - 1)
-            LogUtils.e("GameAllRankingViewHolder", "onPageSelected height-nestedScrollView=${mBinding.nestedScrollView.height}")
         }
     }
 
 
     override val vbClass: KClass<FragmentGameAllBinding> = FragmentGameAllBinding::class
     override val vmClass: KClass<GameAllViewModel> = GameAllViewModel::class
-    private val hallViewModel: HallViewModel by sharedViewModel<HallViewModel, HallFragment>()
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             val concatAdapter = ConcatAdapter(
@@ -86,11 +82,7 @@ class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>()
             rvContent.layoutManager = LinearLayoutManager(requireContext())
             rvContent.adapter = concatAdapter
             rvContent.setItemViewCacheSize(10)
-            NestedScrollViewBackToTopHelper(nestedScrollView, ivBackToTop, scrollStateListener = {
-                hallViewModel.setScrollState(it)
-            })
         }
-
     }
 
     override fun initData() {
@@ -98,14 +90,13 @@ class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>()
         super.initData()
     }
 
-    override fun initListener() {
-        mBinding.rvContent.onScrolledOver(100f, 80f, {
-            hallViewModel.setScroll(true)
-        }, {
-            hallViewModel.setScroll(false)
-        })
+    override fun provideBannerViewModel(): BaseBannerViewModel {
+        return sharedViewModel<HallViewModel, HallFragment>().value
     }
 
+    override fun provideBannerNestedScrollView(): Pair<NestedScrollView, View> {
+        return mBinding.nestedScrollView to mBinding.ivBackToTop
+    }
 
     //循环请求数据
     override suspend fun createObserver() {
@@ -142,14 +133,4 @@ class GameAllFragment : BaseFragment<GameAllViewModel, FragmentGameAllBinding>()
         // headerAdapter.stopProBannerJob(mBinding.rvContent)
     }
 
-    override fun onResume() {
-        super.onResume()
-        mBinding.rvContent.post {
-            mBinding.rvContent.checkCurrentScrollState(100f, 80f, {
-                hallViewModel.setScroll(true)
-            }, {
-                hallViewModel.setScroll(false)
-            })
-        }
-    }
 }

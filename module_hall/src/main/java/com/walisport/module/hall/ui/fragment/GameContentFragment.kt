@@ -7,10 +7,10 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
-import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.adapter.GridSpacingItemDecoration
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
@@ -20,9 +20,7 @@ import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.common.utils.ext.checkCurrentScrollState
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.common.utils.ext.onScrolledOver
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.BackToTopHelper
@@ -31,6 +29,8 @@ import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.business.common.data.UniversalLoadMoreScrollListener
 import com.walisport.module.business.common.data.constants.GameSortType
 import com.walisport.module.business.common.ui.adapter.GameContentAdapter
+import com.walisport.module.business.common.ui.fragment.BaseBannerLinkFragment
+import com.walisport.module.business.common.ui.viewmodel.BaseBannerViewModel
 import com.walisport.module.hall.R
 import com.walisport.module.hall.databinding.FragmentGameContentBinding
 import com.walisport.module.hall.databinding.LayoutGameSortingMenuBinding
@@ -40,7 +40,7 @@ import com.walisport.module.live.data.EventClick
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 
-class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameContentBinding>() {
+class GameContentFragment : BaseBannerLinkFragment<GameContentViewModel, FragmentGameContentBinding>() {
     companion object {
         private const val ARG_CATEGORY_TYPE = "arg_category_type"
 
@@ -56,7 +56,6 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
 
     override val vbClass: KClass<FragmentGameContentBinding> = FragmentGameContentBinding::class
     override val vmClass: KClass<GameContentViewModel> = GameContentViewModel::class
-    private val hallViewModel: HallViewModel by sharedViewModel<HallViewModel, HallFragment>()
     private lateinit var adapter: GameContentAdapter
 
     private var isExpanded = false
@@ -104,7 +103,6 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
-
             customTabGroup.setTabClickListener(object :
                 arch.cayenne.lib.common.ui.view.CustomGameTabClickListener {
                 override fun onTabClicked(id: Int) {
@@ -147,20 +145,7 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
     }
 
     override fun initListener() {
-        mBinding.rvGame.onScrolledOver(100f, 80f, {
-            hallViewModel.setScroll(true)
-        }, {
-            hallViewModel.setScroll(false)
-        })
-
-        mBinding.rvGame.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: androidx.recyclerview.widget.RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                // 这里处理滚动状态变化
-                // newState: 0=IDLE, 1=DRAGGING, 2=SETTLING
-                hallViewModel.setScrollState(newState)
-            }
-        })
+        super.initListener()
 
         mBinding.rvGame.addOnScrollListener(UniversalLoadMoreScrollListener(6) {
             if (mViewModel.apiStateListener.value == DataState.LoadSuccess) {
@@ -178,6 +163,14 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
             showSupplierListBottomSheet()
         })
 
+    }
+
+    override fun provideBannerViewModel(): BaseBannerViewModel {
+        return sharedViewModel<HallViewModel, HallFragment>().value
+    }
+
+    override fun provideBannerRecyclerView(): RecyclerView? {
+        return mBinding.rvGame
     }
 
     private fun showSupplierListBottomSheet() {
@@ -590,16 +583,6 @@ class GameContentFragment : BaseFragment<GameContentViewModel, FragmentGameConte
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        mBinding.rvGame.post {
-            mBinding.rvGame.checkCurrentScrollState(100f, 80f, {
-                hallViewModel.setScroll(true)
-            }, {
-                hallViewModel.setScroll(false)
-            })
-        }
-    }
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)

@@ -40,6 +40,8 @@ import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.CollectListViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
+import com.walisport.module.business.common.ui.fragment.BaseBannerLinkFragment
+import com.walisport.module.business.common.ui.viewmodel.BaseBannerViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.lang.ref.WeakReference
@@ -50,7 +52,7 @@ import kotlin.reflect.KClass
  * @date: 2025/5/23 上午11:30
  * @description:
  */
-class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectListBinding>() {
+class CollectListFragment : BaseBannerLinkFragment<CollectListViewModel, FragmentCollectListBinding>() {
     override val vbClass: KClass<FragmentCollectListBinding> = FragmentCollectListBinding::class
     override val vmClass: KClass<CollectListViewModel> = CollectListViewModel::class
     private lateinit var matchAdapter: MatchItemAdapter
@@ -251,15 +253,12 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
     override fun onFragmentAnimEnd(isEnter: Boolean) {
     }
 
-    override fun initListener() {
-        mBinding.rvCollectList.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: androidx.recyclerview.widget.RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                // 这里处理滚动状态变化
-                // newState: 0=IDLE, 1=DRAGGING, 2=SETTLING
-                homeViewModel.setScrollState(newState)
-            }
-        })
+    override fun provideBannerViewModel(): BaseBannerViewModel {
+        return sharedViewModel<HomeViewModel, NewHomeFragment>().value
+    }
+
+    override fun provideBannerRecyclerView(): RecyclerView? {
+        return mBinding.rvCollectList
     }
 
     @SuppressLint("SetTextI18n")

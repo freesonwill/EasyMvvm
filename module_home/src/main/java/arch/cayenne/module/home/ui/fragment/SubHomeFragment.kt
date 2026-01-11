@@ -12,6 +12,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
@@ -54,6 +55,9 @@ import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModelV2
 import arch.cayenne.module.home.utils.DateUtils
 import com.bumptech.glide.Glide
+import com.google.android.material.appbar.AppBarLayout
+import com.walisport.module.business.common.ui.fragment.BaseBannerLinkFragment
+import com.walisport.module.business.common.ui.viewmodel.BaseBannerViewModel
 import com.walisport.module.business.common.utils.ext.setGlobalIndicator
 import com.walisport.module.business.common.utils.ext.setGlobalBasicConfig
 import kotlinx.coroutines.Job
@@ -62,9 +66,9 @@ import java.util.Locale
 import kotlin.reflect.KClass
 
 /**
- * 今日Fragment
+ * 超级大赛Fragment
  */
-class SubHomeFragment : BaseFragment<SubHomeViewModelV2, FragmentSubHomeBinding>(),
+class SubHomeFragment : BaseBannerLinkFragment<SubHomeViewModelV2, FragmentSubHomeBinding>(),
     ISubFragmentLifecycle {
     override val vbClass: KClass<FragmentSubHomeBinding> = FragmentSubHomeBinding::class
     override val vmClass: KClass<SubHomeViewModelV2> = SubHomeViewModelV2::class
@@ -121,6 +125,7 @@ class SubHomeFragment : BaseFragment<SubHomeViewModelV2, FragmentSubHomeBinding>
     }
 
     override fun initListener() {
+        super.initListener()
         with(mBinding) {
             setTopMaskListener()
 
@@ -836,6 +841,15 @@ class SubHomeFragment : BaseFragment<SubHomeViewModelV2, FragmentSubHomeBinding>
         sortingMenuBinding = null
         super.onDestroyView()
     }
+
+    override fun provideBannerViewModel(): BaseBannerViewModel {
+        return sharedViewModel<HomeViewModel, NewHomeFragment>().value
+    }
+
+    override fun provideBannerAppBarLayout(): AppBarLayout? {
+        return mBinding.aplHomeBanner
+    }
+
 
     companion object {
         const val LOW_MEMORY_THRESHOLD = 2_000_000_000L

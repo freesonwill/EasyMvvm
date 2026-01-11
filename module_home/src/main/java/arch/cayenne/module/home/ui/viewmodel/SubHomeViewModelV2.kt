@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
-import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.SportEnum
@@ -209,7 +208,7 @@ open class SubHomeViewModelV2 : BaseBannerViewModel() {
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            repository.observeLoginChange()
+            repository.observeUserToken()
                 .filter {
                     it && (!repository.isPreloadSuccess()
                             || apiStateListener.value == DataState.NetworkUnavailable

@@ -6,6 +6,7 @@ import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.constants.PreloadEnum
+import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.GameBean
@@ -23,6 +24,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import arch.cayenne.lib.http.data.Result
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.withContext
 
 class HallRepository(
@@ -37,8 +40,24 @@ class HallRepository(
     private val _gameCategoryListLiveData = UnPeekLiveData<List<GameCategoryVo>>()
     val gameCategoryListLiveData: UnPeekLiveData<List<GameCategoryVo>> = _gameCategoryListLiveData
 
-    suspend fun checkIsLogin(): Boolean {
-        return database.infoDao().isLogin()?: false
+    fun observeUserLogin(): Flow<Boolean> {
+        return manager.observe<String>(UserDataKey.KEY_TOKEN).transform { token ->
+            emit(token.isNotEmpty())
+        }
+    }
+
+
+    /**
+     * 检查用户是否已登录。
+     *
+     * 此方法通过检查用户数据管理器中存储的用户令牌（KEY_TOKEN）是否存在且非空，
+     * 来判断用户的登录状态。
+     *
+     * @return `true` 如果用户令牌存在且非空，表示用户已登录；
+     *         否则返回 `false`。
+     */
+    fun checkIsLogin(): Boolean {
+        return !manager.getValue<String>(UserDataKey.KEY_TOKEN).isNullOrEmpty()
     }
 
     suspend fun queryGameList(

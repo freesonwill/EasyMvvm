@@ -20,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -32,7 +33,12 @@ class LiveMainRepository(
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
     fun observeInfo(): Flow<InfoBean?> = database.infoDao().observeInfo().flowOn(Dispatchers.IO)
     fun observeMatchBean(matchId: Long) = database.liveMatchDao().observeMatchById(matchId).flowOn(Dispatchers.IO)
-    fun observeLoginChange() = database.infoDao().observeIsLogin()
+
+    fun observeLoginChange(): Flow<Boolean> {
+        return userManager.observe<String>(UserDataKey.KEY_TOKEN).transform {
+            emit(it.isNotEmpty())
+        }
+    }
     // 500-1003: 获取比赛详情
     @SuppressLint("SuspiciousIndentation")
     suspend fun getMatchRes(matchId: Long):ApiResponseState = withContext(scope.coroutineContext)  {

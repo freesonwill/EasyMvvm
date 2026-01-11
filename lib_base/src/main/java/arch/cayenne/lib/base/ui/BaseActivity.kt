@@ -10,21 +10,26 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.base.ui._interface.IFragment
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.ui._interface.IStatusBar
 import arch.cayenne.lib.base.ui._interface.IView
 import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModelForClass
+import java.util.Stack
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.reflect.KClass
@@ -37,6 +42,7 @@ import kotlin.reflect.KClass
 abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActivity(), IView,
     IStatusBar {
     protected open val TAG = this.javaClass.simpleName
+
     //#region VB,VM
     protected val mBinding: VB get() = uiBind.binding
     protected val mViewModel: VM get() = uiBind.viewModel
@@ -49,6 +55,7 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
             vbProvider = ::createVB,
         )
     }
+
     protected open fun createVB(container: ViewGroup?): VB {
         return getViewBind(vbClass, container, false)
     }
@@ -58,21 +65,23 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
     }
 
     //navigation跳转时是否保留view（true:保留；false：销毁）
-    open val keepViewOnNavigation:Boolean = false
+    open val keepViewOnNavigation: Boolean = false
+
     //#endregion VB,VM
     // edittext软键盘弹出后，点击外部虚拟键盘消失 true启用，false不启用 子类可覆盖 默认启用
     open var enableHideKeyboardOnTouchOutside = true
+
     //设置颜色，默认根据主题颜色设定
-    private val statusBar: IStatusBar by lazy { StatusBarDelegate(this)  }
+    private val statusBar: IStatusBar by lazy { StatusBarDelegate(this) }
 
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        uiBind.onCreateView(layoutInflater,null,savedInstanceState)
+        uiBind.onCreateView(layoutInflater, null, savedInstanceState)
         setContentView(mBinding.root)
-        uiBind.onViewCreated(mBinding.root,savedInstanceState)
+        uiBind.onViewCreated(mBinding.root, savedInstanceState)
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-        setStatusBar(configStatusBar(),mBinding.root)
+        setStatusBar(configStatusBar(), mBinding.root)
     }
 
     @CallSuper
@@ -80,16 +89,19 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         super.onStart()
         uiBind.onStart()
     }
+
     @CallSuper
     override fun onResume() {
         super.onResume()
         uiBind.onResume()
     }
+
     @CallSuper
     override fun onPause() {
         super.onPause()
         uiBind.onPause()
     }
+
     @CallSuper
     override fun onStop() {
         super.onStop()
@@ -110,7 +122,7 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
     }
 
     override fun setStatusBar(config: StatusBarConfig, view: View) {
-        statusBar.setStatusBar(config,view)
+        statusBar.setStatusBar(config, view)
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
@@ -124,11 +136,46 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         }
         return super.dispatchTouchEvent(ev)
     }
+
     fun reset() {
         mViewModel.reset()
     }
-}
 
+    override fun onBackPressed() {
+        val roots = supportFragmentManager.fragments
+        if (roots.isNotEmpty()) {
+            val stack = ArrayDeque<Fragment>()
+            val expanded = HashSet<Fragment>()
+
+            // 根节点：按原顺序入栈，保证“右边的根”先被处理
+            for (i in 0 until roots.size) {
+                stack.addLast(roots[i])
+            }
+
+            while (stack.isNotEmpty()) {
+                val cur = stack.last()
+
+                if (!expanded.add(cur)) {
+                    stack.removeLast()
+                    val consumed = cur.isVisible && (cur as? IFragment)?.onBackPressed() == true
+                    if (consumed) {
+                        "onBackPressed consumed by fragment: $cur".logd(TAG)
+                        return
+                    }
+                    continue
+                }
+
+                // children：按原顺序入栈，保证“右边的 child”先被处理
+                val children = cur.childFragmentManager.fragments
+                for (i in 0 until children.size) {
+                    stack.addLast(children[i])
+                }
+            }
+        }
+        "onBackPressed consumed by activity: $this".logd(TAG)
+        super.onBackPressed()
+    }
+}
 /**
  * 启动一个协程
  *

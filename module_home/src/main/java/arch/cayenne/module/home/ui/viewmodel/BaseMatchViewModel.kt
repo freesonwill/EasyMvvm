@@ -18,7 +18,6 @@ import arch.cayenne.module.home.data.repo.BaseMatchRepository
 import com.walisport.module.business.common.data.OddsTypeChangedRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -63,7 +62,7 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
             }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            repository.observeLoginChange()
+            repository.observeUserToken()
                 .filter { it }
                 .collect {
                     getMatchListData(LoadMatchType.RETRY)

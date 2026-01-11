@@ -19,7 +19,7 @@ import androidx.navigation.findNavController
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.R
 import arch.cayenne.lib.base.data.model.StatusBarConfig
-import arch.cayenne.lib.base.ui._interface.IFragmentArguments
+import arch.cayenne.lib.base.ui._interface.IFragment
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
@@ -28,7 +28,7 @@ import arch.cayenne.lib.base.ui._interface.IView
 import org.koin.androidx.viewmodel.ext.android.viewModelForClass
 import kotlin.reflect.KClass
 
-abstract class BaseDialogFragment<VM : BaseViewModel, VB : ViewBinding> : DialogFragment(), IView,IStatusBar, IFragmentArguments {
+abstract class BaseDialogFragment<VM : BaseViewModel, VB : ViewBinding> : DialogFragment(), IView,IStatusBar, IFragment {
     protected open val TAG = this.javaClass.simpleName
 
     //#region VB,VM

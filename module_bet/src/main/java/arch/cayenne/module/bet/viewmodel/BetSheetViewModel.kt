@@ -33,12 +33,12 @@ class BetSheetViewModel(
 
     fun unregister() {
         repo.unregister()
-        repo.stopObserveLoginStatus()
+        repo.stopObserveTokenStatus()
     }
 
     fun register() {
         repo.register()
-        repo.observeLoginStatus()
+        repo.observeTokenStatus()
     }
 
     fun removeSingleBet() {

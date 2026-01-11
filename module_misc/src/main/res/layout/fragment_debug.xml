@@ -150,7 +150,6 @@
             android:text="button" />
 
         <TextView
-            android:id="@+id/jumpToSmsVerfiy"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_columnWeight="1"
@@ -158,7 +157,7 @@
             android:textAllCaps="false"
             android:textSize="@dimen/sp_12"
             android:background="@color/color_00E0E5"
-            android:text="smsVerfiy" />
+            android:text="button" />
 
         <TextView
             android:layout_width="0dp"

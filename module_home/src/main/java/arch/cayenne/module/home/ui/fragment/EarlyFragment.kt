@@ -58,7 +58,10 @@ import arch.cayenne.module.home.ui.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.utils.scrollToPositionWithoutAnim
 import com.bumptech.glide.Glide
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
+import com.walisport.module.business.common.ui.fragment.BaseBannerLinkFragment
+import com.walisport.module.business.common.ui.viewmodel.BaseBannerViewModel
 import com.walisport.module.business.common.utils.ext.setGlobalIndicator
 import com.walisport.module.business.common.utils.ext.setGlobalBasicConfig
 import kotlinx.coroutines.Job
@@ -70,7 +73,7 @@ import kotlin.reflect.KClass
 /**
  * 早盘页面
  */
-class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
+class EarlyFragment : BaseBannerLinkFragment<EarlyViewModel, FragmentEarlyBinding>(),
     ISubFragmentLifecycle {
     override val vbClass: KClass<FragmentEarlyBinding> = FragmentEarlyBinding::class
     override val vmClass: KClass<EarlyViewModel> = EarlyViewModel::class
@@ -125,7 +128,9 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
         updateTournamentButtonStyle(mViewModel.hasTournamentSelections())
     }
 
+
     override fun initListener() {
+        super.initListener()
         with(mBinding) {
             setTopMaskListener()
 
@@ -134,6 +139,14 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>(),
                 addScaleOnTouchAnimation()
             }
         }
+    }
+
+    override fun provideBannerViewModel(): BaseBannerViewModel {
+        return sharedViewModel<HomeViewModel, NewHomeFragment>().value
+    }
+
+    override fun provideBannerAppBarLayout(): AppBarLayout? {
+        return mBinding.aplHomeBanner
     }
 
     private fun showTournamentListBottomSheet() {
