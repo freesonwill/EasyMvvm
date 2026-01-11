@@ -25,9 +25,9 @@ class ChatUserGameAdapter() :
         fun updateItem(position: Int) {
             val item = getItem(position)
             viewBinding.tvNumber.setTextColor(if (position==0) R.color.adapter_number_text_color.getColor() else arch.cayenne.lib.common.R.color.white.getColor())
-            viewBinding.gameName.text = item.name
-            viewBinding.tvNumber.text = "${position+1}"
-            viewBinding.tvMoney.text = item.money
+//            viewBinding.gameName.text = item.name
+//            viewBinding.tvNumber.text = "${position+1}"
+//            viewBinding.tvMoney.text = item.money
         }
     }
 
