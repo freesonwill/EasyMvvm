@@ -53,7 +53,7 @@ class ModuleInitializer : DefaultInitializer<String> {
                 activityCount++
                 "Activity $activity has created. Count: $activityCount".logi(TAG)
                 if(activity is FragmentActivity){
-                    TimesExitOnBackPressedHelper(activity as FragmentActivity,2){ remain, times->
+                    TimesExitOnBackPressedHelper(activity,2){ remain, times->
                         activity.showToast(R.string.more_taps_to_exit.getString())
                         //activity.showToast(R.string.more_taps_to_exit2.getString(remain))
                     }.attach()
