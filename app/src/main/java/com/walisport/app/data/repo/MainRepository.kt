@@ -35,7 +35,7 @@ class MainRepository(
     private val infoDao: InfoDao,
 ) : BaseRepository() {
 
-    suspend fun observeLoginChange(): Flow<Boolean> {
+    suspend fun observeUserToken(): Flow<Boolean> {
         return userDataManager.observe<String>(UserDataKey.KEY_TOKEN).transform {
             emit(it.isNotEmpty())
         }

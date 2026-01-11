@@ -5,10 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
-import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.ui.viewmodel.Event
-import arch.cayenne.lib.common.utils.ext.VIPDataExt
 import arch.cayenne.lib.database.entity.UserDataBean
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.R
@@ -127,7 +125,7 @@ class SuperCompetitionViewModel : BaseBannerViewModel() {
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            repository.observeLoginChange()
+            repository.observeUserToken()
                 .filter {
                     it && (!repository.isPreloadSuccess()
                             || apiStateListener.value == DataState.NetworkUnavailable

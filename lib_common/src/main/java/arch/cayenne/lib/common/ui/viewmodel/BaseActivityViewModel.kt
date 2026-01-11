@@ -62,6 +62,13 @@ abstract class BaseActivityViewModel : BaseViewModel() {
                 }
             }
             launch {
+                commonRepository.observerLogin().collect { login ->
+                    if (login == true && shouldBeAutoLogin) {
+                        login()
+                    }
+                }
+            }
+            launch {
                 commonRepository.observeAppNotifyChange().collect { result ->
                     if (result.error == null && result.data != null) {
                         result.data?.let {
