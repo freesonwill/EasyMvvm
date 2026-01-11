@@ -9,8 +9,6 @@ import com.walisport.module.business.common.data.BannerActiveBean
 import com.walisport.module.business.common.ui.viewmodel.BaseBannerViewModel
 import com.walisport.module.business.common.utils.biz.BannerBiz
 import com.walisport.module.hall.data.HallRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
@@ -19,24 +17,19 @@ import plugin.koin.KoinViewModel
 class HallViewModel : BaseBannerViewModel() {
     private val repository: HallRepository by inject { parametersOf(viewModelScope) }
 
-    private val _isLogin = MutableLiveData<Boolean>()
-    val isAccountLogin: LiveData<Boolean> = _isLogin
-
-
     private val _curveBannerLiveData = MutableLiveData<List<BannerActiveBean>>(emptyList())
     val curveBannerLiveData: LiveData<List<BannerActiveBean>> = _curveBannerLiveData
 
     val gameCategory = repository.gameCategoryListLiveData //分类列表
 
+    fun observeUserLogin() = repository.observeUserLogin()
+
     fun queryGameCommon() {
         repository.queryGameCommonList()
     }
 
-    fun checkIsLogin() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val isLogin = repository.checkIsLogin()
-            _isLogin.postValue(isLogin)
-        }
+    fun checkIsLogin(): Boolean {
+        return repository.checkIsLogin()
     }
 
     suspend fun getBannerActive() {

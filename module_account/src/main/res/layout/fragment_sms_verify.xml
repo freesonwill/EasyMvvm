@@ -14,21 +14,22 @@
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints" />
 
-    <TextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_sms_verify_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_32"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_9"
         android:textColor="@color/white"
         android:textFontWeight="500"
-        android:textSize="@dimen/sp_30" />
+        android:textSize="@dimen/sp_30"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_32"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_5"
         android:orientation="horizontal">
 
         <TextView
@@ -54,7 +55,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_44"
         android:layout_marginStart="@dimen/dp_32"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_19"
         android:layout_marginEnd="@dimen/dp_32"
         android:focusableInTouchMode="true"
         android:fontFamily="@font/sf_pro"
@@ -74,5 +75,45 @@
         app:psw_style="StyleOneself"
         app:psw_text_color="@color/white" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_32"
+        android:orientation="vertical">
 
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_verify_failure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_14"
+            android:text="@string/account_sms_verify_failure"
+            android:textColor="@color/color_FE7536"
+            android:textFontWeight="400"
+            android:textSize="@dimen/sp_13"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_count_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/account_count_down_color_state"
+            android:textFontWeight="500"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_verify_failure" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_loading"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_2"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/account_verify_loading" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>

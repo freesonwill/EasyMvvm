@@ -23,7 +23,9 @@ import arch.cayenne.module.home.data.constants.playTypeToShowType
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.withContext
 
 class HomeRepository(
@@ -43,7 +45,20 @@ class HomeRepository(
     fun observeTenTournaments() = tournamentDao.observeTournamentWithLimit()
     fun observeUserInfo() = database.userDataDao().observeUser()
     fun observeLanguageChange() = userDataManager.observe<String>(UserDataKey.KEY_LANGUAGE)
-    fun observeLoginChange() = infoDao.observeIsLogin()
+
+    /**
+     * 监听用户令牌的变化。
+     *
+     * 此方法通过观察用户数据管理器中存储的用户令牌（KEY_TOKEN），
+     * 并将其转换为一个布尔值流，表示令牌是否存在且非空。
+     *
+     * @return 一个 `Flow<Boolean>`，当令牌存在且非空时发射 `true`，否则发射 `false`。
+     */
+    fun observeUserToken(): Flow<Boolean> {
+        return userDataManager.observe<String>(UserDataKey.KEY_TOKEN).transform {
+            emit(it.isNotEmpty())
+        }
+    }
     fun isPreloadSuccess() = preloadResultChange.value == PreloadEnum.SUCCESS
 
     suspend fun getTournament(playTypeId: Int, sportId: Int, tournamentId: Int): TournamentDataModel? = tournamentDao.queryTournament(playTypeId, sportId, tournamentId)

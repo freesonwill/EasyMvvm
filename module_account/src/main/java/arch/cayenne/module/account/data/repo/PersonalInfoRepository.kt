@@ -3,8 +3,10 @@ package arch.cayenne.module.account.data.repo
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.data.model.UnPeekLiveData
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.constants.BASE_URL
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
@@ -14,22 +16,26 @@ import arch.cayenne.lib.database.entity.SystemAvatarBean
 import arch.cayenne.lib.database.entity.UserDataBean
 import arch.cayenne.lib.database.entity.WalletBean
 import arch.cayenne.lib.http.HttpClient
+import arch.cayenne.lib.http.HttpException
 import arch.cayenne.lib.http._interface.IAccount
 import arch.cayenne.lib.http.data.AccountInfo
 import arch.cayenne.lib.http.data.ApiNickname
 import arch.cayenne.lib.http.data.ApiUpAvatar
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.module.account.R
+import arch.cayenne.module.account.data.model.LoginVo
 import arch.cayenne.module.account.data.model.PersonalInfoData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
+import kotlin.coroutines.resume
 
 /**
  * @author: ricky.chang
@@ -91,6 +97,48 @@ class PersonalInfoRepository(
             )
         }
         return changeNickNameLiveData
+    }
+
+    suspend fun changeNicknameResponse(nickNames: String): ApiResponseState{
+        val api = httpClient.create(IAccount::class.java)
+        return suspendCancellableCoroutine<ApiResponseState> { cancellableContinuation ->
+            scope.launch(Dispatchers.IO) {
+                httpClient.safeRequest(
+                    request = {
+                        val apiNickname = ApiNickname(nickname = nickNames)
+                        api.changeNickname(apiNickname)
+                    },
+                    onSuccess = { resp ->
+                        if (resp.code == 0) {
+                            saveUserInfo(nickNames)
+                            getAccountInfo()
+                            cancellableContinuation.resume(ApiResponseState.Succeeded(resp.data))
+                        } else {
+                            "response------>${resp.code},${resp.message}".loge(TAG)
+                            cancellableContinuation.resume(
+                                ApiResponseState.Failed(
+                                    HttpException(
+                                        resp.code,
+                                        resp.message
+                                    )
+                                )
+                            )
+                        }
+                    },
+                    onFailure = { code, msg, throwable ->
+                        "response------>$code,$msg,$throwable".loge(TAG)
+                        cancellableContinuation.resume(
+                            ApiResponseState.Failed(
+                                HttpException(
+                                    code,
+                                    msg ?: ""
+                                )
+                            )
+                        )
+                    }
+                )
+            }
+        }
     }
 
     //更新用户头像

@@ -17,6 +17,8 @@ import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 
 /**
@@ -33,7 +35,11 @@ class MainRepository(
     private val infoDao: InfoDao,
 ) : BaseRepository() {
 
-    suspend fun observeLoginChange() = infoDao.observeIsLogin()
+    suspend fun observeUserToken(): Flow<Boolean> {
+        return userDataManager.observe<String>(UserDataKey.KEY_TOKEN).transform {
+            emit(it.isNotEmpty())
+        }
+    }
 
     //获取皮肤背景
     fun getSkinType(): String {

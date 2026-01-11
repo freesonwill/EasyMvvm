@@ -1,6 +1,8 @@
 package arch.cayenne.module.bet.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.common.data.constants.UserDataKey
+import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.entity.BetTypeEnum
@@ -9,8 +11,6 @@ import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -18,13 +18,14 @@ class BetSheetRepository(
     override val scope: CoroutineScope,
     private val infoDao: InfoDao,
     private val betDao: BetDao,
-    private val remoteManager: BettingRemoteManager
-) : BaseRepository() {
+    private val remoteManager: BettingRemoteManager,
+    private val userDataManager: UserDataManager,
+    ) : BaseRepository() {
 
     val observerBetCount: Flow<Int> = betDao.observeCurrentCount()
 
     private var registerObserverJob: Job? = null
-    private var loginStatusObserverJob: Job? = null
+    private var tokenStatusObserverJob: Job? = null
 
     init {
         scope.launch {
@@ -96,20 +97,20 @@ class BetSheetRepository(
         }
     }
 
-    fun observeLoginStatus() {
-        loginStatusObserverJob?.cancel()
-        loginStatusObserverJob = scope.launch {
-            infoDao.observeIsLogin().drop(1).distinctUntilChanged().collect {
-                if (it) {
+    fun observeTokenStatus() {
+        tokenStatusObserverJob?.cancel()
+        tokenStatusObserverJob = scope.launch {
+            userDataManager.observe<String>(UserDataKey.KEY_TOKEN).collect {
+                if (it.isNotEmpty()) {
                     register()
                 }
             }
         }
     }
 
-    fun stopObserveLoginStatus() {
-        loginStatusObserverJob?.cancel()
-        loginStatusObserverJob = null
+    fun stopObserveTokenStatus() {
+        tokenStatusObserverJob?.cancel()
+        tokenStatusObserverJob = null
     }
 
     suspend fun getBetType(): BetTypeEnum? = withContext(scope.coroutineContext) {
