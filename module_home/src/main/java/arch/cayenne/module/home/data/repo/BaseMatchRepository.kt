@@ -10,6 +10,7 @@ import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.MatchDao
+import arch.cayenne.lib.database.dao.SportLoginInfoDao
 import arch.cayenne.lib.database.entity.MarketBeanLite
 import arch.cayenne.lib.database.entity.MatchBean
 import arch.cayenne.lib.database.entity.MatchBeanLite
@@ -36,6 +37,7 @@ abstract class BaseMatchRepository(
     private val betDao: BetDao,
     private val matchDao: MatchDao,
     private val infoDao: InfoDao,
+    private val sportLoginInfoDao: SportLoginInfoDao,
     private val userDataManager: UserDataManager,
 ) : BaseRepository() {
     companion object {
@@ -228,17 +230,6 @@ abstract class BaseMatchRepository(
         provider = match.basicInfo.provider
     )
 
-    /**
-     * 监听用户令牌的变化。
-     *
-     * 此方法通过观察用户数据管理器中存储的用户令牌（KEY_TOKEN），
-     * 并将其转换为一个布尔值流，表示令牌是否存在且非空。
-     *
-     * @return 一个 `Flow<Boolean>`，当令牌存在且非空时发射 `true`，否则发射 `false`。
-     */
-    suspend fun observeUserToken(): Flow<Boolean> {
-        return userDataManager.observe<String>(UserDataKey.KEY_TOKEN).transform {
-            emit(it.isNotEmpty())
-        }
-    }
+
+    fun observerUserLogin() = sportLoginInfoDao.observerLogin()
 }

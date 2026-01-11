@@ -7,6 +7,7 @@ import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.CollectListDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.MatchDao
+import arch.cayenne.lib.database.dao.SportLoginInfoDao
 import arch.cayenne.lib.database.entity.CollectListBean
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.websocket.WebSocketManager
@@ -29,8 +30,17 @@ class CollectListRepository(
     private val matchDao: MatchDao,
     private val infoDao: InfoDao,
     private val collectListDao: CollectListDao,
+    private val sportLoginInfoDao: SportLoginInfoDao,
     private val userDataManager: UserDataManager,
-) : BaseMatchRepository(scope, socketManager, betDao, matchDao, infoDao, userDataManager) {
+) : BaseMatchRepository(
+    scope,
+    socketManager,
+    betDao,
+    matchDao,
+    infoDao,
+    sportLoginInfoDao,
+    userDataManager
+) {
 
     private val collectMatchChange by lazy { MutableStateFlow<Map<Long, CollectMatchRef>>(hashMapOf()) }  //CollectMatchCrossRef
 

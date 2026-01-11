@@ -39,7 +39,17 @@ class HomeModuleInitializer: DefaultInitializer<Unit> {
             CoroutineScope(Dispatchers.IO)
         }
         factory { HomeRepository(get(), get(), get(), get(), get()) }
-        factory { ChampionRepository(get(), get(), get<GameDatabase>().matchDao(), get<GameDatabase>().betDao(), get<GameDatabase>().infoDao(), get()) }
+        factory {
+            ChampionRepository(
+                get(),
+                get(),
+                get<GameDatabase>().matchDao(),
+                get<GameDatabase>().betDao(),
+                get<GameDatabase>().infoDao(),
+                get<GameDatabase>().sportLoginInfoDao(),
+                get()
+            )
+        }
         factory {
             TournamentListRepository(
                 get(),
@@ -50,8 +60,29 @@ class HomeModuleInitializer: DefaultInitializer<Unit> {
                 get()
             )
         }
-        factory { CollectListRepository(get(), get(), get<GameDatabase>().betDao(), get<GameDatabase>().matchDao(), get<GameDatabase>().infoDao(),get<GameDatabase>().collectListDao(), get()) }
-        factory { MatchListRepository(get(), get(), get<GameDatabase>().betDao(), get<GameDatabase>().matchDao(), get<GameDatabase>().infoDao(), get()) }
+        factory {
+            CollectListRepository(
+                get(),
+                get(),
+                get<GameDatabase>().betDao(),
+                get<GameDatabase>().matchDao(),
+                get<GameDatabase>().infoDao(),
+                get<GameDatabase>().collectListDao(),
+                get<GameDatabase>().sportLoginInfoDao(),
+                get()
+            )
+        }
+        factory {
+            MatchListRepository(
+                get(),
+                get(),
+                get<GameDatabase>().betDao(),
+                get<GameDatabase>().matchDao(),
+                get<GameDatabase>().infoDao(),
+                get<GameDatabase>().sportLoginInfoDao(),
+                get()
+            )
+        }
         factory { DrawerContentRepository(get(), get(), get()) }
     }
     private val moduleList: List<Module> = listOf(viewModules, daoModule, repoModules)
