@@ -14,7 +14,6 @@ import arch.cayenne.lib.database.entity.GameSupplierDataModel
 import arch.cayenne.lib.database.entity.SystemAvatarBean
 import arch.cayenne.lib.http.HttpClient
 import arch.cayenne.lib.http.HttpException
-import arch.cayenne.lib.http.data.HttpApiResponse
 import arch.cayenne.lib.websocket.WebSocketManager
 import com.walisport.module.business.common.data.constants.GameSortType
 import kotlinx.coroutines.CoroutineScope
@@ -23,10 +22,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
-import arch.cayenne.lib.http.data.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transform
-import kotlinx.coroutines.withContext
 
 class HallRepository(
     override val scope: CoroutineScope,
@@ -40,7 +37,16 @@ class HallRepository(
     private val _gameCategoryListLiveData = UnPeekLiveData<List<GameCategoryVo>>()
     val gameCategoryListLiveData: UnPeekLiveData<List<GameCategoryVo>> = _gameCategoryListLiveData
 
-    fun observeUserLogin(): Flow<Boolean> {
+
+    /**
+     * 观察用户令牌的变化。
+     *
+     * 此方法通过监听用户数据管理器中存储的用户令牌（KEY_TOKEN），
+     * 并将其转换为一个布尔值流，表示令牌是否存在且非空。
+     *
+     * @return 一个 `Flow<Boolean>`，当令牌存在且非空时发射 `true`，否则发射 `false`。
+     */
+    fun observeUserToken(): Flow<Boolean> {
         return manager.observe<String>(UserDataKey.KEY_TOKEN).transform { token ->
             emit(token.isNotEmpty())
         }

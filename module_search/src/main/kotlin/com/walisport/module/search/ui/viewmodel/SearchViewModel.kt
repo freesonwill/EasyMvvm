@@ -17,7 +17,7 @@ class SearchViewModel : BaseViewModel() {
     private val repository: SearchRepository by inject { parametersOf(viewModelScope) }
 
     /** 監聽登入狀態變化 */
-    fun observeLoginChange() = repository.observeUserToken()
+    fun observeLoginChange() = repository.observeUserLogin()
 
     /** 歷史搜尋紀錄 */
     private val _recordList = MutableLiveData<List<String>>()

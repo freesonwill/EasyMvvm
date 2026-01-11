@@ -22,6 +22,7 @@ class EmailFragment :
             mBinding.llNextWrapper.alpha =
                 if (mBinding.llNextWrapper.isEnabled) 1.0f else 0.4f
         }
+        mBinding.editTextEmail.post { mBinding.editTextEmail.requestFocus() }
     }
 
     override fun initData() {

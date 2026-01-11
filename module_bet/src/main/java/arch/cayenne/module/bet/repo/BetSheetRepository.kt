@@ -1,10 +1,10 @@
 package arch.cayenne.module.bet.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
-import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
+import arch.cayenne.lib.database.dao.SportLoginInfoDao
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.BettingRemoteManager
 import galaxy.client.proto.Client
@@ -18,6 +18,7 @@ class BetSheetRepository(
     override val scope: CoroutineScope,
     private val infoDao: InfoDao,
     private val betDao: BetDao,
+    private val sportLoginInfoDao: SportLoginInfoDao,
     private val remoteManager: BettingRemoteManager,
     private val userDataManager: UserDataManager,
     ) : BaseRepository() {
@@ -25,7 +26,7 @@ class BetSheetRepository(
     val observerBetCount: Flow<Int> = betDao.observeCurrentCount()
 
     private var registerObserverJob: Job? = null
-    private var tokenStatusObserverJob: Job? = null
+    private var loginStatusObserverJob: Job? = null
 
     init {
         scope.launch {
@@ -97,20 +98,20 @@ class BetSheetRepository(
         }
     }
 
-    fun observeTokenStatus() {
-        tokenStatusObserverJob?.cancel()
-        tokenStatusObserverJob = scope.launch {
-            userDataManager.observe<String>(UserDataKey.KEY_TOKEN).collect {
-                if (it.isNotEmpty()) {
+    fun observeLoginStatus() {
+        loginStatusObserverJob?.cancel()
+        loginStatusObserverJob = scope.launch {
+            sportLoginInfoDao.observerLogin().collect {
+                if (it == true) {
                     register()
                 }
             }
         }
     }
 
-    fun stopObserveTokenStatus() {
-        tokenStatusObserverJob?.cancel()
-        tokenStatusObserverJob = null
+    fun stopObserveLoginStatus() {
+        loginStatusObserverJob?.cancel()
+        loginStatusObserverJob = null
     }
 
     suspend fun getBetType(): BetTypeEnum? = withContext(scope.coroutineContext) {

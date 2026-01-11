@@ -62,8 +62,8 @@ class ChampionPageViewModel : BaseViewModel() {
             }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            championRepository.observeUserToken()
-                .filter { it }
+            championRepository.observerUserLogin()
+                .filter { it == true }
                 .collect {
                     launch(Dispatchers.Main) {
                         subscribeMatch()

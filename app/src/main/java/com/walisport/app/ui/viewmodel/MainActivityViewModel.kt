@@ -18,20 +18,16 @@ class MainActivityViewModel : BaseActivityViewModel() {
     private val repository: MainRepository by inject { parametersOf(viewModelScope) }
     override val shouldBeAutoLogin: Boolean = true
 
-    private val userDataManager: UserDataManager by inject()
-
     override fun initViewModel() {
         super.initViewModel()
-        //要给token flow赋初值
-        userDataManager.notifyToken()
 
         viewModelScope.launch {
-            repository.observeUserToken()
-                .filter { it }
+            repository.observeLogin()
+                .filter { it == true }
                 .collect {
-                repository.loadSportList()
-                repository.observeSystemNotify()
-            }
+                    repository.loadSportList()
+                    repository.observeSystemNotify()
+                }
         }
 
     }

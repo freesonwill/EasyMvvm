@@ -29,19 +29,15 @@ class SearchRepository(
     private val database: GameDatabase
 ) : BaseRepository() {
 
+
     /**
-     * 监听用户令牌的变化。
+     * 观察用户登录状态的变化。
      *
-     * 此方法通过观察用户数据管理器中存储的用户令牌（KEY_TOKEN），
-     * 并将其转换为一个布尔值流，表示令牌是否存在且非空。
+     * 此方法通过访问数据库中的 `sportLoginInfoDao`，获取用户登录状态的观察流。
      *
-     * @return 一个 `Flow<Boolean>`，当令牌存在且非空时发射 `true`，否则发射 `false`。
+     * @return 一个 `Flow` 对象，用于监听用户登录状态的变化。
      */
-    fun observeUserToken(): Flow<Boolean> {
-        return userDataManager.observe<String>(UserDataKey.KEY_TOKEN).transform {
-            emit(it.isNotEmpty())
-        }
-    }
+    fun observeUserLogin() = database.sportLoginInfoDao().observerLogin()
 
     /** * 删除一条搜索记录
      * @param keyword 要删除的关键字
