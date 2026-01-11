@@ -49,12 +49,12 @@ class AccountLoginRepository(
                                 countryCode = countryCode,
                                 nationalNumber = phoneNumber,
                                 pwd = "",
-                                mobileType = "",
+                                mobileType = android.os.Build.MODEL, // 获取设备型号
                                 osVer = "",
                                 jb = false,
                                 sms = sms,
-                                clientId = null,
-                                authSecret = null,
+                                clientId = "",
+                                authSecret = "",
                             )
                         )
                     },
