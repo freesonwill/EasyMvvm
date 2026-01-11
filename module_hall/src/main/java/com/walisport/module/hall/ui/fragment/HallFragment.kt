@@ -14,13 +14,10 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
-import arch.cayenne.lib.base.ui.animation.AnimationController
-import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
@@ -62,7 +59,6 @@ import com.walisport.module.hall.ui.view.ScrollableTabIndicatorHelper
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
 import com.walisport.module.popup.slot.ui.fragment.PopupSlotFragment
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
@@ -110,6 +106,14 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
                 )
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 requireActivity().navigate(intent)
+            }
+
+            if (mViewModel.checkIsLogin()) {
+                btnLogin.isVisible = false
+                balanceView.isVisible = true
+            } else {
+                btnLogin.isVisible = true
+                balanceView.isVisible = false
             }
         }
         initPopupSlot()
@@ -368,7 +372,7 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
         }
 
         launch {
-            mViewModel.observeUserLogin().collect {
+            mViewModel.observeUserToken().collect {
                 mBinding.btnLogin.isVisible = !it
                 mBinding.balanceView.isVisible = it
             }

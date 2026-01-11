@@ -47,7 +47,7 @@ class CommonRepository(
     fun getBetResultFlow(): Flow<List<BetResultLiteBean>> = betResultFlow
     fun getSoftConfigFlow():Flow<Boolean> = softConfigFlow
 
-    fun observerLogin() = sportLoginInfoDao.observerLogin()
+    fun observeToken() = userDataManager.observe<String>(UserDataKey.KEY_TOKEN)
 
     suspend fun getMyCurrency(): String {
         return infoDao.getCurrency2() ?: "CNY"
