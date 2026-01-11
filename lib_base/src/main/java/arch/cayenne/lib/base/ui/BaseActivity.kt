@@ -157,8 +157,8 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
 
                 if (!expanded.add(cur)) {
                     stack.removeLast()
-                    val consumed = (cur as? IFragment)?.onBackPressed() == true
-                    if (cur.isVisible && consumed) {
+                    val consumed = cur.isVisible && (cur as? IFragment)?.onBackPressed() == true
+                    if (consumed) {
                         "onBackPressed consumed by fragment: $cur".logd(TAG)
                         return
                     }
