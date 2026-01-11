@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <application>
         <provider
             android:name="androidx.startup.InitializationProvider"
@@ -11,5 +12,9 @@
                 android:name="arch.cayenne.module.account.AccountModuleInitializer"
                 android:value="androidx.startup" />
         </provider>
+
+        <activity
+            android:name=".ui.activity.LoginActivity"
+            android:exported="false" />
     </application>
 </manifest>

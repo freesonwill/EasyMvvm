@@ -6,4 +6,8 @@
     <color name="account_edit_name_hint">#33FFFFFF</color>
     <color name="dialog_line">#272727</color>
     <color name="user_avatar_text_bg">#45000000</color>
+    <color name="account_tab_select_text">#FFFFFF</color>
+    <color name="account_register_hint_text_color">@color/color_999999</color>
+    <color name="account_country_code_text_color">@color/white</color>
+
 </resources>

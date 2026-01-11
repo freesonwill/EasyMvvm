@@ -12,18 +12,13 @@ import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.walisport.module.search.data.model.RecordBean
-import com.walisport.module.search.data.model.SearchDailyMatchBean
-import com.walisport.module.search.data.model.SearchMatchBean
-import com.walisport.module.search.data.model.SearchResultBean
-import com.walisport.module.search.data.model.SearchResultPlayerBean
-import com.walisport.module.search.data.model.SearchResultTeamBean
-import com.walisport.module.search.data.model.SearchResultTournamentBean
-import com.walisport.module.search.data.constants.SearchResultTypeEnum
 import com.walisport.module.search.data.constants.SearchTypeEnum
 import com.walisport.module.search.data.transformer.SearchTransformer.toSearchResultBean
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.withContext
 
 
@@ -34,10 +29,15 @@ class SearchRepository(
     private val database: GameDatabase
 ) : BaseRepository() {
 
-    private val infoDao = database.infoDao()
 
-    /** * 监听登录状态变化 */
-    fun observeLoginChange() = infoDao.observeIsLogin()
+    /**
+     * 观察用户登录状态的变化。
+     *
+     * 此方法通过访问数据库中的 `sportLoginInfoDao`，获取用户登录状态的观察流。
+     *
+     * @return 一个 `Flow` 对象，用于监听用户登录状态的变化。
+     */
+    fun observeUserLogin() = database.sportLoginInfoDao().observerLogin()
 
     /** * 删除一条搜索记录
      * @param keyword 要删除的关键字

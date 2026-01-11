@@ -12,8 +12,10 @@ import arch.cayenne.lib.base.utils.log.Utils
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.databinding.TitleBarSimpleBinding
+import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.DimensionExt.px2dp
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
@@ -142,7 +144,6 @@ class DebugFragment : BaseFragment<DebugViewModel, FragmentDebugBinding>() {
                     )
                 ).show(parentFragmentManager, "ComboDetailFragment")
             }
-
         }
     }
 

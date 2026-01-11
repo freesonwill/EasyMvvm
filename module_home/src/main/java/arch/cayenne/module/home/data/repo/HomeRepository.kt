@@ -23,7 +23,9 @@ import arch.cayenne.module.home.data.constants.playTypeToShowType
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.withContext
 
 class HomeRepository(
@@ -43,7 +45,16 @@ class HomeRepository(
     fun observeTenTournaments() = tournamentDao.observeTournamentWithLimit()
     fun observeUserInfo() = database.userDataDao().observeUser()
     fun observeLanguageChange() = userDataManager.observe<String>(UserDataKey.KEY_LANGUAGE)
-    fun observeLoginChange() = infoDao.observeIsLogin()
+
+
+    /**
+     * 观察用户登录状态的变化。
+     *
+     * 此方法通过访问数据库中的 `sportLoginInfoDao`，获取用户登录状态的观察流。
+     *
+     * @return 一个 `Flow<Boolean>`，用于监听用户登录状态的变化。
+     */
+    fun observeUserLogin() = database.sportLoginInfoDao().observerLogin()
     fun isPreloadSuccess() = preloadResultChange.value == PreloadEnum.SUCCESS
 
     suspend fun getTournament(playTypeId: Int, sportId: Int, tournamentId: Int): TournamentDataModel? = tournamentDao.queryTournament(playTypeId, sportId, tournamentId)

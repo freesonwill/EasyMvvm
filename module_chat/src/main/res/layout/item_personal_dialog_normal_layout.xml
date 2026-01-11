@@ -2,19 +2,20 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_56"
+    android:layout_height="56.3dp"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+   >
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv"
         android:layout_width="wrap_content"
         android:layout_height="22dp"
         android:text="\@Ta"
+        android:layout_marginTop="@dimen/dp_15"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_16"
         tools:ignore="HardcodedText"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         />

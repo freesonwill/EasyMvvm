@@ -11,12 +11,14 @@ import arch.cayenne.lib.websocket.chat.data.ChatType
 import arch.cayenne.lib.websocket.chat.data.GetChatHistoryResponse
 import arch.cayenne.lib.websocket.chat.data.MsgNotify
 import arch.cayenne.lib.websocket.chat.data.MsgType
+import arch.cayenne.lib.websocket.chat.data.ReportUserResponse
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.module.chat.data.constants.CheckBetResultEnum
 import com.google.gson.Gson
 import game.chat.proto.GameChat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,10 +38,15 @@ class ChatServerController(
 
     val TAG = this.javaClass.simpleName
     private val _sendMsgResultFlow = MutableStateFlow<ChatSendMsgResponse?>(null)
-    private val _historyFlow = MutableSharedFlow<GetChatHistoryResponse?>(replay = 1, extraBufferCapacity = 2)
+    private val _historyFlow =
+        MutableSharedFlow<GetChatHistoryResponse?>(replay = 1, extraBufferCapacity = 2)
     private val _checkBetAmountFlow = MutableStateFlow<CheckBetResultEnum?>(null)
-    private val _enterRoomFlow = MutableSharedFlow<ChatEnterRoomResponse?>(1, extraBufferCapacity = 2)
-    private val _leaveRoomFlow = MutableSharedFlow<ChatLeaveRoomResponse?>(1, extraBufferCapacity = 2)
+    private val _enterRoomFlow =
+        MutableSharedFlow<ChatEnterRoomResponse?>(1, extraBufferCapacity = 2)
+    private val _leaveRoomFlow =
+        MutableSharedFlow<ChatLeaveRoomResponse?>(1, extraBufferCapacity = 2)
+    private val _reportUserFlow =
+        MutableSharedFlow<ReportUserResponse?>(1, extraBufferCapacity = 2)
 
     //检查是否可以发送消息
     var checkBetAmountFlow: StateFlow<CheckBetResultEnum?> = _checkBetAmountFlow
@@ -55,6 +62,9 @@ class ChatServerController(
 
     //查询历史消息返回结果
     val historyFlow: SharedFlow<GetChatHistoryResponse?> = _historyFlow
+
+    //用户举报返回结果
+    val reportUserFlow: SharedFlow<ReportUserResponse?> = _reportUserFlow
 
     var newMsgNotify: Flow<MsgNotify?> = MutableStateFlow(null)
     var matchId: Long? = null
@@ -178,6 +188,17 @@ class ChatServerController(
 
     fun getManagerLoginFlow(): StateFlow<ChatLoginResponseData?> {
         return manager.getLoginFlow()
+    }
+
+    fun reportUser(
+        uid: String,
+        chatType: ChatType,
+        type: Int
+    ) {
+        scope.launch(Dispatchers.IO) {
+          val value =  manager.reportUser(uid, chatType, type)
+        _reportUserFlow.emit(value)
+        }
     }
 
 

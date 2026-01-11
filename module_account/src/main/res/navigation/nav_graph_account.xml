@@ -33,8 +33,7 @@
             app:argType="string" />
         <action
             android:id="@+id/action_avatarFragment_to_SystemAvatarFragment"
-            app:destination="@id/systemAvatarFragment"
-            />
+            app:destination="@id/systemAvatarFragment" />
         <action
             android:id="@+id/action_avatarFragment_to_avatarPreViewFragment"
             app:destination="@id/avatarPreViewFragment" />
@@ -53,5 +52,12 @@
         android:label="avatarPreViewFragment">
         <deepLink app:uri="@string/nav_module_avatar_preview_fragment" />
     </fragment>
+
+    <activity
+        android:id="@+id/loginActivity"
+        android:name="arch.cayenne.module.account.ui.activity.LoginActivity"
+        android:label="LoginActivity">
+    </activity>
+
 
 </navigation>

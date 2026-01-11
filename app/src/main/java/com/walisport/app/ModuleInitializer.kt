@@ -53,7 +53,7 @@ class ModuleInitializer : DefaultInitializer<String> {
                 activityCount++
                 "Activity $activity has created. Count: $activityCount".logi(TAG)
                 if(activity is FragmentActivity){
-                    TimesExitOnBackPressedHelper(activity as FragmentActivity,2){ remain, times->
+                    TimesExitOnBackPressedHelper(activity,2){ remain, times->
                         activity.showToast(R.string.more_taps_to_exit.getString())
                         //activity.showToast(R.string.more_taps_to_exit2.getString(remain))
                     }.attach()
@@ -117,7 +117,17 @@ class ModuleInitializer : DefaultInitializer<String> {
         factory { CoroutineScope(Dispatchers.IO) }
         single { MutableStateFlow(PreloadEnum.INIT) }
         factory { ModuleRepository(get(), get(), get(named("sport_http")), get(named("3n1_http")), get(), get(), get()) }
-        factory { (scope: CoroutineScope) -> MainRepository(scope, get(), get(), get(), get(), get()) }
+        factory { (scope: CoroutineScope) ->
+            MainRepository(
+                scope,
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get()
+            )
+        }
         factory { (scope: CoroutineScope) -> SplashRepository(scope, get(), get()) }
     }
     private val moduleList: List<Module> = listOf(viewModules, repoModules)

@@ -2,12 +2,16 @@ package com.walisport.module.live.data.repository
 
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.common.data.constants.UserDataKey
+import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.GameDatabase
 import com.walisport.module.live.LiveRemoteManager
 import com.walisport.module.live.data.model.LeagueMatchBean
 import com.walisport.module.live.data.model.MatchBean
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -15,11 +19,12 @@ import java.util.Locale
 
 class LiveLeagueRepository(
     private val remoteManager: LiveRemoteManager,
-    private val database: GameDatabase
-) : BaseRepository() {
+    private val database: GameDatabase,
+    private val userManager: UserDataManager,
+    ) : BaseRepository() {
 
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-    fun observeLoginChange() = database.infoDao().observeIsLogin()
+    fun observeLoginChange() = database.sportLoginInfoDao().observerLogin()
 
     //获取联赛日程列表数据
     suspend fun getMatchLeagueList(

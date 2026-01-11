@@ -5,12 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
-import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.ui.viewmodel.Event
-import arch.cayenne.lib.common.utils.ext.VIPDataExt
 import arch.cayenne.lib.database.entity.BaseTournamentData
 import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
 import arch.cayenne.lib.database.entity.SportDataModel
@@ -23,6 +21,7 @@ import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.MatchListSortType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
 import arch.cayenne.module.home.data.repo.HomeRepository
+import com.walisport.module.business.common.ui.viewmodel.BaseBannerViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -36,7 +35,7 @@ import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-open class ChampionSubViewModel : BaseViewModel() {
+open class ChampionSubViewModel : BaseBannerViewModel() {
 
     val repository: HomeRepository by inject()
 
@@ -217,9 +216,9 @@ open class ChampionSubViewModel : BaseViewModel() {
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            repository.observeLoginChange()
+            repository.observeUserLogin()
                 .filter {
-                    it && (!repository.isPreloadSuccess()
+                    it == true && (!repository.isPreloadSuccess()
                             || apiStateListener.value == DataState.NetworkUnavailable
                             || apiStateListener.value == HomeState.Sport.LoadFailure
                             || apiStateListener.value == HomeState.Tournament.LoadFailure)

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.common.ui.view.InterceptedLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_1E1E1E"
+    android:orientation="vertical"
+    app:interceptedDirection="RIGHT">
+
+    <arch.cayenne.lib.common.ui.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_sms_verify_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_9"
+        android:textColor="@color/white"
+        android:textFontWeight="500"
+        android:textSize="@dimen/sp_30"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_5"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sms_code_sent_to"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_13" />
+
+        <TextView
+            android:id="@+id/tv_phone_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_7"
+            android:fontFamily="@font/sf_pro"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_13" />
+    </LinearLayout>
+
+
+    <com.maning.pswedittextlibrary.MNPasswordEditText
+        android:id="@+id/et_sms_code"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_44"
+        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_19"
+        android:layout_marginEnd="@dimen/dp_32"
+        android:focusableInTouchMode="true"
+        android:fontFamily="@font/sf_pro"
+        android:inputType="number"
+        android:maxLength="6"
+        android:textFontWeight="500"
+        android:textSize="20sp"
+        app:psw_background_color="@color/color_272727"
+        app:psw_border_color="@color/color_272727"
+        app:psw_border_radius="@dimen/dp_5"
+        app:psw_border_selected_color="@color/color_272727"
+        app:psw_cursor_color="@color/color_FE3666"
+        app:psw_cursor_height="@dimen/dp_22"
+        app:psw_cursor_width="@dimen/dp_2"
+        app:psw_mode="OriginalText"
+        app:psw_show_cursor="true"
+        app:psw_style="StyleOneself"
+        app:psw_text_color="@color/white" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_32"
+        android:orientation="vertical">
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_verify_failure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_14"
+            android:text="@string/account_sms_verify_failure"
+            android:textColor="@color/color_FE7536"
+            android:textFontWeight="400"
+            android:textSize="@dimen/sp_13"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_count_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/account_count_down_color_state"
+            android:textFontWeight="500"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_verify_failure" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_loading"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_2"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/account_verify_loading" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</arch.cayenne.lib.common.ui.view.InterceptedLinearLayout>

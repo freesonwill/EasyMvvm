@@ -24,6 +24,7 @@ import arch.cayenne.lib.database.dao.MarketTypeMenuBeanDao
 import arch.cayenne.lib.database.dao.MatchDao
 import arch.cayenne.lib.database.dao.MessageDao
 import arch.cayenne.lib.database.dao.SportDao
+import arch.cayenne.lib.database.dao.SportLoginInfoDao
 import arch.cayenne.lib.database.dao.SystemAvatarDao
 import arch.cayenne.lib.database.dao.TournamentDao
 import arch.cayenne.lib.database.dao.UserDataDao
@@ -60,6 +61,7 @@ import arch.cayenne.lib.database.entity.SportTournamentCrossRef
 import arch.cayenne.lib.database.entity.TournamentBean
 import arch.cayenne.lib.database.entity.TournamentMatchRef
 import arch.cayenne.lib.database.entity.GameSupplierDataModel
+import arch.cayenne.lib.database.entity.SportLoginInfoBean
 import arch.cayenne.lib.database.entity.SystemAvatarBean
 import arch.cayenne.lib.database.entity.UserDataBean
 @Database(
@@ -98,7 +100,8 @@ import arch.cayenne.lib.database.entity.UserDataBean
         GameSupplierDataModel::class,
         GameBean::class,
         DailyBetMatchDataBean::class,
-        SystemAvatarBean::class
+        SystemAvatarBean::class,
+        SportLoginInfoBean::class
     ],
     version = 1,
     exportSchema = false
@@ -154,5 +157,6 @@ abstract class GameDatabase: RoomDatabase() {
     abstract fun currencyConfigDao(): CurrencyConfigDao
     abstract fun dailyBetMatchDataDao(): DailyBetMatchDataDao
     abstract fun systemAvatarDao(): SystemAvatarDao
+    abstract fun sportLoginInfoDao(): SportLoginInfoDao
 
 }

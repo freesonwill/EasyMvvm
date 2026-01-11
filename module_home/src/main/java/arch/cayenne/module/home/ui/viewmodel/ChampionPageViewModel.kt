@@ -11,7 +11,7 @@ import arch.cayenne.module.bet.data.AddSelectionStatus
 import arch.cayenne.module.bet.data.BetInsertBean
 import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.home.data.repo.ChampionRepository
-import com.walisport.module.business.common.repo.BalanceRepository
+import com.walisport.module.business.common.data.repo.BalanceRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
@@ -62,8 +62,8 @@ class ChampionPageViewModel : BaseViewModel() {
             }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            championRepository.observeLoginChange()
-                .filter { it }
+            championRepository.observerUserLogin()
+                .filter { it == true }
                 .collect {
                     launch(Dispatchers.Main) {
                         subscribeMatch()

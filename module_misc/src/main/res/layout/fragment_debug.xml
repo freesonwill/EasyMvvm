@@ -147,7 +147,7 @@
             android:textSize="@dimen/sp_12"
             android:gravity="center"
             android:background="@color/color_00E0E5"
-            android:text="Item 3" />
+            android:text="button" />
 
         <TextView
             android:layout_width="0dp"
@@ -157,7 +157,7 @@
             android:textAllCaps="false"
             android:textSize="@dimen/sp_12"
             android:background="@color/color_00E0E5"
-            android:text="Item 4" />
+            android:text="button" />
 
         <TextView
             android:layout_width="0dp"

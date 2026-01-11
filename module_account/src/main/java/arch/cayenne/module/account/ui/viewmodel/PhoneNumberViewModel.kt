@@ -1,0 +1,79 @@
+package arch.cayenne.module.account.ui.viewmodel
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.module.account.data.constants.SmsRequestState
+import arch.cayenne.module.account.data.repo.AccountLoginRepository
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import org.koin.core.component.inject
+import plugin.koin.KoinViewModel
+
+@KoinViewModel
+class PhoneNumberViewModel : BaseViewModel() {
+
+    private val repository: AccountLoginRepository by inject()
+
+    private val _smsState = MutableLiveData<SmsRequestState>()
+    val smsState: LiveData<SmsRequestState> = _smsState
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+    }
+
+    /**
+     * 请求验证码
+     */
+    fun requestSMSCode(countryCode: String, phoneNumber: String) {
+        setState(DataState.Loading)
+        viewModelScope.launch {
+            delay(1_500) //模拟网络延迟
+            setState(DataState.LoadSuccess)
+            _smsState.value = SmsRequestState.Success
+
+//            callApi(
+//                {
+//                    repository.accountLogin(
+//                        countryCode = countryCode,
+//                        phoneNumber = phoneNumber,
+//                        sms = ""
+//                    )
+//                },
+//                {
+//                    when (it) {
+//                        is ApiResponseState.Failed -> {
+//                            setState(DataState.NetworkUnavailable)
+//                        }
+//
+//                        is ApiResponseState.Succeeded<*> -> {
+//                            setState(DataState.LoadSuccess)
+//
+//                            viewModelScope.launch(Dispatchers.IO) {
+//                                val loginResponseVo = it.dataAs<LoginResponseVo>()
+//                                loginResponseVo?.let { loginResponseVo ->
+//                                    if (loginResponseVo.isReg) {
+//                                        //进入验证码登录/注册流程
+//                                        _smsState.value = SmsState.Success
+//                                    } else {
+//                                        _smsState.value = SmsState.Failure
+//                                    }
+//                                }
+//                            }
+//                        }
+//
+//                        else -> {}
+//                    }
+//                }, autoUpdateState = false
+//            )
+        }
+    }
+
+
+
+
+}
+

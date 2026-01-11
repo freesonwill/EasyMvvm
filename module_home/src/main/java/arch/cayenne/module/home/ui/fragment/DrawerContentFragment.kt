@@ -1,6 +1,9 @@
 package arch.cayenne.module.home.ui.fragment
 
+import android.content.ComponentName
+import android.content.Intent
 import android.graphics.Rect
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -18,6 +21,7 @@ import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.constants.FragmentResultEnum
 import arch.cayenne.lib.common.data.constants.HomePageEnum
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
+import arch.cayenne.lib.common.utils.ThumbHashUtils
 import arch.cayenne.lib.common.utils.biz.CommonBiz
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -33,6 +37,8 @@ import arch.cayenne.module.home.databinding.FragmentDrawerContentBinding
 import arch.cayenne.module.home.ui.adapter.DrawerFeaturesAdapter
 import arch.cayenne.module.home.ui.viewmodel.DrawerContentViewModel
 import arch.cayenne.module.home.utils.DateUtils
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.walisport.module.message.data.NotificationBean
 import kotlin.reflect.KClass
 
@@ -310,17 +316,18 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
     override fun initListener() {
         with(mBinding) {
             clDrawerNickname.clickNoRepeat {
-                requireActivity().supportFragmentManager.setFragmentResultListener(
-                    KeyConfig.VALUE_NICKNAME_RESULT,
-                    viewLifecycleOwner
-                ) { _, bundle ->
-                    requireActivity().supportFragmentManager.clearFragmentResultListener(KeyConfig.VALUE_NICKNAME_RESULT)
-                    val isSaveSuccess = bundle.getBoolean(KeyConfig.VALUE_SAVE_NICKNAME, false)
-                    if (isSaveSuccess) {
-                        refreshDefaultNickName()
-                    }
+                if (mViewModel.checkIsLogin()) {
+                    navigatePage(arch.cayenne.lib.res.R.string.nav_module_personal_info_fragment.deeplink())
+                } else {
+                    //到LoginActivity
+                    val intent = Intent()
+                    intent.component = ComponentName(
+                        requireActivity().packageName,
+                        "arch.cayenne.module.account.ui.activity.LoginActivity"
+                    )
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    requireActivity().navigate(intent)
                 }
-                navigatePage(arch.cayenne.lib.res.R.string.nav_module_personal_info_fragment.deeplink())
             }
             mBinding.viewRipperTop.clickNoRepeat {
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_message_fragment.deeplink())
@@ -361,7 +368,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         with(mViewModel) {
             launch {
                 selectedSkinType.observe(viewLifecycleOwner) {
-                    refreshDefaultNickName()
+//                    refreshDefaultNickName()
                 }
             }
             notificationBean.observeEvent(viewLifecycleOwner, this@DrawerContentFragment) { list ->
@@ -374,6 +381,27 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                         CurrencySymbols.getSymbol(it?.currency ?: ""),
                         (it?.balance ?: 0L).getFormalMoney()
                     )
+            }
+
+            onUserInfoListener.observe(viewLifecycleOwner) {
+                it?.let {
+                    val placeholderDrawable = try {
+                        ThumbHashUtils.getBitmapFromThumbHash(it.avatar.thumbhash)?.let { bitmap ->
+                            BitmapDrawable(resources, bitmap)
+                        }
+                    } catch (_: Exception) {
+                        null
+                    }
+
+                    Glide.with(this@DrawerContentFragment)
+                        .load(it.avatar.url.trim())
+                        .placeholder(placeholderDrawable)
+                        .transition(DrawableTransitionOptions.withCrossFade())
+                        .into(mBinding.ivIconNickname)
+
+                    mBinding.tvTitleNickname.text = it.nickname
+                }
+
             }
         }
     }
@@ -417,28 +445,6 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         return SkinnableResourceManager.getTargetResourceId(requireContext(), this)
     }
 
-    private fun refreshDefaultNickName() {
-        val defaultResId = mViewModel.getDefaultResId()
-        with(mBinding) {
-            if (defaultResId == -1) {
-                ivIconNickname.setImageResource(arch.cayenne.lib.common.R.drawable.ic_avatar_default)
-            } else {
-                ivIconNickname.setImageDrawable(
-                    ResourcesCompat.getDrawable(
-                        resources,
-                        defaultResId,
-                        null
-                    )
-                )
-            }
-            val defaultNickName = mViewModel.getDefaultNickName()
-            if (defaultNickName.isNotEmpty()) {
-                tvTitleNickname.text = defaultNickName
-            } else {
-                tvTitleNickname.text = getString(R.string.drawer_nickname_title)
-            }
-        }
-    }
 
     override fun onStart() {
         super.onStart()

@@ -1,5 +1,7 @@
 package com.walisport.module.hall.ui.fragment
 
+import android.content.ComponentName
+import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -7,11 +9,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
@@ -20,7 +23,6 @@ import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
-import arch.cayenne.lib.common.data.constants.BizUrl
 import arch.cayenne.lib.common.data.constants.DrawerAction.ACTION_OPEN
 import arch.cayenne.lib.common.data.constants.DrawerAction.KEY_ACTION
 import arch.cayenne.lib.common.data.constants.DrawerAction.REQUEST_KEY_DRAWER
@@ -47,7 +49,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.business.common.data.Category
-import com.walisport.module.business.common.viewmodel.BalanceViewModel
+import com.walisport.module.business.common.ui.viewmodel.BalanceViewModel
 import com.walisport.module.hall.R
 import com.walisport.module.hall.data.GameCategoryVo
 import com.walisport.module.hall.data.HallGamePage
@@ -58,7 +60,6 @@ import com.walisport.module.hall.ui.view.ScrollableTabIndicatorHelper
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
 import com.walisport.module.popup.slot.ui.fragment.PopupSlotFragment
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
@@ -86,17 +87,46 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             root.touchBackPressed()
-
             balanceView.init(childFragmentManager)
             balanceView.setBalanceViewModel(balanceViewModel, viewLifecycleOwner)
             initCurveBanner()
-            var barHeight = ViewUtils.getStatusBarHeight(requireContext())
-            //
+            btnLogin.clickNoRepeat {
+//                navigate(
+//                    arch.cayenne.lib.res.R.string.nav_module_login_fragment.deeplink(),
+//                    enterAnim = AnimationController[AnimType.routeEnterBT],
+//                    exitAnim = AnimationController[AnimType.routeExitTB],
+//                    popEnterAnim = AnimationController[AnimType.routeExitTB],
+//                    popExitAnim = AnimationController[AnimType.routeExitBT]
+//                )
+
+                //到LoginActivity
+                val intent = Intent()
+                intent.component = ComponentName(
+                    requireActivity().packageName,
+                    "arch.cayenne.module.account.ui.activity.LoginActivity"
+                )
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                requireActivity().navigate(intent)
+            }
+
+            if (mViewModel.checkIsLogin()) {
+                btnLogin.isVisible = false
+                balanceView.isVisible = true
+            } else {
+                btnLogin.isVisible = true
+                balanceView.isVisible = false
+            }
         }
         initPopupSlot()
-        mViewModel.queryGameCommon()
     }
 
+
+    override fun initData() {
+        mViewModel.checkIsLogin()
+        mViewModel.queryGameCommon()
+
+        launch { mViewModel.getBannerActive() }
+    }
 
     override fun onDestroyView() {
         tabIndicatorHelper?.release()
@@ -109,14 +139,13 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
             ItemHallGameTabBinding.inflate(LayoutInflater.from(requireContext()), null, false)
         tabBinding.tvTitle.text = item.title
         if (item is HallGameTabDefault) {
-                Glide.with(mBinding.root)
-                    .load(item.icon)
-                    .transition(DrawableTransitionOptions.withCrossFade()) // 淡入动画
-                    .into(tabBinding.ivHallTabIcon)
+            Glide.with(mBinding.root)
+                .load(item.icon)
+                .transition(DrawableTransitionOptions.withCrossFade()) // 淡入动画
+                .into(tabBinding.ivHallTabIcon)
         } else {
             //TODO 從api來
         }
-
         return tabBinding.root
     }
 
@@ -140,10 +169,9 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
 //            }
 
             ivRightLogo.setOnBannerListener { Int, position ->
-                navigate(
-                    arch.cayenne.lib.res.R.string.nav_module_web_fragment
-                        .deeplink("url" to BizUrl.ACTIVITY.url)
-                )
+                val url = mViewModel.curveBannerLiveData.value?.get(position)?.targetUrl ?: ""
+                //navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment.deeplink("url" to url))
+                loadWeb(url)
             }
 
             llSearchBar.apply {
@@ -158,7 +186,7 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
 
     fun initTab(tabCategoryList: List<GameCategoryVo>) {
         mBinding.aciTabBg.visibility = View.VISIBLE
-       //循环把tabCategoryList装到HallGameTabDefault里面
+        //循环把tabCategoryList装到HallGameTabDefault里面
         val tabList = tabCategoryList.map { vo ->
             var colorRes = vo.color
             if (colorRes.isEmpty()){
@@ -277,13 +305,13 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
 
                 }
                 tab.customView?.findViewById<SkinnableTextView>(R.id.tv_title)?.apply {
-                        (layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
-                            marginStart = marginStart
-                            topMargin = 4.dp2px
-                            marginEnd = marginEnd
-                            bottomMargin = bottomMargin
-                            layoutParams = this
-                        }
+                    (layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
+                        marginStart = marginStart
+                        topMargin = 4.dp2px
+                        marginEnd = marginEnd
+                        bottomMargin = bottomMargin
+                        layoutParams = this
+                    }
                 }
                 tab.customView?.findViewById<AppCompatImageView>(R.id.iv_Hall_tab_icon)?.apply {
                     setScaleAnim(mMinHeight.toInt(), mMaxHeight.toInt())
@@ -338,6 +366,24 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
     }
 
     override suspend fun createObserver() {
+        mViewModel.curveBannerLiveData.observe(viewLifecycleOwner) { bannerList ->
+            val adapter = mBinding.ivRightLogo.adapter as BannerImageAdapter
+            val images = bannerList.map { it.imagePath }
+            adapter.setDatas(images)
+            mBinding.ivRightLogo.isVisible = adapter.itemCount != 0
+        }
+
+        launch {
+            mViewModel.observeUserToken().collect {
+                mBinding.btnLogin.isVisible = !it
+                mBinding.balanceView.isVisible = it
+                //登录成功后需要请求下个人信息
+                if (it) {
+                    mViewModel.getAccountInfo()
+                }
+            }
+        }
+
         mViewModel.gameCategory.observe(viewLifecycleOwner) { categoryList ->
             LogUtils.e("HallFragment--->gameCategory--->$categoryList")
             //分类列表数据更新后处理
@@ -365,7 +411,7 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
         }
         unreadMessageViewModel.createObserver()
 
-        mViewModel.scorll.observe(viewLifecycleOwner) {
+        mViewModel.scroll.observe(viewLifecycleOwner) {
             if (it) { //收起
                 mBinding.homeBarIcon.marginEndAnim()
             } else { //展开
@@ -375,11 +421,10 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
 
         mViewModel.scrollStateChanged.observe(viewLifecycleOwner) {
             if (it == RecyclerView.SCROLL_STATE_IDLE) {
-                lifecycleScope.launch {
+                launch {
                     delay(200)
                     popupSlotFragment.fadeAndIn()
                 }
-
             } else {
                 popupSlotFragment.fadeAndOut()
             }
@@ -404,19 +449,13 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
     }
 
 
-    private fun initCurveBanner() {
-        val images = listOf(
-            arch.cayenne.lib.common.R.drawable.home_bar_left_icon,
-            arch.cayenne.lib.common.R.drawable.home_bar_left_icon,
-            arch.cayenne.lib.common.R.drawable.home_bar_left_icon,
-            arch.cayenne.lib.common.R.drawable.home_bar_left_icon
-        )
+    private fun initCurveBanner(images:List<String> = emptyList()) {
         // 自定义适配器
         val adapter = BannerImageAdapter(images)
         mBinding.ivRightLogo.setAdapter(adapter)
-        mBinding.ivRightLogo.setLoopTime(3000)
+        mBinding.ivRightLogo.setLoopTime(5000)
         // 设置滑动时长丝滑,不影响曲线,
-        mBinding.ivRightLogo.setScrollTime(500)  // 1 秒
+        mBinding.ivRightLogo.setScrollTime(500)
         mBinding.ivRightLogo.setPageTransformer(CustomCurveTransformer())
         // 启动轮播
         mBinding.ivRightLogo.start()
@@ -429,6 +468,24 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
     }
 
 
+    private fun loadWeb(url: String) {
+        mBinding.webView.isVisible = true
+        val barHeight = ViewUtils.getStatusBarHeight(requireContext())
+        mBinding.webView.layoutParams = (mBinding.webView.layoutParams as MarginLayoutParams).apply {
+             topMargin = barHeight
+        }
+        mBinding.webView.loadUrl(url)
+    }
 
-
+    override fun onBackPressed(): Boolean {
+        if(mBinding.webView.isVisible) {
+            if (mBinding.webView.canGoBack()) {
+                mBinding.webView.goBack()
+            } else {
+                mBinding.webView.isVisible = false
+            }
+            return true
+        }
+        return super.onBackPressed()
+    }
 }

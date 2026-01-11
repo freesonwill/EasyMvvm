@@ -88,13 +88,8 @@ class ModuleRepository(
         }
         val name = users.find { it.uid == uid }?.name
         "initUidToken name:${name}, uid:$uid, token:$token".logd(TAG)
-        saveUserData(uid, token)
     }
 
-    private fun saveUserData(uid: Int, token: String) {
-        manager.setKeyValue(UserDataKey.KEY_UID, uid)
-        manager.setKeyValue(UserDataKey.KEY_TOKEN, token)
-    }
 
     fun getProfileInfo() {
         val api = tioHttpClient.create(IAccount::class.java)
@@ -124,7 +119,7 @@ class ModuleRepository(
                     thumbhash = profileInfo.avatar.thumbhash,
                     type = profileInfo.avatar.type
                 ),
-                Uid = 100L,
+                Uid = manager.getValue(UserDataKey.KEY_UID, -1),
                 registerTime = profileInfo.registerTime,
                 vipLevel = profileInfo.vipLevel,
                 score = profileInfo.score,

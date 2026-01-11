@@ -90,6 +90,7 @@ val CHAT_SERVER
             }
 
             else -> {
+//                "wss://sport-test.ra781.com/api/game/chat/ws"
                 "wss://sport-dev.ra781.com/api/game/chat/ws"
             }
         }

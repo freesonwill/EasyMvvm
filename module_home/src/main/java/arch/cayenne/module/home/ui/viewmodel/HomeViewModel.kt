@@ -2,22 +2,26 @@ package arch.cayenne.module.home.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import androidx.room.Transaction
 import arch.cayenne.lib.base.data.constants.DataState
-import arch.cayenne.lib.base.data.model.UnPeekLiveData
-import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.InfoBean
+import arch.cayenne.lib.http.data.Result
 import arch.cayenne.lib.skin.LanguageManager
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.getPlayTypeById
 import arch.cayenne.module.home.data.repo.HomeRepository
-import com.walisport.module.business.common.repo.BalanceRepository
+import com.walisport.module.business.common.data.BannerActiveBean
+import com.walisport.module.business.common.data.repo.BalanceRepository
+import com.walisport.module.business.common.ui.viewmodel.BaseBannerViewModel
+import com.walisport.module.business.common.utils.biz.BannerBiz
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -29,7 +33,7 @@ import org.koin.core.component.inject
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-class HomeViewModel : BaseViewModel() {
+class HomeViewModel : BaseBannerViewModel() {
     companion object {
         const val TOURNAMENT_ALL_ID = 0
         const val DEFAULT_DATE = -1L  //預設值，如果任何livedata收到這個預設值可以先略過要做的事情，主要拿來避免頁面生成時拿到舊的date
@@ -66,15 +70,13 @@ class HomeViewModel : BaseViewModel() {
 
     val playTypeClickRecord = hashMapOf<Int, Long>()  //HashMap<PlayTypeId, RecordTime>
 
-    //分类列表触发广告位收起动画  true 为收起 false 为展开
-    private val _scroll = MutableLiveData<Boolean>()
-    val scroll: LiveData<Boolean> = _scroll
-
-
-    //滚动状态变更通知
-    private val _scrollStateChanged = UnPeekLiveData<Int>()
-    val scrollStateChanged: LiveData<Int> = _scrollStateChanged
-
+    private val _bannerActiveLiveData = MutableLiveData<List<BannerActiveBean>>(emptyList())
+    val curveBannerLiveData: LiveData<List<BannerActiveBean>> = _bannerActiveLiveData.map {
+        it.filter { banner -> banner.activityType == BannerActiveBean.ACTIVITY_TYPE_HOME_FIXED }
+    }
+    val inviteFriendBannerLiveData: LiveData<List<BannerActiveBean>> = _bannerActiveLiveData.map {
+        it.filter { banner -> banner.activityType == BannerActiveBean.ACTIVITY_TYPE_INVITE_FRIEND }
+    }
 
     init {
         viewModelScope.launch {
@@ -156,18 +158,6 @@ class HomeViewModel : BaseViewModel() {
         return isNeedRefresh
     }
 
-    fun setScroll(bool: Boolean) {
-        if (bool != scroll.value) {
-            _scroll.value = bool
-        }
-    }
-
-    fun setScrollState(state:Int){
-        if (_scrollStateChanged.value != state) {
-            _scrollStateChanged.value = state
-        }
-    }
-
     private fun stopTimer() {
         timerJob?.cancel()
         timerJob = null
@@ -176,5 +166,14 @@ class HomeViewModel : BaseViewModel() {
     override fun onCleared() {
         super.onCleared()
         stopTimer()
+    }
+
+    suspend fun getBannerActive() {
+        val result = BannerBiz.getBannerActive()
+        if(result is Result.Success){
+            _bannerActiveLiveData.value = result.data.data
+        } else {
+            "getBannerActive failed: $result".loge(TAG)
+        }
     }
 }

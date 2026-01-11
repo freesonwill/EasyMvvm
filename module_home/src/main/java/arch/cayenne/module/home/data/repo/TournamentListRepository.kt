@@ -3,7 +3,9 @@ package arch.cayenne.module.home.data.repo
 import androidx.room.Transaction
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.InfoDao
+import arch.cayenne.lib.database.dao.SportLoginInfoDao
 import arch.cayenne.lib.database.dao.TournamentDao
 import arch.cayenne.lib.database.entity.SportTournamentCrossRef
 import arch.cayenne.lib.database.entity.TournamentBean
@@ -20,6 +22,8 @@ class TournamentListRepository(
     private val socketManager: WebSocketManager,
     private val tournamentDao: TournamentDao,
     private val infoDao: InfoDao,
+    private val sportLoginInfoDao: SportLoginInfoDao,
+    private val userDataManager: UserDataManager,
 ) : BaseRepository() {
 
     suspend fun getChampionTournament(sportId: Int): ApiResponseState { //先暫時用TournamentDataModel
@@ -82,5 +86,6 @@ class TournamentListRepository(
     suspend fun queryTournaments(playTypeId: Int, sportId: Int) = tournamentDao.queryTournaments(playTypeId, sportId)
     suspend fun queryChampionTournaments(sportId: Int) = tournamentDao.queryChampionTournaments(PlayType.CHAMPION.id, sportId)
 
-    suspend fun observeLoginChange() = infoDao.observeIsLogin()
+
+    fun observeUserLogin() = sportLoginInfoDao.observerLogin()
 }

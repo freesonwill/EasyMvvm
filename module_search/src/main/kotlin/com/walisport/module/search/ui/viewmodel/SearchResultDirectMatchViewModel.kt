@@ -22,11 +22,9 @@ import com.walisport.module.business.common.data.constants.GameSortType
 import com.walisport.module.search.ui.model.Avatar
 import com.walisport.module.search.ui.model.HotColdType
 import com.walisport.module.search.ui.model.SearchGameContentData
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -85,7 +83,7 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
         get() = _raceDateMap
 
     /** 監聽登入狀態變化 */
-    fun observeLoginChange() = repository.observeLoginChange()
+    fun observeLoginChange() = repository.observeUserLogin()
 
     /** 取得精準搜尋結果 */
     fun getSearchResult(data: SearchResultBean) {

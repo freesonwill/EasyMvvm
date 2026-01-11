@@ -37,7 +37,7 @@
         app:layout_constraintBottom_toBottomOf="@id/title_bottom"
         app:srcCompat="@drawable/selector_ic_arrow_left" />
 
-    <com.walisport.module.business.common.ui.BalanceView
+    <com.walisport.module.business.common.ui.view.BalanceView
         android:id="@+id/view_balance"
         android:layout_width="176dp"
         android:layout_height="@dimen/dp_36"

@@ -9,11 +9,13 @@ import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.SportStringExt.balanceStringToLong
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
+import arch.cayenne.lib.database.dao.SportLoginInfoDao
 import arch.cayenne.lib.database.entity.BetResultLiteBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
 import arch.cayenne.lib.database.entity.ComboBetResultBean
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.SingleBetResultBean
+import arch.cayenne.lib.database.entity.SportLoginInfoBean
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.data.InvalidLoginError
@@ -34,7 +36,8 @@ class CommonRepository(
     private val socketManager: WebSocketManager,
     private val userDataManager: UserDataManager,
     private val infoDao: InfoDao,
-    private val betDao: BetDao
+    private val betDao: BetDao,
+    private val sportLoginInfoDao: SportLoginInfoDao,
 ) : BaseRepository() {
 
     private val betResultFlow = MutableSharedFlow<List<BetResultLiteBean>>()
@@ -44,9 +47,7 @@ class CommonRepository(
     fun getBetResultFlow(): Flow<List<BetResultLiteBean>> = betResultFlow
     fun getSoftConfigFlow():Flow<Boolean> = softConfigFlow
 
-    suspend fun checkIsLogin(): Boolean {
-        return infoDao.isLogin()?: false
-    }
+    fun observeToken() = userDataManager.observe<String>(UserDataKey.KEY_TOKEN)
 
     suspend fun getMyCurrency(): String {
         return infoDao.getCurrency2() ?: "CNY"
@@ -75,13 +76,14 @@ class CommonRepository(
         }
         socketManager.isLogin = true
         if (loginResp.data != null && loginResp.data!!.success) {
+            sportLoginInfoDao.insert(SportLoginInfoBean(index = 0, isLogin = true))
+
             val balanceBean = getBalance()
             infoDao.insert(
                 InfoBean(
                     uid,
                     balanceBean.balance,
                     balanceBean.currency,
-                    loginResp.data!!.success
                 )
             )
             return ApiResponseState.Succeeded(loginResp.data!!.success)
@@ -121,7 +123,6 @@ class CommonRepository(
                             this.uid,
                             it.data!!.balance.balanceStringToLong(),
                             this.currency,//账号余额通知中没有币种字段
-                            this.login
                         )
                     )
                 }
@@ -178,7 +179,7 @@ class CommonRepository(
 
     suspend fun reset() {
         socketManager.reset()
-        setIsLogin(false)
+        clearToken()
     }
 
     fun reconnectNow() {
@@ -280,10 +281,16 @@ class CommonRepository(
     fun observeAppNotifyChange() =
         socketManager.observeProtoMessage<Client.AppNoticeNotify>(ApiCode.APP_NOTIFY)
 
-    suspend fun setIsLogin(b: Boolean) {
+    /** 清除用户令牌。
+     *
+     * 该方法首先从用户数据管理器中获取用户ID（KEY_UID）。
+     * 如果用户ID为-1，表示无效用户，方法将直接返回，不进行任何操作。
+     * 否则，方法将用户令牌（KEY_TOKEN）设置为空字符串，从而清除用户的登录状态。
+     */
+    fun clearToken() {
         val uid = userDataManager.getValue(UserDataKey.KEY_UID, -1)
         if (uid == -1) return
-        infoDao.setLogin(uid, b)
+        userDataManager.setKeyValue(UserDataKey.KEY_TOKEN, "")
     }
 
     fun observeAberrantNotify() = socketManager.observeProtoMessage<Client.AberrantNotify>(ApiCode.ABERRANT_NOTIFY)

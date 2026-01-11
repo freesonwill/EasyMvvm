@@ -10,6 +10,7 @@ import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.MatchDao
+import arch.cayenne.lib.database.dao.SportLoginInfoDao
 import arch.cayenne.lib.database.entity.MarketBeanLite
 import arch.cayenne.lib.database.entity.MatchBean
 import arch.cayenne.lib.database.entity.MatchBeanLite
@@ -36,6 +37,7 @@ abstract class BaseMatchRepository(
     private val betDao: BetDao,
     private val matchDao: MatchDao,
     private val infoDao: InfoDao,
+    private val sportLoginInfoDao: SportLoginInfoDao,
     private val userDataManager: UserDataManager,
 ) : BaseRepository() {
     companion object {
@@ -228,5 +230,6 @@ abstract class BaseMatchRepository(
         provider = match.basicInfo.provider
     )
 
-    suspend fun observeLoginChange() = infoDao.observeIsLogin()
+
+    fun observerUserLogin() = sportLoginInfoDao.observerLogin()
 }

@@ -1,16 +1,16 @@
 package arch.cayenne.module.bet.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
+import arch.cayenne.lib.database.dao.SportLoginInfoDao
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.BettingRemoteManager
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -18,8 +18,10 @@ class BetSheetRepository(
     override val scope: CoroutineScope,
     private val infoDao: InfoDao,
     private val betDao: BetDao,
-    private val remoteManager: BettingRemoteManager
-) : BaseRepository() {
+    private val sportLoginInfoDao: SportLoginInfoDao,
+    private val remoteManager: BettingRemoteManager,
+    private val userDataManager: UserDataManager,
+    ) : BaseRepository() {
 
     val observerBetCount: Flow<Int> = betDao.observeCurrentCount()
 
@@ -99,8 +101,8 @@ class BetSheetRepository(
     fun observeLoginStatus() {
         loginStatusObserverJob?.cancel()
         loginStatusObserverJob = scope.launch {
-            infoDao.observeIsLogin().drop(1).distinctUntilChanged().collect {
-                if (it) {
+            sportLoginInfoDao.observerLogin().collect {
+                if (it == true) {
                     register()
                 }
             }

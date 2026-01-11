@@ -72,7 +72,6 @@ dependencies {
     implementation(project(":module_home"))
     implementation(project(":module_bet"))
     implementation(project(":module_betslip"))
-    implementation(project(":module_login"))
     implementation(project(":module_setting"))
     implementation(project(":module_live"))
     implementation(project(":module_handicap"))
@@ -98,7 +97,9 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.immersionbar)
-    debugImplementation(libs.leakcanary)
+    if(localProps.getProperty("switch.leakcanary","true").toBoolean()) {
+        debugImplementation(libs.leakcanary)
+    }
     if(localProps.getProperty("PERF_BLOCK_CANARY","false").toBoolean()) {
         debugImplementation(project(":external:blockcanary"))
     }

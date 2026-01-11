@@ -3,7 +3,6 @@ package arch.cayenne.module.home.ui.fragment
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -13,6 +12,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
@@ -20,11 +20,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
-import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
-import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
+import com.walisport.module.business.common.ui.adapter.BannerImageMatchAdapter
 import arch.cayenne.lib.common.ui.view.CustomTabLayoutMediator
 import arch.cayenne.lib.common.ui.view.WLLinearGradientFontSpan
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -56,15 +55,20 @@ import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModelV2
 import arch.cayenne.module.home.utils.DateUtils
 import com.bumptech.glide.Glide
+import com.google.android.material.appbar.AppBarLayout
+import com.walisport.module.business.common.ui.fragment.BaseBannerLinkFragment
+import com.walisport.module.business.common.ui.viewmodel.BaseBannerViewModel
+import com.walisport.module.business.common.utils.ext.setGlobalIndicator
+import com.walisport.module.business.common.utils.ext.setGlobalBasicConfig
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.reflect.KClass
 
 /**
- * 今日Fragment
+ * 超级大赛Fragment
  */
-class SubHomeFragment : BaseFragment<SubHomeViewModelV2, FragmentSubHomeBinding>(),
+class SubHomeFragment : BaseBannerLinkFragment<SubHomeViewModelV2, FragmentSubHomeBinding>(),
     ISubFragmentLifecycle {
     override val vbClass: KClass<FragmentSubHomeBinding> = FragmentSubHomeBinding::class
     override val vmClass: KClass<SubHomeViewModelV2> = SubHomeViewModelV2::class
@@ -113,7 +117,7 @@ class SubHomeFragment : BaseFragment<SubHomeViewModelV2, FragmentSubHomeBinding>
 
     override fun initView(savedInstanceState: Bundle?) {
         initSportLayout()
-        initSportBanner()
+        launch { initSportBanner() }
         initTournamentLayout()
 
         // 初始化聯賽按鈕狀態
@@ -121,6 +125,7 @@ class SubHomeFragment : BaseFragment<SubHomeViewModelV2, FragmentSubHomeBinding>
     }
 
     override fun initListener() {
+        super.initListener()
         with(mBinding) {
             setTopMaskListener()
 
@@ -277,42 +282,16 @@ class SubHomeFragment : BaseFragment<SubHomeViewModelV2, FragmentSubHomeBinding>
 
     // init Sport Banner 輪播區塊
     @SuppressLint("ClickableViewAccessibility")
-    private fun initSportBanner() {
-        val mockBannerList = arrayListOf(
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-        )
+    private suspend fun initSportBanner() {
+        val mockBannerList = mViewModel.getBannerList()
 
         with(mBinding.includeSportBanner) {
-            pbSportBanner.setTriggerListener {
-                vpSportBanner.setLoopTime(50)
-                vpSportBanner.isAutoLoop(true)
-                vpSportBanner.start()
-                vpSportBanner.postDelayed({
-                    vpSportBanner.stop()                    // 停止自动轮播
-                    vpSportBanner.isAutoLoop(false)         // 关闭自动轮播功能 // 可选：允许下次再次触发
-                }, 50)
-            }
             val adapter = BannerImageMatchAdapter(mockBannerList)
             vpSportBanner.setAdapter(adapter)
-            vpSportBanner.setBannerRound(9.dp2px.toFloat())
-            vpSportBanner.isAutoLoop(false)
-            // 设置滑动时长丝滑,不影响曲线,
-            vpSportBanner.setScrollTime(600)  // 0.6 秒
-            vpSportBanner.setPageTransformer(CustomCurveTransformer())
+            vpSportBanner.setGlobalBasicConfig()
+            vpSportBanner.setGlobalIndicator()
+            vpSportBanner.start()
         }
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        if (hidden) {
-            mBinding.includeSportBanner.pbSportBanner.stopTriggerJob()
-        } else {
-            mBinding.includeSportBanner.pbSportBanner.resetTriggerJob()
-        }
-        super.onHiddenChanged(hidden)
     }
 
     // 更新 VIP 信息顯示
@@ -862,6 +841,15 @@ class SubHomeFragment : BaseFragment<SubHomeViewModelV2, FragmentSubHomeBinding>
         sortingMenuBinding = null
         super.onDestroyView()
     }
+
+    override fun provideBannerViewModel(): BaseBannerViewModel {
+        return sharedViewModel<HomeViewModel, NewHomeFragment>().value
+    }
+
+    override fun provideBannerAppBarLayout(): AppBarLayout? {
+        return mBinding.aplHomeBanner
+    }
+
 
     companion object {
         const val LOW_MEMORY_THRESHOLD = 2_000_000_000L

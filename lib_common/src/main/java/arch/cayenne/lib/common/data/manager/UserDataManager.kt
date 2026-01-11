@@ -70,4 +70,5 @@ class UserDataManager {
         @Suppress("UNCHECKED_CAST")
         return flow as Flow<T>
     }
+
 }

@@ -1,6 +1,7 @@
 package com.walisport.app.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.ui.viewmodel.BaseActivityViewModel
 import com.walisport.app.data.repo.MainRepository
 import kotlinx.coroutines.flow.filter
@@ -19,13 +20,14 @@ class MainActivityViewModel : BaseActivityViewModel() {
 
     override fun initViewModel() {
         super.initViewModel()
+
         viewModelScope.launch {
-            repository.observeLoginChange()
-                .filter { it }
+            repository.observeLogin()
+                .filter { it == true }
                 .collect {
-                repository.loadSportList()
-                repository.observeSystemNotify()
-            }
+                    repository.loadSportList()
+                    repository.observeSystemNotify()
+                }
         }
 
     }

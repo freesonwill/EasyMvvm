@@ -426,9 +426,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         launch(Lifecycle.State.RESUMED) {
             //网络异常登陆成功后才获取数据
             mViewModel.observeLoginChange()
-                .filter { it && mViewModel.apiStateListener.value == DataState.NetworkUnavailable }
+                .filter { it == true && mViewModel.apiStateListener.value == DataState.NetworkUnavailable }
                 .collect {
-                    if (it) {
+                    if (it == true) {
                         mViewModel.matchId.value?.let { matchId ->
                             mViewModel.registerMatchInfoNotify(matchId)
                             mViewModel.registerStatisticsNotify(matchId)

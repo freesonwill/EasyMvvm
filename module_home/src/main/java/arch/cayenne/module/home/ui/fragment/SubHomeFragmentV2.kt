@@ -10,17 +10,17 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
 import android.widget.TextView
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.animation.AnimationController
 import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
-import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
-import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
+import com.walisport.module.business.common.ui.adapter.BannerImageMatchAdapter
 import arch.cayenne.lib.common.ui.view.SimpleTabDataModel
 import arch.cayenne.lib.common.ui.view.WLLinearGradientFontSpan
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -46,10 +46,18 @@ import arch.cayenne.module.home.databinding.LayoutTournamentSortingMenuBinding
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.SubHomeViewModelV2
+import com.google.android.material.appbar.AppBarLayout
+import com.walisport.module.business.common.ui.fragment.BaseBannerLinkFragment
+import com.walisport.module.business.common.ui.viewmodel.BaseBannerViewModel
+import com.walisport.module.business.common.utils.ext.setGlobalIndicator
+import com.walisport.module.business.common.utils.ext.setGlobalBasicConfig
 import kotlinx.coroutines.Job
 import kotlin.reflect.KClass
 
-class SubHomeFragmentV2 : BaseFragment<SubHomeViewModelV2, FragmentSubHomeV2Binding>(),
+/**
+ * 今日、滚球 子頁面
+ */
+class SubHomeFragmentV2 : BaseBannerLinkFragment<SubHomeViewModelV2, FragmentSubHomeV2Binding>(),
     ISubFragmentLifecycle {
 
     override val vbClass: KClass<FragmentSubHomeV2Binding> = FragmentSubHomeV2Binding::class
@@ -90,13 +98,14 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModelV2, FragmentSubHomeV2Bind
 
 
     override fun initView(savedInstanceState: Bundle?) {
-        initSportBanner()
+        launch { initSportBanner() }
         initSportLayout()
         setupMatchFragment()
         initTournamentLayout()
     }
 
     override fun initListener() {
+        super.initListener()
         with(mBinding) {
             setTopMaskListener()
 
@@ -264,32 +273,15 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModelV2, FragmentSubHomeV2Bind
 
     // init Sport Banner 輪播區塊
     @SuppressLint("ClickableViewAccessibility")
-    private fun initSportBanner() {
-        val mockBannerList = arrayListOf(
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-        )
+    private suspend fun initSportBanner() {
+        val mockBannerList = mViewModel.getBannerList()
 
         with(mBinding.includeSportBanner) {
-            pbSportBanner.setTriggerListener {
-                vpSportBanner.setLoopTime(50)
-                vpSportBanner.isAutoLoop(true)
-                vpSportBanner.start()
-                vpSportBanner.postDelayed({
-                    vpSportBanner.stop()                    // 停止自动轮播
-                    vpSportBanner.isAutoLoop(false)         // 关闭自动轮播功能 // 可选：允许下次再次触发
-                }, 50)
-            }
             val adapter = BannerImageMatchAdapter(mockBannerList)
             vpSportBanner.setAdapter(adapter)
-            vpSportBanner.setBannerRound(9.dp2px.toFloat())
-            vpSportBanner.isAutoLoop(false)
-            // 设置滑动时长丝滑,不影响曲线,
-            vpSportBanner.setScrollTime(600)  // 0.6 秒
-            vpSportBanner.setPageTransformer(CustomCurveTransformer())
+            vpSportBanner.setGlobalBasicConfig()
+            vpSportBanner.setGlobalIndicator()
+            vpSportBanner.start()
         }
     }
 
@@ -712,11 +704,6 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModelV2, FragmentSubHomeV2Bind
 
 
     override fun onHiddenChanged(hidden: Boolean) {
-        if (hidden) {
-            mBinding.includeSportBanner.pbSportBanner.stopTriggerJob()
-        } else {
-            mBinding.includeSportBanner.pbSportBanner.resetTriggerJob()
-        }
         super.onHiddenChanged(hidden)
 
         if (hidden) {
@@ -753,6 +740,14 @@ class SubHomeFragmentV2 : BaseFragment<SubHomeViewModelV2, FragmentSubHomeV2Bind
      */
     private fun updateTournamentButtonStyle(hasSelection: Boolean) {
         mBinding.layoutContainer.customTabGroup.updateTournamentButtonStyle(hasSelection)
+    }
+
+    override fun provideBannerViewModel(): BaseBannerViewModel {
+        return sharedViewModel<HomeViewModel, NewHomeFragment>().value
+    }
+
+    override fun provideBannerAppBarLayout(): AppBarLayout? {
+        return mBinding.aplHomeBanner
     }
 
     companion object {

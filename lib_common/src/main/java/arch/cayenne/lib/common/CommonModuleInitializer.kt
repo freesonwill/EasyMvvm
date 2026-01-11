@@ -58,7 +58,7 @@ class CommonModuleInitializer : DefaultInitializer<String> {
         factory {
             CoroutineScope(Dispatchers.IO)
         }
-        factory { (scope: CoroutineScope) -> CommonRepository(scope, get(), get(), get(), get()) }
+        factory { (scope: CoroutineScope) -> CommonRepository(scope, get(), get(), get(), get(), get()) }
         single { UserDataManager() }
         viewModelOf(::ConnectFailedViewModel)
         viewModelOf(::ReserveDialogViewModel)

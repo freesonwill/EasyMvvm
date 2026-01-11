@@ -7,6 +7,7 @@ import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.MessageDao
 import arch.cayenne.lib.database.dao.SportDao
+import arch.cayenne.lib.database.dao.SportLoginInfoDao
 import arch.cayenne.lib.database.entity.MessageBean
 import arch.cayenne.lib.database.entity.ShowType
 import arch.cayenne.lib.database.entity.SportBean
@@ -17,6 +18,8 @@ import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 
 /**
@@ -31,9 +34,10 @@ class MainRepository(
     private val sportDao: SportDao,
     private val msgDao: MessageDao,
     private val infoDao: InfoDao,
+    private val sportLoginInfoDao: SportLoginInfoDao
 ) : BaseRepository() {
 
-    suspend fun observeLoginChange() = infoDao.observeIsLogin()
+    fun observeLogin() = sportLoginInfoDao.observerLogin()
 
     //获取皮肤背景
     fun getSkinType(): String {

@@ -2,4 +2,24 @@
     <string name="account_edit_name_toast_limit">You have reached the limit of changes for this month. Please try again next month.</string>
     <string name="system_avatar_save" translatable="false">Save Avatar</string>
     <string name="account_avatar_select">Please select an avatar</string>
+    <string name="title_login_or_register" translatable="false">Login/Register</string>
+    <string name="account_phone_register">Phone Number</string>
+    <string name="account_email_register">Email</string>
+    <string name="hint_phone_number">Phone Number</string>
+    <string name="account_continue">Continue</string>
+    <string name="sms_verify_hint">Enter the 6-digit code</string>
+    <string name="sms_code_sent_to">Verification code sent to</string>
+    <string name="account_skip">Skip</string>
+    <string name="account_create_nickname">Create Nickname</string>
+    <string name="account_nickname_hint">You can enter your preferred nickname, and you can change it later. If you skip this step, the system will assign a nickname for you automatically.</string>
+    <string name="account_sms_verify_failure">The verification code is incorrect</string>
+    <string name="account_resend_sms_code">Resend verification code</string>
+    <string name="account_resend_sms_code_count_down">Resend verification code %ds</string>
+    <string name="account_nickname_initial_input_hint" translatable="false">Add Nickname</string>
+    <string name="nickname_modify_failed">Failed to modify nickname, please try again later</string>
+    <string name="account_login_success">Login successful</string>
+    <string name="account_register_success">Registration successful</string>
+
+
+
 </resources>

@@ -45,6 +45,7 @@ dependencies {
     implementation(project(":module_game_detail"))
     implementation(project(":module_popup_slot"))
     implementation(project(":module_business_common"))
+    implementation(project(":module_misc"))
     testImplementation(libs.junit)
     implementation(libs.banner)
     androidTestImplementation(libs.androidx.junit)

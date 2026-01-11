@@ -79,13 +79,13 @@ object ViewExt {
      *  获取View的真实尺寸，确保View已经完成测量和布局
      * @return
      */
-    suspend fun View.getRealSize(): Pair<Int, Int> {
+    suspend fun View.awaitViewSize(): Pair<Int, Int> {
         return suspendCancellableCoroutine { continuation ->
             val v = this
             var w = this.width
             var h = this.height
             val r = object : Runnable {
-                var i = 0
+                val t = System.currentTimeMillis()
                 override fun run() {
                     if (w == v.width && h == v.height) {
                         continuation.resume(Pair(w, h))
@@ -94,8 +94,7 @@ object ViewExt {
                         h = v.height
                         v.post(this)
                     }
-                    i++
-                    if(i > 20) throw IllegalStateException("getViewSize timeout")
+                    if((System.currentTimeMillis() -t) > 500) throw IllegalStateException("$this awaitViewSize timeout")
                 }
             }
             v.post(r)
@@ -105,9 +104,13 @@ object ViewExt {
     /**
      * 协程版的post
      */
-    suspend fun View.suspendPost(){
+    suspend fun View.suspendPost(delayMillis: Long=0){
         return suspendCancellableCoroutine { continuation ->
-            this.post { continuation.resume(Unit) }
+            if(delayMillis > 0){
+                this.postDelayed({ continuation.resume(Unit) },delayMillis)
+            }else {
+                this.post { continuation.resume(Unit) }
+            }
         }
     }
 }

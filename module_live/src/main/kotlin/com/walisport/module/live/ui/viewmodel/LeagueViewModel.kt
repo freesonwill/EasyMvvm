@@ -19,7 +19,7 @@ class LeagueViewModel : BaseViewModel() {
     val leagueData: LiveData<LeagueMatchBean> get() = _leagueData
     private val _activeHeaderIndex = MutableLiveData<Int?>()
     val activeHeaderIndex: LiveData<Int?> get() = _activeHeaderIndex
-    fun observeLoginChange(): Flow<Boolean> = repo.observeLoginChange()
+    fun observeLoginChange() = repo.observeLoginChange()
     private var cursorMatchId: Long = 0L
     private var cursorMatchStartTime: Long = 0L
 

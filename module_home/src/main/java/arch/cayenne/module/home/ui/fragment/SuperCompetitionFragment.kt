@@ -9,10 +9,9 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
-import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
-import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
-import arch.cayenne.lib.common.ui.adapter.BannerImageMatchAdapter
+import com.walisport.module.business.common.ui.adapter.BannerImageMatchAdapter
 import arch.cayenne.lib.common.ui.view.WLLinearGradientFontSpan
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
@@ -23,6 +22,7 @@ import arch.cayenne.lib.common.utils.ext.TabLayoutExt
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.addOnTabSelectedListener2
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startFadeAnim
 import arch.cayenne.lib.common.utils.helper.VIPResourceHelper
 import arch.cayenne.module.home.R
@@ -35,14 +35,22 @@ import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.SuperCompetitionViewModel
 import arch.cayenne.module.home.utils.scrollToPositionWithoutAnim
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
+import com.walisport.module.business.common.ui.fragment.BaseBannerLinkFragment
+import com.walisport.module.business.common.ui.viewmodel.BaseBannerViewModel
+import com.walisport.module.business.common.utils.ext.setGlobalIndicator
+import com.walisport.module.business.common.utils.ext.setGlobalBasicConfig
 import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.reflect.KClass
 
+/**
+ * 超级大赛
+ */
 class SuperCompetitionFragment :
-    BaseFragment<SuperCompetitionViewModel, FragmentSuperCompetitionBinding>(),
+    BaseBannerLinkFragment<SuperCompetitionViewModel, FragmentSuperCompetitionBinding>(),
     ISubFragmentLifecycle {
 
     override val vbClass: KClass<FragmentSuperCompetitionBinding> =
@@ -50,17 +58,27 @@ class SuperCompetitionFragment :
     override val vmClass: KClass<SuperCompetitionViewModel> = SuperCompetitionViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
-        initSportBanner()
+        launch { initSportBanner() }
         initMatchListFragment()
     }
 
+
     override fun initListener() {
+        super.initListener()
         with(mBinding) {
             clVipInfo.apply {
                 clickNoRepeatSingle { navigate(arch.cayenne.lib.res.R.string.nav_module_vip_fragment.deeplink()) }
                 addScaleOnTouchAnimation()
             }
         }
+    }
+
+    override fun provideBannerViewModel(): BaseBannerViewModel {
+        return sharedViewModel<HomeViewModel, NewHomeFragment>().value
+    }
+
+    override fun provideBannerAppBarLayout(): AppBarLayout {
+        return mBinding.aplHomeBanner
     }
 
     override suspend fun createObserver() {
@@ -112,31 +130,14 @@ class SuperCompetitionFragment :
 
     // init Sport Banner 輪播區塊
     @SuppressLint("ClickableViewAccessibility")
-    private fun initSportBanner() {
-        val mockBannerList = arrayListOf(
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-            R.drawable.banner_ad1,
-        )
+    private suspend fun initSportBanner() {
+        val mockBannerList = mViewModel.getBannerList()
         with(mBinding.includeSportBanner) {
-            pbSportBanner.setTriggerListener {
-                vpSportBanner.setLoopTime(50)
-                vpSportBanner.isAutoLoop(true)
-                vpSportBanner.start()
-                vpSportBanner.postDelayed({
-                    vpSportBanner.stop()                    // 停止自动轮播
-                    vpSportBanner.isAutoLoop(false)         // 关闭自动轮播功能 // 可选：允许下次再次触发
-                }, 50)
-            }
             val adapter = BannerImageMatchAdapter(mockBannerList)
             vpSportBanner.setAdapter(adapter)
-            vpSportBanner.setBannerRound(9.dp2px.toFloat())
-            vpSportBanner.isAutoLoop(false)
-            // 设置滑动时长丝滑,不影响曲线,
-            vpSportBanner.setScrollTime(600)  // 0.6 秒
-            vpSportBanner.setPageTransformer(CustomCurveTransformer())
+            vpSportBanner.setGlobalBasicConfig()
+            vpSportBanner.setGlobalIndicator()
+            vpSportBanner.start()
         }
     }
 
@@ -181,7 +182,7 @@ class SuperCompetitionFragment :
             TabLayoutExt.OnTabSelectedListener2 {
             override fun onTabSelected(tab: TabLayout.Tab, isTabClick: Boolean) {
                 playFadeAnimTriggerByDateTab {
-                    lifecycleScope.launch {
+                    launch {
                         mViewModel.selectedDate(
                             mViewModel.dateList.value?.find { it.dateStr == tab.tag }?.timestamp
                                 ?: return@launch
@@ -365,15 +366,6 @@ class SuperCompetitionFragment :
         val itemId = 0
         val fragment = childFragmentManager.findFragmentByTag("f$itemId") ?: return
         (fragment as? BiDirectionalMatchListPagerFragment)?.reloadAllData()
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        if (hidden) {
-            mBinding.includeSportBanner.pbSportBanner.stopTriggerJob()
-        } else {
-            mBinding.includeSportBanner.pbSportBanner.resetTriggerJob()
-        }
-        super.onHiddenChanged(hidden)
     }
 
     companion object {
