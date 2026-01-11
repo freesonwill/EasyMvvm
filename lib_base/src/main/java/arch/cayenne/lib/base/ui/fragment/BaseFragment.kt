@@ -12,7 +12,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -20,20 +19,17 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.R
 import arch.cayenne.lib.base.data.model.StatusBarConfig
-import arch.cayenne.lib.base.ui._interface.IFragmentArguments
+import arch.cayenne.lib.base.ui._interface.IFragment
 import arch.cayenne.lib.base.ui._interface.IStatusBar
 import arch.cayenne.lib.base.ui._interface.IView
 import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.ext.FragmentExt.handleBackPressed
 import arch.cayenne.lib.base.utils.ext.FragmentExt.isRootFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.launch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModelForClass
 import java.lang.reflect.Method
 import kotlin.coroutines.CoroutineContext
@@ -45,7 +41,7 @@ import kotlin.reflect.KClass
  * @date: 2025/3/13 18:38
  * @description: ViewModelFragment基类，自动把ViewModel注入Fragment
  */
-abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), IView, IStatusBar,IFragmentArguments {
+abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), IView, IStatusBar,IFragment {
     protected open val TAG = this.javaClass.simpleName
     //#region VB,VM
     protected val mBinding: VB get() = uiBind.binding
@@ -79,7 +75,6 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
         uiBind.onCreateView(inflater,container,savedInstanceState)
-        handleBackPressed(::onBackPressed)
         return mBinding.root
     }
 
@@ -164,15 +159,6 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
      */
     private fun findActivityNavController(@IdRes id: Int = R.id.nav_host): NavController {
         return requireActivity().findNavController(id)
-    }
-
-    /**
-     * 返回事件处理
-     *
-     * @return true-拦截事件，false-不拦截事件
-     */
-    open fun onBackPressed():Boolean {
-        return false
     }
 
     /**

@@ -236,10 +236,11 @@ object NavigationExt {
         exitAnim: IAnimationOption? = AnimationController[AnimType.routeExit],
         popEnterAnim: IAnimationOption? = AnimationController[AnimType.routePopEnter],
         popExitAnim: IAnimationOption? = AnimationController[AnimType.routePopExit],
+        navController: NavController = findNavController()
     ) {
         if (isNavigationDebounced("$this", enterAnim?.duration)) return
         setupDefaultAnim(args, enterAnim, exitAnim, popEnterAnim, popExitAnim)
-        findNavController().navigate(resId, args, navOptions, navigatorExtras)
+        navController.navigate(resId, args, navOptions, navigatorExtras)
     }
 
     fun Fragment.navigateUp(): Boolean {

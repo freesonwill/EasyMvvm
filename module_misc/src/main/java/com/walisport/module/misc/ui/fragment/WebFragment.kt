@@ -25,11 +25,12 @@ import kotlin.reflect.KClass
  * Web浏览页，加载充提教程、实时返水等H5页面
  */
 class WebFragment : BaseFragment<SeniorPartnerViewModel, FragmentSeniorPartnerBinding>() {
-
+    companion object {
+        const val TAG = "WebFragment"
+    }
     override val vbClass: KClass<FragmentSeniorPartnerBinding> = FragmentSeniorPartnerBinding::class
     override val vmClass: KClass<SeniorPartnerViewModel> = SeniorPartnerViewModel::class
 
-    //private val manager: UserDataManager by inject(UserDataManager::class.java)
     private val args by navArgs<WebFragmentArgs>()
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -146,7 +147,7 @@ class WebFragment : BaseFragment<SeniorPartnerViewModel, FragmentSeniorPartnerBi
         super.onDestroy()
     }
 
-    fun doFragmentBack(): Boolean {
+    private fun doFragmentBack(): Boolean {
         if (mBinding.webView.canGoBack()) {
             mBinding.webView.goBack()
             return true

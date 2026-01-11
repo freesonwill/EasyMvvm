@@ -51,22 +51,27 @@ class GameAllHeaderViewHolder(
     fun init() {
         scope.launch {
             with(binding) {
-                val mockBannerList = onItemClickListener.getBannerList()
-                // 自定义适配器
-                val adapter = BannerImageMatchAdapter(mockBannerList)
-                vpBanner.setAdapter(adapter)
-                vpBanner.setGlobalBasicConfig()
-                vpBanner.setGlobalIndicator()
-                vpBanner.start()
-
-                ivInviteFriend.clickNoRepeat {
-                    onItemClickListener.onInviteFriendItemClick()
-                }
+                 onItemClickListener.getBannerList().let {list ->
+                    // 自定义适配器
+                    val adapter = BannerImageMatchAdapter(list)
+                    vpBanner.setAdapter(adapter)
+                    vpBanner.setGlobalBasicConfig()
+                    vpBanner.setGlobalIndicator()
+                    vpBanner.start()
+                 }
 
                 fragmentManager.beginTransaction().replace(
                     R.id.daily_match_fragment,
                     DailyMatchInfoFragment()
                 ).commit()
+
+                onItemClickListener.getInviteFriend().let {list->
+                    val adapter = BannerImageMatchAdapter(list)
+                    ivInviteFriend.setAdapter(adapter)
+                    ivInviteFriend.setGlobalBasicConfig()
+                    ivInviteFriend.setGlobalIndicator()
+                    ivInviteFriend.start()
+                }
             }
         }
     }
@@ -74,8 +79,8 @@ class GameAllHeaderViewHolder(
 
 
     interface OnHeaderItemClickListener {
-        fun onInviteFriendItemClick()
         suspend fun getBannerList():List<BannerImageMatchAdapter.ImageData>
+        suspend fun getInviteFriend():List<BannerImageMatchAdapter.ImageData>
     }
 
 }

@@ -9,18 +9,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
-import arch.cayenne.lib.base.ui.animation.AnimationController
-import arch.cayenne.lib.base.ui.animation.AnimationController.AnimType
 import arch.cayenne.lib.base.ui.animation.CustomCurveTransformer
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
@@ -62,7 +60,6 @@ import com.walisport.module.hall.ui.view.ScrollableTabIndicatorHelper
 import com.walisport.module.hall.ui.viewmodel.HallViewModel
 import com.walisport.module.popup.slot.ui.fragment.PopupSlotFragment
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
@@ -165,7 +162,8 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
 
             ivRightLogo.setOnBannerListener { Int, position ->
                 val url = mViewModel.curveBannerLiveData.value?.get(position)?.targetUrl ?: ""
-                navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment.deeplink("url" to url))
+                //navigate(arch.cayenne.lib.res.R.string.nav_module_web_fragment.deeplink("url" to url))
+                loadWeb(url)
             }
 
             llSearchBar.apply {
@@ -457,4 +455,25 @@ class HallFragment : BaseFragment<HallViewModel , FragmentHallBinding>() {
             .commit()
     }
 
+
+    private fun loadWeb(url: String) {
+        mBinding.webView.isVisible = true
+        val barHeight = ViewUtils.getStatusBarHeight(requireContext())
+        mBinding.webView.layoutParams = (mBinding.webView.layoutParams as MarginLayoutParams).apply {
+             topMargin = barHeight
+        }
+        mBinding.webView.loadUrl(url)
+    }
+
+    override fun onBackPressed(): Boolean {
+        if(mBinding.webView.isVisible) {
+            if (mBinding.webView.canGoBack()) {
+                mBinding.webView.goBack()
+            } else {
+                mBinding.webView.isVisible = false
+            }
+            return true
+        }
+        return super.onBackPressed()
+    }
 }

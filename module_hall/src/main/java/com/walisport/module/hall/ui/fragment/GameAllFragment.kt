@@ -34,12 +34,12 @@ class GameAllFragment : BaseBannerLinkFragment<GameAllViewModel, FragmentGameAll
     private val headerAdapter by lazy {
         GameAllHeaderAdapter(viewLifecycleOwner.lifecycleScope,childFragmentManager,
             object : GameAllHeaderViewHolder.OnHeaderItemClickListener {
-                override fun onInviteFriendItemClick() {
-                    navigate(arch.cayenne.lib.res.R.string.nav_module_invite_friends_fragment.deeplink())
-                }
-
                 override suspend fun getBannerList(): List<BannerImageMatchAdapter.ImageData> {
                     return mViewModel.getBannerList()
+                }
+
+                override suspend fun getInviteFriend(): List<BannerImageMatchAdapter.ImageData> {
+                    return mViewModel.getInviteFriend()
                 }
             })
     }
