@@ -279,7 +279,7 @@ class SubHomeFragmentV2 : BaseBannerLinkFragment<SubHomeViewModelV2, FragmentSub
         with(mBinding.includeSportBanner) {
             val adapter = BannerImageMatchAdapter(mockBannerList)
             vpSportBanner.setAdapter(adapter)
-            vpSportBanner.setGlobalBasicConfig()
+            vpSportBanner.setGlobalBasicConfig(bannerRadius = 9f.dp2px)
             vpSportBanner.setGlobalIndicator()
             vpSportBanner.start()
         }
