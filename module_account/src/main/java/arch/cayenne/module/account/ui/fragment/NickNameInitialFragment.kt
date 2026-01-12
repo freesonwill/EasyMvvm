@@ -141,6 +141,10 @@ class NickNameInitialFragment :
 
                 is NicknameInitialState.Failure -> {
                     showToast(getString(R.string.nickname_modify_failed))
+
+                    mBinding.tvNext.visibility = View.VISIBLE
+                    mBinding.ivLoading.visibility = View.GONE
+
                     loadingAnim?.cancel()
                 }
 
