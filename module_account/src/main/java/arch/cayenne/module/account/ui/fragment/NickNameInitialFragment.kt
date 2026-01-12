@@ -52,6 +52,10 @@ class NickNameInitialFragment :
 
         mBinding.llNextWrapper.clickNoRepeat {
             //修改昵称
+            if (mViewModel.apiStateListener.value is DataState.Loading) {
+                //正在加载中，防止重复点击
+                return@clickNoRepeat
+            }
             mViewModel.changeNickname(mBinding.etNickname.text.toString().trim())
         }
 
