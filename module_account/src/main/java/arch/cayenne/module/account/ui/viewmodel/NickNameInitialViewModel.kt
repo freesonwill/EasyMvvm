@@ -35,7 +35,7 @@ class NickNameInitialViewModel : BaseViewModel() {
                         }
 
                         is ApiResponseState.Failed -> {
-                            setState(NicknameInitialState.Failure)
+                            setState(NicknameInitialState.Failure(it.error?.msg ?: ""))
                         }
 
                         else -> {}
