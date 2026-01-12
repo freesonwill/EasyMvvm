@@ -1,5 +1,9 @@
 <resources>
     <string name="game_data_empty">暂无游戏记录</string>
     <string name="game_favorite_empty">暂无游戏收藏</string>
+    <string name="back_percent">返奖率</string>
+    <string name="online_count">在玩</string>
+
+
 
 </resources>
